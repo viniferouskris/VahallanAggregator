@@ -235,23 +235,22 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
 
             return recipe;
         }
+        // Add this method to your existing RecipeService class
 
-        public async Task<IEnumerable<RecipeViewModel>> GetAllRecipesAsync(string userId, bool isAdmin)
+        public async Task<List<RecipeViewModel>> GetAllPublicRecipesAsync()
         {
             try
             {
-                _logger.LogInformation($"Retrieving recipes for user: {userId}, isAdmin: {isAdmin}");
+                _logger.LogInformation("Retrieving all public recipes for shared view");
 
-                IQueryable<Recipe> query = _context.Recipes
-                    .Include(r => r.RecipeIngredients);
-
-                // If not admin, only show public recipes and user's own recipes
-                if (!isAdmin)
-                {
-                    query = query.Where(r => r.IsPublic || r.CreatedById == userId);
-                }
-
-                var recipes = await query.ToListAsync();
+                var recipes = await _context.Recipes
+                    .Include(r => r.RecipeIngredients)
+                        .ThenInclude(ri => ri.Ingredient)
+                    .Include(r => r.Photos)
+                    .Where(r => r.IsPublic) // All recipes should be public in your system
+                    .OrderBy(r => r.Collection)
+                    .ThenBy(r => r.Name)
+                    .ToListAsync();
 
                 var viewModels = recipes.Select(r => new RecipeViewModel
                 {
@@ -262,8 +261,54 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
                     CookTime = r.CookTimeMinutes,
                     TotalTime = r.PrepTimeMinutes + r.CookTimeMinutes,
                     IsPublic = r.IsPublic,
-                    IsOwner = r.CreatedById == userId,
-                    CreatedBy = r.CreatedById
+                    IsOwner = false, // No individual ownership in shared system
+                    CreatedBy = r.CreatedById,
+                    Collection = r.Collection,
+                   // PatternCode = r.PatternCode,
+                    AccuracyLevel = r.AccuracyLevel,
+                    MainPhotoUrl = r.Photos?.FirstOrDefault(p => p.IsMain)?.FilePath,
+                    IngredientsCount = r.RecipeIngredients?.Count ?? 0
+                }).ToList();
+
+                _logger.LogInformation($"Retrieved {viewModels.Count} public recipes");
+                return viewModels;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving public recipes");
+                throw;
+            }
+        }
+
+        // Also update your existing GetAllRecipesAsync method to be simpler
+        public async Task<IEnumerable<RecipeViewModel>> GetAllRecipesAsync(string userId, bool isAdmin)
+        {
+            try
+            {
+                _logger.LogInformation($"Retrieving recipes - isAdmin: {isAdmin}");
+
+                // In admin-only system, just get all public recipes
+                var recipes = await _context.Recipes
+                    .Include(r => r.RecipeIngredients)
+                        .ThenInclude(ri => ri.Ingredient)
+                    .Include(r => r.Photos)
+                    .Where(r => r.IsPublic)
+                    .ToListAsync();
+
+                var viewModels = recipes.Select(r => new RecipeViewModel
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                    PrepTime = r.PrepTimeMinutes,
+                    CookTime = r.CookTimeMinutes,
+                    TotalTime = r.PrepTimeMinutes + r.CookTimeMinutes,
+                    IsPublic = r.IsPublic,
+                    IsOwner = isAdmin, // Only admin can manage recipes
+                    CreatedBy = r.CreatedById,
+                    Collection = r.Collection,
+                   // PatternCode = r.PatternCode,
+                    AccuracyLevel = r.AccuracyLevel
                 }).ToList();
 
                 _logger.LogInformation($"Retrieved {viewModels.Count} recipes");
@@ -275,6 +320,45 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
                 throw;
             }
         }
+        //public async Task<IEnumerable<RecipeViewModel>> GetAllRecipesAsync(string userId, bool isAdmin)
+        //{
+        //    try
+        //    {
+        //        _logger.LogInformation($"Retrieving recipes for user: {userId}, isAdmin: {isAdmin}");
+
+        //        IQueryable<Recipe> query = _context.Recipes
+        //            .Include(r => r.RecipeIngredients);
+
+        //        // If not admin, only show public recipes and user's own recipes
+        //        if (!isAdmin)
+        //        {
+        //            query = query.Where(r => r.IsPublic || r.CreatedById == userId);
+        //        }
+
+        //        var recipes = await query.ToListAsync();
+
+        //        var viewModels = recipes.Select(r => new RecipeViewModel
+        //        {
+        //            Id = r.Id,
+        //            Name = r.Name,
+        //            Description = r.Description,
+        //            PrepTime = r.PrepTimeMinutes,
+        //            CookTime = r.CookTimeMinutes,
+        //            TotalTime = r.PrepTimeMinutes + r.CookTimeMinutes,
+        //            IsPublic = r.IsPublic,
+        //            IsOwner = r.CreatedById == userId,
+        //            CreatedBy = r.CreatedById
+        //        }).ToList();
+
+        //        _logger.LogInformation($"Retrieved {viewModels.Count} recipes");
+        //        return viewModels;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error retrieving recipes");
+        //        throw;
+        //    }
+        //}
 
 
         public async Task UpdateRecipeAsync(Recipe recipe)
@@ -321,8 +405,7 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
         {
             return await _context.Recipes
                 .Where(r => r.CreatedById != userId &&
-                           r.IsPublic &&
-                           r.ExternalSource == null)
+                           r.IsPublic)
                 .Select(r => new RecipeViewModel
                 {
                     Id = r.Id,
@@ -340,103 +423,6 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
         }
 
 
-        public async Task<bool> IsRecipeImportedAsync(string externalId)
-        {
-            return await _context.Recipes
-                .AnyAsync(r => r.ExternalId == externalId);
-        }
-        //public async Task<Recipe> ImportExternalRecipeAsync(MealDBResponse mealResponse, string userId)
-        //{
-        //    // Check if there are any meals in the response
-        //    if (mealResponse?.Meals == null || !mealResponse.Meals.Any())
-        //    {
-        //        throw new InvalidOperationException("No meals found in the response.");
-        //    }
-
-        //    var meal = mealResponse.Meals.First(); // Get the first meal
-
-        //    if (await IsRecipeImportedAsync(meal.IdMeal))
-        //    {
-        //        throw new InvalidOperationException($"Recipe {meal.StrMeal} is already imported.");
-        //    }
-
-        //    var recipe = new Recipe
-        //    {
-        //        Name = meal.StrMeal,
-        //        Description = $"Category: {meal.StrCategory}, Area: {meal.StrArea}",
-        //        Instructions = meal.StrInstructions,
-        //        ExternalId = meal.IdMeal,
-        //        ExternalSource = "TheMealDB",
-        //        CreatedById = userId,
-        //        IsPublic = true,
-        //        Type = "Recipe",
-        //        Unit = "serving", // Set a default value
-        //        StoredUnit = "serving", // Set a default value
-        //        Quantity = 1, // Set a default value
-        //        StoredQuantity = 1, // Set a default value
-        //        NumberOfServings = 4, // Set a default value
-        //        PrepTimeMinutes = 30, // Set a reasonable default
-        //        CookTimeMinutes = 30, // Set a reasonable default
-        //        Photos = new List<RecipePhoto>(),
-        //        RecipeIngredients = new List<RecipeIngredient>()
-        //    };
-
-        //    // Add ingredients using RecipeIngredient relationships
-        //    var ingredients = meal.GetIngredientPairs()
-        //        .Where(pair => !string.IsNullOrWhiteSpace(pair.Ingredient));
-
-        //    foreach (var (ingredientName, measurementText) in ingredients)
-        //    {
-        //        // Create or get the ingredient
-        //        var existingIngredient = await _context.Ingredients
-        //            .FirstOrDefaultAsync(i => i.Name.ToLower() == ingredientName.ToLower());
-
-        //        // Parse the measurement text into quantity and unit
-        //        (decimal quantity, string unit) = ParseMeasurement(measurementText);
-
-        //        if (existingIngredient == null)
-        //        {
-        //            // If unit is still empty after parsing, use a default
-        //            if (string.IsNullOrWhiteSpace(unit))
-        //            {
-        //                unit = "count";
-        //            }
-
-        //            existingIngredient = new Ingredient
-        //            {
-        //                Name = ingredientName,
-        //                CreatedById = userId,
-        //                CreatedAt = DateTime.UtcNow,
-        //                Type = "Ingredient",
-        //                // Set default values for required fields
-        //                CostPerPackage = 0, // Default value
-        //                ServingsPerPackage = 1, // Default value
-        //                CaloriesPerServing = 0, // Default value
-        //                Quantity = 1, // Default value
-        //                Unit = unit, // Use the parsed unit
-        //                StoredQuantity = 1,
-        //                StoredUnit = unit
-        //            };
-
-        //            _context.Ingredients.Add(existingIngredient);
-        //            await _context.SaveChangesAsync(); // Save to get the Id
-        //        }
-
-        //        // Create the recipe-ingredient relationship
-        //        var recipeIngredient = new RecipeIngredient
-        //        {
-        //            Recipe = recipe,
-        //            Ingredient = existingIngredient,
-        //            Quantity = quantity, // Use the parsed quantity
-        //            Unit = unit // Use the parsed unit
-        //        };
-
-        //        recipe.RecipeIngredients.Add(recipeIngredient);
-        //    }
-
-        //    await CreateRecipeAsync(recipe, userId);
-        //    return recipe;
-        //}
 
         /// <summary>
         /// Parses a measurement string like "1 cup" or "3 cloves" into quantity and unit
@@ -675,13 +661,13 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
         ////////////external Recipe
         ///
 
-        public async Task<int?> GetLocalRecipeIdByExternalIdAsync(string externalId)
-        {
-            var recipe = await _context.Recipes
-                .FirstOrDefaultAsync(r => r.ExternalId == externalId);
+        //public async Task<int?> GetLocalRecipeIdByExternalIdAsync(string externalId)
+        //{
+        //    var recipe = await _context.Recipes
+        //        .FirstOrDefaultAsync(r => r.ExternalId == externalId);
 
-            return recipe?.Id;
-        }
+        //    return recipe?.Id;
+        //}
 
         public async Task<Recipe> CreateRecipeAsync(Recipe recipe, string userId)
         {
@@ -715,10 +701,10 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
 
   
 
-        Task<List<RecipeViewModel>> IRecipeService.GetAllRecipesAsync(string userId, bool isAdmin)
-        {
-            throw new NotImplementedException();
-        }
+     //   Task<List<RecipeViewModel>> IRecipeService.GetAllRecipesAsync(string userId, bool isAdmin)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
     }

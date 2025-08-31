@@ -27,6 +27,8 @@ namespace Vahallan_Ingredient_Aggregator.Models.ViewModels
         public DateTime? LastUsed { get; set; }
         public decimal AverageCostPerRecipe { get; set; }
         public ICollection<RecipePhoto> Photos { get; set; } = new List<RecipePhoto>();
+        public string MaterialType { get; set; } = "General";
+        public string Vendor { get; set; } = "";
 
     }
 }

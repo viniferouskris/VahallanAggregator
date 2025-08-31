@@ -21,6 +21,9 @@
 
         public bool ShowInIngredientsList { get; set; } = false;
         public RecipeAccuracyLevel AccuracyLevel { get; set; } = RecipeAccuracyLevel.Estimate;
+        public string MainPhotoUrl { get; set; }
+
+
     }
 
 }

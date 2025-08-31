@@ -24,7 +24,10 @@ namespace Vahallan_Ingredient_Aggregator.Models.ViewModels
 
         public string Collection { get; set; }
         public bool ShowInIngredientsList { get; set; }
+        public decimal StandardSquareFeet { get; set; }
         public RecipeAccuracyLevel AccuracyLevel { get; set; }
+
+
     }
 
     public class RecipeIngredientViewModel
@@ -32,5 +35,8 @@ namespace Vahallan_Ingredient_Aggregator.Models.ViewModels
         public string Name { get; set; }
         public decimal Quantity { get; set; }
         public string Unit { get; set; }
+        // ADD MISSING wallpaper properties
+        public string MaterialType { get; set; }
+        public string Vendor { get; set; }
     }
 }

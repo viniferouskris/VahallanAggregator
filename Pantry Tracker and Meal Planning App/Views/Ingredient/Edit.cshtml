@@ -17,12 +17,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">Edit @Model.Name</h2>
-                        <div>
-                            @if (Model.IsSystemIngredient)
-                            {
-                                <span class="badge bg-info">System Ingredient</span>
-                            }
-                        </div>
+ 
                     </div>
 
                     <div class="card-body">
@@ -73,10 +68,22 @@
                             {
                                 <div class="col-md-12">
                                     <div class="form-check mb-3">
-                                        <input asp-for="IsSystemIngredient" class="form-check-input" />
-                                        <label asp-for="IsSystemIngredient" class="form-check-label">
-                                            System ingredient (available to all users)
-                                        </label>
+                                        <div class="form-group">
+                                            <label asp-for="MaterialType" class="control-label">Material Type</label>
+                                            <select asp-for="MaterialType" class="form-control">
+                                                <option value="Paper">Paper</option>
+                                                <option value="Paint">Paint</option>
+                                                <option value="Metallic">Metallic</option>
+                                                <option value="Texture">Texture</option>
+                                                <option value="Adhesive">Adhesive</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="Vendor" class="control-label">Vendor</label>
+                                            <input asp-for="Vendor" class="form-control" />
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -97,20 +104,22 @@
             </div>
 
             <div class="col-md-4">
-                @if (Model.IsSystemIngredient)
-                {
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">System Ingredient</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                This is a system ingredient available to all users. Any changes will affect all users
-                                who have not created their own copy.
-                            </p>
-                        </div>
-                    </div>
-                }
+                <div class="form-group">
+                    <label asp-for="MaterialType" class="control-label">Material Type</label>
+                    <select asp-for="MaterialType" class="form-control">
+                        <option value="Paper">Paper</option>
+                        <option value="Paint">Paint</option>
+                        <option value="Metallic">Metallic</option>
+                        <option value="Texture">Texture</option>
+                        <option value="Adhesive">Adhesive</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Vendor" class="control-label">Vendor</label>
+                    <input asp-for="Vendor" class="form-control" />
+                </div>
             </div>
         </div>
         <div class="row mb-4">

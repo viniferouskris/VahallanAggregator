@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vahallan_Ingredient_Aggregator.Models.Photo;
 using Vahallan_Ingredient_Aggregator.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
 
 public static class RecipeSeeder
 {
     public static void SeedCapreseSalad(ModelBuilder modelBuilder)
     {
-        // Setup photo directories
+        // Ensure directories exist
         var recipePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "recipe-photos");
         var originalsPath = Path.Combine(recipePath, "originals");
         var thumbnailsPath = Path.Combine(recipePath, "thumbnails");
@@ -14,7 +14,7 @@ public static class RecipeSeeder
         Directory.CreateDirectory(originalsPath);
         Directory.CreateDirectory(thumbnailsPath);
 
-        // Copy seed photos
+        // Copy seed photo files if they don't exist
         var sourcePhotoPath = Path.Combine(Directory.GetCurrentDirectory(), "SeedData", "caprese-main.jpg");
         var destinationPhotoPath = Path.Combine(originalsPath, "caprese-main.jpg");
         var destinationThumbnailPath = Path.Combine(thumbnailsPath, "caprese-main.jpg");
@@ -22,11 +22,11 @@ public static class RecipeSeeder
         if (File.Exists(sourcePhotoPath))
         {
             File.Copy(sourcePhotoPath, destinationPhotoPath, true);
-            File.Copy(sourcePhotoPath, destinationThumbnailPath, true);
+            File.Copy(sourcePhotoPath, destinationThumbnailPath, true); // For demo, using same file as thumbnail
         }
 
-        // Create base recipe
-        var recipe = new Recipe
+        // Seed the recipe first - ADD MISSING PROPERTIES
+        var capreseSalad = new Recipe
         {
             Id = 8,
             Name = "Classic Caprese Salad",
@@ -42,212 +42,167 @@ public static class RecipeSeeder
             CreatedById = "system",
             CreatedAt = DateTime.UtcNow,
             Version = 1,
-            IsPublic = true,
-            NumberOfServings = 4,
-            Type = "Recipe",
             Unit = "serving",
             Quantity = 4,
+            Type = "Recipe",
             StoredUnit = "serving",
             StoredQuantity = 4,
+            IsPublic = true,
 
-            // NEW PROPERTIES ADDED:
-            Collection = "Appetizers",                           // Set collection to "Appetizers"
-            ShowInIngredientsList = false,                       // This is a finished dish, not an ingredient
-            AccuracyLevel = RecipeAccuracyLevel.Tested          // Mark as tested since it's a classic recipe
+            // ADD THESE REQUIRED WALLPAPER PROPERTIES
+            Collection = "Sample Recipes",
+            ShowInIngredientsList = false,
+            AccuracyLevel = RecipeAccuracyLevel.Tested,
+            PatternCode = "CAPRESE-001",  // THIS WAS MISSING!
+            StandardSquareFeet = 100m     // DEFAULT VALUE
         };
 
-        // Create base ingredients
+        // Seed base ingredients - REMOVE IsSystemIngredient and IsPromoted
         var ingredients = new[]
         {
             new Ingredient
             {
                 Id = 1,
                 Name = "Fresh Mozzarella",
+                Quantity = 16,
+                Unit = "oz",
                 CostPerPackage = 5.99m,
                 ServingsPerPackage = 16,
                 CaloriesPerServing = 70,
                 CreatedById = "system",
                 CreatedAt = DateTime.UtcNow,
-                Type = "Ingredient",
-                IsSystemIngredient = true,
-                Unit = "oz",
-                Quantity = 1,
+                StoredQuantity = 453.592m,
                 StoredUnit = "g",
-                StoredQuantity = 28.35m
+                Type = "Ingredient",
+                MaterialType = "Dairy",  // ADD wallpaper property
+                Vendor = "Local Farm"    // ADD wallpaper property
+                // REMOVED: IsSystemIngredient and IsPromoted
+                // REMOVED: ParentId (not used in your current model)
             },
             new Ingredient
             {
                 Id = 2,
                 Name = "Ripe Tomatoes",
+                Quantity = 4,
+                Unit = "count",
                 CostPerPackage = 3.00m,
                 ServingsPerPackage = 4,
                 CaloriesPerServing = 22,
                 CreatedById = "system",
                 CreatedAt = DateTime.UtcNow,
-                Type = "Ingredient",
-                IsSystemIngredient = true,
-                Unit = "count",
-                Quantity = 1,
+                StoredQuantity = 4,
                 StoredUnit = "count",
-                StoredQuantity = 1
+                Type = "Ingredient",
+                MaterialType = "Produce",
+                Vendor = "Local Market"
+                // REMOVED: IsSystemIngredient, IsPromoted, ParentId
             },
             new Ingredient
             {
                 Id = 3,
                 Name = "Fresh Basil Leaves",
+                Quantity = 20,
+                Unit = "count",
                 CostPerPackage = 2.99m,
                 ServingsPerPackage = 30,
                 CaloriesPerServing = 1,
                 CreatedById = "system",
                 CreatedAt = DateTime.UtcNow,
-                Type = "Ingredient",
-                IsSystemIngredient = true,
-                Unit = "count",
-                Quantity = 1,
+                StoredQuantity = 20,
                 StoredUnit = "count",
-                StoredQuantity = 1
+                Type = "Ingredient",
+                MaterialType = "Herbs",
+                Vendor = "Garden Center"
+                // REMOVED: IsSystemIngredient, IsPromoted, ParentId
             },
             new Ingredient
             {
                 Id = 4,
                 Name = "Extra Virgin Olive Oil",
+                Quantity = 2,
+                Unit = "tbsp",
                 CostPerPackage = 8.99m,
                 ServingsPerPackage = 33.8m,
                 CaloriesPerServing = 120,
                 CreatedById = "system",
                 CreatedAt = DateTime.UtcNow,
-                Type = "Ingredient",
-                IsSystemIngredient = true,
-                Unit = "tbsp",
-                Quantity = 1,
+                StoredQuantity = 29.5735m,
                 StoredUnit = "ml",
-                StoredQuantity = 14.7868m
+                Type = "Ingredient",
+                MaterialType = "Oil",
+                Vendor = "Mediterranean Imports"
+                // REMOVED: IsSystemIngredient, IsPromoted, ParentId
             },
             new Ingredient
             {
                 Id = 5,
                 Name = "Balsamic Vinegar",
+                Quantity = 2,
+                Unit = "tbsp",
                 CostPerPackage = 5.99m,
                 ServingsPerPackage = 16.9m,
                 CaloriesPerServing = 14,
                 CreatedById = "system",
                 CreatedAt = DateTime.UtcNow,
-                Type = "Ingredient",
-                IsSystemIngredient = true,
-                Unit = "tbsp",
-                Quantity = 1,
+                StoredQuantity = 29.5735m,
                 StoredUnit = "ml",
-                StoredQuantity = 14.7868m
+                Type = "Ingredient",
+                MaterialType = "Condiment",
+                Vendor = "Mediterranean Imports"
+                // REMOVED: IsSystemIngredient, IsPromoted, ParentId
             },
             new Ingredient
             {
                 Id = 6,
                 Name = "Salt",
+                Quantity = 0.5m,
+                Unit = "tsp",
                 CostPerPackage = 0.99m,
                 ServingsPerPackage = 156,
                 CaloriesPerServing = 0,
                 CreatedById = "system",
                 CreatedAt = DateTime.UtcNow,
-                Type = "Ingredient",
-                IsSystemIngredient = true,
-                Unit = "tsp",
-                Quantity = 1,
+                StoredQuantity = 2.46446m,
                 StoredUnit = "ml",
-                StoredQuantity = 4.92892m
+                Type = "Ingredient",
+                MaterialType = "Seasoning",
+                Vendor = "General Store"
+                // REMOVED: IsSystemIngredient, IsPromoted, ParentId
             },
             new Ingredient
             {
                 Id = 7,
                 Name = "Black Pepper",
+                Quantity = 0.25m,
+                Unit = "tsp",
                 CostPerPackage = 3.99m,
                 ServingsPerPackage = 144,
                 CaloriesPerServing = 0,
                 CreatedById = "system",
                 CreatedAt = DateTime.UtcNow,
-                Type = "Ingredient",
-                IsSystemIngredient = true,
-                Unit = "tsp",
-                Quantity = 1,
+                StoredQuantity = 1.23223m,
                 StoredUnit = "ml",
-                StoredQuantity = 4.92892m
+                Type = "Ingredient",
+                MaterialType = "Seasoning",
+                Vendor = "Spice Company"
+                // REMOVED: IsSystemIngredient, IsPromoted, ParentId
             }
         };
 
-        // Create recipe-ingredient relationships
-        var recipeIngredients = new[]
-        {
-            new RecipeIngredient
-            {
-                Id = 1,
-                RecipeId = recipe.Id,
-                IngredientId = 1,
-                Quantity = 16,
-                Unit = "oz"
-            },
-            new RecipeIngredient
-            {
-                Id = 2,
-                RecipeId = recipe.Id,
-                IngredientId = 2,
-                Quantity = 4,
-                Unit = "count"
-            },
-            new RecipeIngredient
-            {
-                Id = 3,
-                RecipeId = recipe.Id,
-                IngredientId = 3,
-                Quantity = 20,
-                Unit = "count"
-            },
-            new RecipeIngredient
-            {
-                Id = 4,
-                RecipeId = recipe.Id,
-                IngredientId = 4,
-                Quantity = 2,
-                Unit = "tbsp"
-            },
-            new RecipeIngredient
-            {
-                Id = 5,
-                RecipeId = recipe.Id,
-                IngredientId = 5,
-                Quantity = 2,
-                Unit = "tbsp"
-            },
-            new RecipeIngredient
-            {
-                Id = 6,
-                RecipeId = recipe.Id,
-                IngredientId = 6,
-                Quantity = 0.5m,
-                Unit = "tsp"
-            },
-            new RecipeIngredient
-            {
-                Id = 7,
-                RecipeId = recipe.Id,
-                IngredientId = 7,
-                Quantity = 0.25m,
-                Unit = "tsp"
-            }
-        };
-
-        // Create photos
-        var photos = new[]
+        // Seed recipe photos
+        var recipePhotos = new[]
         {
             new RecipePhoto
             {
                 Id = 1,
-                RecipeId = recipe.Id,
+                RecipeId = capreseSalad.Id,
                 FilePath = "/recipe-photos/originals/caprese-main.jpg",
                 ThumbnailPath = "/recipe-photos/thumbnails/caprese-main.jpg",
                 ContentType = "image/jpeg",
-                FileSize = 19661L,
+                FileSize = 20L,
                 FileName = "caprese-main.jpg",
                 Description = "Classic Caprese Salad with alternating slices of mozzarella and tomato",
-                IsMain = true,
+                IsMain = true,  // CORRECTED: Use IsMain instead of IsMainPhoto
                 IsApproved = true,
                 UploadedById = "system",
                 UploadedAt = DateTime.UtcNow
@@ -255,7 +210,7 @@ public static class RecipeSeeder
             new RecipePhoto
             {
                 Id = 2,
-                RecipeId = recipe.Id,
+                RecipeId = capreseSalad.Id,
                 FilePath = "/recipe-photos/originals/caprese-salad-recipe-1.jpg",
                 ThumbnailPath = "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg",
                 ContentType = "image/jpeg",
@@ -269,46 +224,71 @@ public static class RecipeSeeder
             }
         };
 
-        // Seed all entities
-        modelBuilder.Entity<Recipe>().HasData(recipe);
-        modelBuilder.Entity<Ingredient>().HasData(ingredients);
-        modelBuilder.Entity<RecipeIngredient>().HasData(recipeIngredients);
-        modelBuilder.Entity<RecipePhoto>().HasData(photos);
-    }
-
-    // OPTIONAL: Add another recipe to showcase different property values
-    public static void SeedAdditionalRecipes(ModelBuilder modelBuilder)
-    {
-        // Example of a recipe that WOULD show in ingredients list (like a sauce)
-        var marinara = new Recipe
+        // ADD MISSING: Seed RecipeIngredient relationships
+        var recipeIngredients = new[]
         {
-            Id = 9,
-            Name = "Basic Marinara Sauce",
-            Description = "A simple tomato-based sauce that can be used in many dishes.",
-            Instructions = @"1. Heat olive oil in a pan.
-2. Add garlic and cook until fragrant.
-3. Add crushed tomatoes and seasonings.
-4. Simmer for 20 minutes.
-5. Season to taste.",
-            PrepTimeMinutes = 10,
-            CookTimeMinutes = 25,
-            CreatedById = "system",
-            CreatedAt = DateTime.UtcNow,
-            Version = 1,
-            IsPublic = true,
-            NumberOfServings = 8,
-            Type = "Recipe",
-            Unit = "serving",
-            Quantity = 8,
-            StoredUnit = "serving",
-            StoredQuantity = 8,
-
-            // NEW PROPERTIES - Different values to show variety:
-            Collection = "Sauces",                               // Different collection
-            ShowInIngredientsList = true,                        // This sauce can be used as ingredient
-            AccuracyLevel = RecipeAccuracyLevel.Estimate         // Still being refined
+            new RecipeIngredient
+            {
+                Id = 1,
+                RecipeId = capreseSalad.Id,
+                IngredientId = 1, // Fresh Mozzarella
+                Quantity = 8,
+                Unit = "oz"
+            },
+            new RecipeIngredient
+            {
+                Id = 2,
+                RecipeId = capreseSalad.Id,
+                IngredientId = 2, // Ripe Tomatoes
+                Quantity = 2,
+                Unit = "count"
+            },
+            new RecipeIngredient
+            {
+                Id = 3,
+                RecipeId = capreseSalad.Id,
+                IngredientId = 3, // Fresh Basil Leaves
+                Quantity = 10,
+                Unit = "count"
+            },
+            new RecipeIngredient
+            {
+                Id = 4,
+                RecipeId = capreseSalad.Id,
+                IngredientId = 4, // Extra Virgin Olive Oil
+                Quantity = 2,
+                Unit = "tbsp"
+            },
+            new RecipeIngredient
+            {
+                Id = 5,
+                RecipeId = capreseSalad.Id,
+                IngredientId = 5, // Balsamic Vinegar
+                Quantity = 1,
+                Unit = "tbsp"
+            },
+            new RecipeIngredient
+            {
+                Id = 6,
+                RecipeId = capreseSalad.Id,
+                IngredientId = 6, // Salt
+                Quantity = 0.25m,
+                Unit = "tsp"
+            },
+            new RecipeIngredient
+            {
+                Id = 7,
+                RecipeId = capreseSalad.Id,
+                IngredientId = 7, // Black Pepper
+                Quantity = 0.125m,
+                Unit = "tsp"
+            }
         };
 
-        modelBuilder.Entity<Recipe>().HasData(marinara);
+        // Configure the entity seeding
+        modelBuilder.Entity<Recipe>().HasData(capreseSalad);
+        modelBuilder.Entity<Ingredient>().HasData(ingredients);
+        modelBuilder.Entity<RecipeIngredient>().HasData(recipeIngredients); // ADD THIS
+        modelBuilder.Entity<RecipePhoto>().HasData(recipePhotos);
     }
 }

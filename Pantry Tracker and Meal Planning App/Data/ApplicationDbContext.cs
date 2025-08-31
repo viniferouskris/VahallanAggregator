@@ -35,12 +35,12 @@ namespace Vahallan_Ingredient_Aggregator.Data
            .HasValue<Recipe>("Recipe");
 
             // ADD THIS SECTION - Configure base component properties
-            modelBuilder.Entity<BaseIngredientComponent>(entity =>
-            {
-                entity.Property(e => e.Collection).HasMaxLength(100);
-                entity.Property(e => e.ShowInIngredientsList).HasDefaultValue(false);
-                entity.Property(e => e.AccuracyLevel).HasDefaultValue(RecipeAccuracyLevel.Estimate);
-            });
+            //modelBuilder.Entity<BaseIngredientComponent>(entity =>
+            //{
+            //    entity.Property(e => e.Collection).HasMaxLength(100);
+            //    entity.Property(e => e.ShowInIngredientsList).HasDefaultValue(false);
+            //    entity.Property(e => e.AccuracyLevel).HasDefaultValue(RecipeAccuracyLevel.Estimate);
+            //});
 
             // Configure base component photo relationship
             modelBuilder.Entity<BaseIngredientComponent>()
@@ -121,6 +121,12 @@ namespace Vahallan_Ingredient_Aggregator.Data
                 entity.Property(e => e.Description).HasMaxLength(2000);
                 entity.Property(e => e.Instructions).IsRequired();
                 entity.Property(e => e.NumberOfServings).HasColumnType("decimal(18,2)");
+
+                entity.Property(e => e.Collection).HasMaxLength(100);
+                entity.Property(e => e.ShowInIngredientsList).HasDefaultValue(false);
+                entity.Property(e => e.AccuracyLevel).HasDefaultValue(RecipeAccuracyLevel.Estimate);
+                entity.Property(e => e.PatternCode).HasMaxLength(50);
+                entity.Property(e => e.StandardSquareFeet).HasColumnType("decimal(18,2)").HasDefaultValue(100);
 
             });
 

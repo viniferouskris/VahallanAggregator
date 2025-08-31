@@ -6,19 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 using Vahallan_Ingredient_Aggregator.Models.Photo;
 
-//Place functions that handle CRUD operations
-//Methods that interact with the database
-//Operations that involve multiple ingredients
-//Business logic that goes beyond a single ingredient
-//Data access and persistence logic
-
-
-//Calculate an ingredient's price history -> IngredientService (involves database queries)
-//Check if an ingredient is on sale -> Ingredient model (just uses the ingredient's own properties)
-//Find similar ingredients -> IngredientService (requires querying other ingredients)
-//Convert units -> Ingredient model (operates on the ingredient's own properties)
-
-
 namespace Vahallan_Ingredient_Aggregator.Services
 {
     public class IngredientService : IIngredientService
@@ -33,8 +20,8 @@ namespace Vahallan_Ingredient_Aggregator.Services
             ApplicationDbContext context,
             IMeasurementConversionService conversionService,
             ILogger<IngredientService> logger,
-        IPhotoStorageService photoStorageService,
-        IPhotoProcessingService photoProcessingService)
+            IPhotoStorageService photoStorageService,
+            IPhotoProcessingService photoProcessingService)
         {
             _context = context;
             _conversionService = conversionService;
@@ -77,13 +64,13 @@ namespace Vahallan_Ingredient_Aggregator.Services
                 throw;
             }
         }
+
         public async Task<IEnumerable<Ingredient>> GetAllIngredientsAsync()
         {
             try
             {
                 var ingredients = await _context.Set<BaseIngredientComponent>()
                     .Where(i => i.Type == "Ingredient")
-                    //added .include 2/17
                     .Include(r => r.Photos)
                     .Select(i => (Ingredient)i)
                     .ToListAsync();
@@ -97,22 +84,17 @@ namespace Vahallan_Ingredient_Aggregator.Services
                 throw;
             }
         }
+
         public async Task<IEnumerable<Ingredient>> GetFilteredIngredientsAsync(string userId, bool isAdmin)
         {
             var ingredients = await GetAllIngredientsAsync();
 
-            // Get imported system ingredients
-            var importedSystemIds = ingredients
-                .Where(i => i.CreatedById == userId && i.SystemIngredientId.HasValue)
-                .Select(i => i.SystemIngredientId.Value)
-                .ToHashSet();
-
+            // SIMPLIFIED: Return all ingredients for admin, only user's ingredients for regular users
             return ingredients.Where(ingredient =>
-                isAdmin ||
-                ingredient.CreatedById == userId ||
-                (ingredient.IsSystemIngredient && !importedSystemIds.Contains(ingredient.Id)))
+                isAdmin || ingredient.CreatedById == userId)
                 .ToList();
         }
+
         public async Task<bool> CanEditIngredientAsync(int ingredientId, string userId, bool isAdmin)
         {
             var ingredient = await GetIngredientAsync(ingredientId);
@@ -122,38 +104,32 @@ namespace Vahallan_Ingredient_Aggregator.Services
         public async Task<bool> CanDeleteIngredientAsync(int ingredientId, string userId, bool isAdmin)
         {
             var ingredient = await GetIngredientAsync(ingredientId);
-            return isAdmin || (ingredient.CreatedById == userId && !ingredient.IsSystemIngredient);
+            return isAdmin || ingredient.CreatedById == userId;
         }
 
-        //public async Task<bool> CanCopyIngredientAsync(int ingredientId, string userId)
-        //{
-        //    var ingredient = await GetIngredientAsync(ingredientId);
-        //    return ingredient.IsSystemIngredient && ingredient.CreatedById != userId;
-        //}
-        // IngredientService.cs
-        public async Task<Ingredient> CreatePersonalCopyAsync(int systemIngredientId, string userId)
+        // REMOVED: CanCopyIngredientAsync method since IsSystemIngredient is gone
+
+        // SIMPLIFIED: CreatePersonalCopyAsync - now just creates a copy without system ingredient logic
+        public async Task<Ingredient> CreatePersonalCopyAsync(int sourceIngredientId, string userId)
         {
-            var systemIngredient = await GetIngredientAsync(systemIngredientId);
-            if (!systemIngredient.IsSystemIngredient)
-            {
-                throw new InvalidOperationException("Source ingredient is not a system ingredient");
-            }
+            var sourceIngredient = await GetIngredientAsync(sourceIngredientId);
 
             var personalCopy = new Ingredient
             {
-                Name = systemIngredient.Name,
-                Unit = systemIngredient.Unit,
-                CostPerPackage = systemIngredient.CostPerPackage,
-                ServingsPerPackage = systemIngredient.ServingsPerPackage,
-                CaloriesPerServing = systemIngredient.CaloriesPerServing,
+                Name = sourceIngredient.Name,
+                Unit = sourceIngredient.Unit,
+                CostPerPackage = sourceIngredient.CostPerPackage,
+                ServingsPerPackage = sourceIngredient.ServingsPerPackage,
+                CaloriesPerServing = sourceIngredient.CaloriesPerServing,
+                MaterialType = sourceIngredient.MaterialType,
+                Vendor = sourceIngredient.Vendor,
                 CreatedById = userId,
-                IsSystemIngredient = false,
-                SystemIngredientId = systemIngredientId
+                SystemIngredientId = sourceIngredientId
+                // REMOVED: IsSystemIngredient = false
             };
 
             return await CreateIngredientAsync(personalCopy);
         }
-
 
         public async Task<Ingredient> CreateIngredientAsync(Ingredient ingredient)
         {
@@ -169,170 +145,145 @@ namespace Vahallan_Ingredient_Aggregator.Services
 
         public async Task AddPhotosToIngredientAsync(Ingredient ingredient, IFormFileCollection photos, string userId)
         {
-            //    var userId = User.Identity?.Name ?? "system";
-
             // Process photos if any were uploaded
             if (photos != null && photos.Any())
             {
-                _logger.LogInformation($"Starting to process {photos.Count} photos for recipe {ingredient.Id}");
+                _logger.LogInformation($"Starting to process {photos.Count} photos for ingredient {ingredient.Id}");
                 var processedPhotos = new HashSet<string>(); // Track processed filenames
 
                 foreach (var photo in photos)
-            {
-                try
                 {
-                    // Check if we've already processed this photo
-                    var photoKey = $"{photo.FileName}-{photo.Length}";
-                    if (processedPhotos.Contains(photoKey))
+                    try
                     {
-                        _logger.LogWarning($"Skipping duplicate photo: {photoKey}");
-                        continue;
+                        // Check if we've already processed this photo
+                        var photoKey = $"{photo.FileName}-{photo.Length}";
+                        if (processedPhotos.Contains(photoKey))
+                        {
+                            _logger.LogWarning($"Skipping duplicate photo: {photoKey}");
+                            continue;
+                        }
+
+                        _logger.LogInformation($"Processing photo: {photo.FileName}, Size: {photo.Length} bytes");
+
+                        // Create file paths
+                        var fileName = Path.GetFileName(photo.FileName);
+                        _logger.LogInformation($"Generated fileName: {fileName}");
+
+                        // Upload photo using IPhotoStorageService
+                        var photoUrl = await _photoStorageService.SavePhotoAsync(photo, userId);
+                        _logger.LogInformation($"Saved photo to URL: {photoUrl}");
+
+                        var thumbnailData = await _photoProcessingService.CreateThumbnailAsync(photo);
+                        var thumbnailUrl = await _photoStorageService.SaveThumbnailAsync(thumbnailData, photoUrl);
+                        _logger.LogInformation($"Saved thumbnail to URL: {thumbnailUrl}");
+
+                        // Create photo record
+                        var recipePhoto = new RecipePhoto
+                        {
+                            RecipeId = ingredient.Id,
+                            FilePath = photoUrl,
+                            ThumbnailPath = thumbnailUrl,
+                            ContentType = photo.ContentType,
+                            FileSize = photo.Length,
+                            FileName = Path.GetFileName(photoUrl),
+                            Description = $"Photo for {ingredient.Name}",
+                            IsMain = !ingredient.Photos.Any(), // First photo becomes main
+                            IsApproved = true,
+                            UploadedById = userId,
+                            UploadedAt = DateTime.UtcNow
+                        };
+
+                        ingredient.Photos.Add(recipePhoto);
+                        processedPhotos.Add(photoKey); // Mark as processed
+                        _logger.LogInformation($"Added photo record to ingredient: {recipePhoto.FileName}");
                     }
-
-                    _logger.LogInformation($"Processing photo: {photo.FileName}, Size: {photo.Length} bytes");
-
-                    // Create file paths
-                    var fileName = Path.GetFileName(photo.FileName);
-                    _logger.LogInformation($"Generated fileName: {fileName}");
-
-                    // Upload photo using IPhotoStorageService
-                    var photoUrl = await _photoStorageService.SavePhotoAsync(photo, userId);
-                    _logger.LogInformation($"Saved photo to URL: {photoUrl}");
-
-                    var thumbnailData = await _photoProcessingService.CreateThumbnailAsync(photo);
-                    var thumbnailUrl = await _photoStorageService.SaveThumbnailAsync(thumbnailData, photoUrl);
-                    _logger.LogInformation($"Saved thumbnail to URL: {thumbnailUrl}");
-
-                    // Create photo record
-                    var recipePhoto = new RecipePhoto
+                    catch (Exception ex)
                     {
-                        RecipeId = ingredient.Id,
-                        FilePath = photoUrl,
-                        ThumbnailPath = thumbnailUrl,
-                        ContentType = photo.ContentType,
-                        FileSize = photo.Length,
-                        FileName = Path.GetFileName(photoUrl),
-                        Description = $"Photo for {ingredient.Name}",
-                        IsMain = !ingredient.Photos.Any(), // First photo becomes main
-                        IsApproved = true,
-                        UploadedById = userId,
-                        UploadedAt = DateTime.UtcNow
-                    };
+                        _logger.LogError(ex, $"Error processing photo {photo.FileName} for ingredient {ingredient.Id}");
+                    }
+                }
 
-                    ingredient.Photos.Add(recipePhoto);
-                    processedPhotos.Add(photoKey); // Mark as processed
-                    _logger.LogInformation($"Added photo record to recipe: {recipePhoto.FileName}");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Error processing photo {photo.FileName} for recipe {ingredient.Id}");
-                }
+                _logger.LogInformation($"Updated ingredient {ingredient.Id} with {ingredient.Photos.Count} photos");
             }
-
-            // Update recipe with photos
-            //  await _ingredientService.UpdateIngredientAsync(ingredient);
-            _logger.LogInformation($"Updated recipe {ingredient.Id} with {ingredient.Photos.Count} photos");
         }
-
-    }
 
         public async Task<OperationResult> UpdateIngredientAsync(int id, Ingredient updatedIngredient, string userId, bool isAdmin)
-{
-    try
-    {
-        var existingIngredient = await GetIngredientAsync(id);
-        
-        // Check permissions
-        if (!isAdmin && existingIngredient.CreatedById != userId)
         {
-            return new OperationResult 
-            { 
-                Success = false, 
-                Message = "You don't have permission to edit this ingredient" 
-            };
-        }
+            try
+            {
+                var existingIngredient = await GetIngredientAsync(id);
 
-        // Only admin can change system ingredient status
-        if (!isAdmin && updatedIngredient.IsSystemIngredient != existingIngredient.IsSystemIngredient)
-        {
-            return new OperationResult 
-            { 
-                Success = false, 
-                Message = "Only administrators can modify system ingredient status" 
-            };
-        }
+                // Check permissions
+                if (!isAdmin && existingIngredient.CreatedById != userId)
+                {
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = "You don't have permission to edit this ingredient"
+                    };
+                }
 
-        // Update properties
-        existingIngredient.Name = updatedIngredient.Name;
-        existingIngredient.Unit = updatedIngredient.Unit;
-        existingIngredient.CostPerPackage = updatedIngredient.CostPerPackage;
-        existingIngredient.ServingsPerPackage = updatedIngredient.ServingsPerPackage;
-        existingIngredient.CaloriesPerServing = updatedIngredient.CaloriesPerServing;
-        
-        // Only admin can change system ingredient status
-        if (isAdmin)
-        {
-            existingIngredient.IsSystemIngredient = updatedIngredient.IsSystemIngredient;
-        }
+                // REMOVED: IsSystemIngredient permission checks
 
-        existingIngredient.ModifiedAt = DateTime.UtcNow;
-        
-        await _context.SaveChangesAsync();
-        return new OperationResult { Success = true };
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, $"Error updating ingredient {id}");
-        return new OperationResult 
-        { 
-            Success = false, 
-            Message = "An error occurred while updating the ingredient" 
-        };
-    }
-}
+                // Update properties
+                existingIngredient.Name = updatedIngredient.Name;
+                existingIngredient.Unit = updatedIngredient.Unit;
+                existingIngredient.CostPerPackage = updatedIngredient.CostPerPackage;
+                existingIngredient.ServingsPerPackage = updatedIngredient.ServingsPerPackage;
+                existingIngredient.CaloriesPerServing = updatedIngredient.CaloriesPerServing;
+                existingIngredient.MaterialType = updatedIngredient.MaterialType;
+                existingIngredient.Vendor = updatedIngredient.Vendor;
+
+                // REMOVED: IsSystemIngredient assignment
+
+                existingIngredient.ModifiedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+                return new OperationResult { Success = true };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating ingredient {id}");
+                return new OperationResult
+                {
+                    Success = false,
+                    Message = "An error occurred while updating the ingredient"
+                };
+            }
+        }
 
         public async Task<OperationResult> DeleteIngredientAsync(int id, string userId, bool isAdmin)
-{
-    try
-    {
-        var ingredient = await GetIngredientAsync(id);
-
-        // Check permissions
-        if (!isAdmin && ingredient.CreatedById != userId)
         {
-            return new OperationResult 
-            { 
-                Success = false, 
-                Message = "You don't have permission to delete this ingredient" 
-            };
+            try
+            {
+                var ingredient = await GetIngredientAsync(id);
+
+                // Check permissions
+                if (!isAdmin && ingredient.CreatedById != userId)
+                {
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = "You don't have permission to delete this ingredient"
+                    };
+                }
+
+                // REMOVED: IsSystemIngredient permission check
+
+                _context.Set<BaseIngredientComponent>().Remove(ingredient);
+                await _context.SaveChangesAsync();
+
+                return new OperationResult { Success = true };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting ingredient {id}");
+                return new OperationResult
+                {
+                    Success = false,
+                    Message = "An error occurred while deleting the ingredient"
+                };
+            }
         }
-
-        // Don't allow non-admin users to delete system ingredients
-        if (!isAdmin && ingredient.IsSystemIngredient)
-        {
-            return new OperationResult 
-            { 
-                Success = false, 
-                Message = "System ingredients cannot be deleted by non-admin users" 
-            };
-        }
-
-        _context.Set<BaseIngredientComponent>().Remove(ingredient);
-        await _context.SaveChangesAsync();
-        
-        return new OperationResult { Success = true };
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, $"Error deleting ingredient {id}");
-        return new OperationResult 
-        { 
-            Success = false, 
-            Message = "An error occurred while deleting the ingredient" 
-        };
-    }
-}
-
-     
     }
 }

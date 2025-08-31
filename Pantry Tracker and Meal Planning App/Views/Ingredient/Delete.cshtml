@@ -16,14 +16,7 @@
                     <div class="alert alert-warning">
                         <h4 class="alert-heading">Are you sure you want to delete this ingredient?</h4>
                         <p>This action cannot be undone. All associated data will be permanently deleted.</p>
-                        @if (Model.IsSystemIngredient)
-                        {
-                            <hr>
-                            <p class="mb-0">
-                                <strong>Warning:</strong> This is a system ingredient. Deleting it will affect all users
-                                who haven't created their own copy.
-                            </p>
-                        }
+
                     </div>
 
                     <div class="row mb-4">
@@ -69,20 +62,7 @@
         </div>
 
         <div class="col-md-4">
-            @if (Model.IsSystemIngredient)
-            {
-                <div class="card shadow-sm mb-4 border-danger">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="card-title mb-0">System Ingredient Warning</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <strong>Warning:</strong> Deleting a system ingredient will affect all users who haven't created
-                            their own copy. Consider marking it as deprecated instead of deleting it.
-                        </p>
-                    </div>
-                </div>
-            }
+
         </div>
     </div>
 </div>

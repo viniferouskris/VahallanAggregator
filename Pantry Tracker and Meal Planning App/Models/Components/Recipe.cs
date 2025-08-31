@@ -21,15 +21,25 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         public decimal NumberOfServings { get; set; }
         public bool IsPublic { get; set; }
 
-        // New properties for external recipe sources
-        public string? ExternalId { get; set; }
-        public string? ExternalSource { get; set; }
-        public string? ExternalUrl { get; set; }
-        public DateTime? ImportedAt { get; set; }
+        //// New properties for external recipe sources
+        //public string? ExternalId { get; set; }
+        //public string? ExternalSource { get; set; }
+        //public string? ExternalUrl { get; set; }
+        //public DateTime? ImportedAt { get; set; }
 
-        public bool IsExternalRecipe => !string.IsNullOrEmpty(ExternalId);
+        //public bool IsExternalRecipe => !string.IsNullOrEmpty(ExternalId);
+
+        public string Collection { get; set; } = string.Empty;
+        public bool ShowInIngredientsList { get; set; } = false;
+        public RecipeAccuracyLevel AccuracyLevel { get; set; } = RecipeAccuracyLevel.Estimate;
+        public string PatternCode { get; set; }  // For wallpaper pattern codes
+        public decimal StandardSquareFeet { get; set; }  // Standard size for scaling
+
 
         public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();
+
+       // public virtual ICollection<BaseIngredientComponent> Components { get; set; }
+     //   public virtual ICollection<RecipePhoto> Photos { get; set; }
         public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
         //public virtual ICollection<RecipePhoto> Photos { get; set; } = new List<RecipePhoto>();
@@ -45,7 +55,7 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
             // Components = new List<BaseIngredientComponent>();
             RecipeIngredients = new List<RecipeIngredient>();
             Tags = new List<Tag>();
-            Photos = new List<RecipePhoto>();
+            //Photos = new List<RecipePhoto>();
             Version = 1;
 
         }
@@ -177,27 +187,27 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
             return isValid;
         }
         // Method to create recipe from external source
-        public static Recipe FromExternalSource(
-            string externalId,
-            string source,
-            string name,
-            string description,
-            string instructions,
-            string userId)
-        {
-            return new Recipe
-            {
-                ExternalId = externalId,
-                ExternalSource = source,
-                Name = name,
-                Description = description,
-                Instructions = instructions,
-                ImportedAt = DateTime.UtcNow,
-                CreatedById = userId,
-                CreatedAt = DateTime.UtcNow,
-                IsPublic = true // External recipes are public by default
-            };
-        }
+        //public static Recipe FromExternalSource(
+        //    string externalId,
+        //    string source,
+        //    string name,
+        //    string description,
+        //    string instructions,
+        //    string userId)
+        //{
+        //    return new Recipe
+        //    {
+        //        ExternalId = externalId,
+        //        ExternalSource = source,
+        //        Name = name,
+        //        Description = description,
+        //        Instructions = instructions,
+        //        ImportedAt = DateTime.UtcNow,
+        //        CreatedById = userId,
+        //        CreatedAt = DateTime.UtcNow,
+        //        IsPublic = true // External recipes are public by default
+        //    };
+        //}
         public override BaseIngredientComponent Clone()
         {
             var clone = (Recipe)base.Clone();

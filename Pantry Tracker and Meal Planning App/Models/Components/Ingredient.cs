@@ -20,11 +20,10 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
 
         public decimal ServingsPerPackage { get; set; }
 
-        public bool IsSystemIngredient { get; set; }
-        public bool IsPromoted { get; set; }
-        public DateTime? PromotionStartDate { get; set; }
-        public DateTime? PromotionEndDate { get; set; }
+        //   public bool IsSystemIngredient { get; set; }
 
+        public string MaterialType { get; set; } = "General";  // Paper, Paint, Metallic, etc.
+        public string Vendor { get; set; } = string.Empty;
         // Add reference to original system ingredient if this is a user copy
         public int? SystemIngredientId { get; set; }
 
@@ -55,26 +54,26 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         {
             return new List<Ingredient> { this };
         }
-        public Ingredient CreateUserCopy(string userId)
-        {
-            if (!IsSystemIngredient)
-            {
-                throw new InvalidOperationException("Can only create user copies from system ingredients");
-            }
+      //  public Ingredient CreateUserCopy(string userId)
+        //{
+        //    if (!IsSystemIngredient)
+        //    {
+        //        throw new InvalidOperationException("Can only create user copies from system ingredients");
+        //    }
 
-            return new Ingredient
-            {
-                Name = this.Name,
-                Unit = this.Unit,
-                CostPerPackage = this.CostPerPackage,
-                ServingsPerPackage = this.ServingsPerPackage,
-                CaloriesPerServing = this.CaloriesPerServing,
-                CreatedById = userId,
-                CreatedAt = DateTime.UtcNow,
-                IsSystemIngredient = false,
-                SystemIngredientId = this.Id
-            };
-        }
+        //    return new Ingredient
+        //    {
+        //        Name = this.Name,
+        //        Unit = this.Unit,
+        //        CostPerPackage = this.CostPerPackage,
+        //        ServingsPerPackage = this.ServingsPerPackage,
+        //        CaloriesPerServing = this.CaloriesPerServing,
+        //        CreatedById = userId,
+        //        CreatedAt = DateTime.UtcNow,
+        //     //   IsSystemIngredient = false,
+        //        SystemIngredientId = this.Id
+        //    };
+        //}
 
 
         // Modified to accept the service as a parameter

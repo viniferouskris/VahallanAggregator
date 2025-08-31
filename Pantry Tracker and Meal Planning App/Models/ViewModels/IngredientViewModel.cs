@@ -37,11 +37,15 @@ public class IngredientViewModel
     [Range(0, double.MaxValue, ErrorMessage = "Calories cannot be negative")]
     public decimal CaloriesPerServing { get; set; }
 
+    public string MaterialType { get; set; } = "General";
+    public string Vendor { get; set; } = "";
+
     // Add these new properties
-    public bool IsSystemIngredient { get; set; }
-    public bool IsPromoted { get; set; }
+    //  public bool IsSystemIngredient { get; set; }
+    //  public bool IsPromoted { get; set; }
     public int? SystemIngredientId { get; set; }
     public string? ReturnUrl { get; set; }
+
 
     public ICollection<RecipePhoto> Photos { get; set; } = new List<RecipePhoto>();
 

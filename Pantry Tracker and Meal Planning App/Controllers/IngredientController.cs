@@ -10,10 +10,6 @@ using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
-//Handle HTTP requests
-//Manage the view logic
-//Convert between ViewModels and domain models
-//Coordinate with services
 
 [Authorize]
 public class IngredientController : Controller
@@ -39,59 +35,60 @@ public class IngredientController : Controller
     }
 
     // GET: Ingredient
-public async Task<IActionResult> Index()
-{
-    try
+    public async Task<IActionResult> Index()
     {
-        var userId = User.Identity?.Name;
-        var isAdmin = User.IsInRole("Admin");
-        var ingredients = await _ingredientService.GetAllIngredientsAsync();
-        var viewModels = ingredients.Select(i => new IngredientViewModel
+        try
+        {
+            var userId = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+            var ingredients = await _ingredientService.GetAllIngredientsAsync();
+            var viewModels = ingredients.Select(i => new IngredientViewModel
             {
                 Id = i.Id,
                 Name = i.Name,
-            Unit = i.Unit,
-            CostPerPackage = i.CostPerPackage,
-            ServingsPerPackage = i.ServingsPerPackage,
-            CaloriesPerServing = i.CaloriesPerServing,
-            IsSystemIngredient = i.IsSystemIngredient,
-            IsPromoted = i.IsPromoted,
-            SystemIngredientId = i.SystemIngredientId
-        }).ToList();
+                Unit = i.Unit,
+                CostPerPackage = i.CostPerPackage,
+                ServingsPerPackage = i.ServingsPerPackage,
+                CaloriesPerServing = i.CaloriesPerServing,
+                // REMOVED: IsSystemIngredient and IsPromoted
+                SystemIngredientId = i.SystemIngredientId,
+                MaterialType = i.MaterialType,
+                Vendor = i.Vendor
+            }).ToList();
 
-        ViewBag.IsAdmin = isAdmin;
-        ViewBag.CurrentUserId = userId;
-        return View(viewModels);
+            ViewBag.IsAdmin = isAdmin;
+            ViewBag.CurrentUserId = userId;
+            return View(viewModels);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving ingredients");
+            return View(new List<IngredientViewModel>());
+        }
     }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error retrieving ingredients");
-        return View(new List<IngredientViewModel>());
-    }
-}
+
     public IActionResult Create()
     {
         var isAdmin = User.IsInRole("Admin");
         ViewBag.Units = new SelectList(IngredientViewModel.StandardUnits);
         ViewBag.IsAdmin = isAdmin;
-        ViewBag.IsSystemIngredient = false; // Set default value
-
+        // REMOVED: ViewBag.IsSystemIngredient
 
         var viewModel = new IngredientViewModel
         {
-            // Set default values
-            Quantity = 1, // This fixes the validation issue
+            Quantity = 1,
             ServingsPerPackage = 1,
             CaloriesPerServing = 0
         };
 
         return View(viewModel);
     }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(IngredientViewModel viewModel)
     {
-         var userId = User.Identity?.Name ?? "system";
+        var userId = User.Identity?.Name ?? "system";
 
         try
         {
@@ -110,13 +107,15 @@ public async Task<IActionResult> Index()
                 ServingsPerPackage = viewModel.ServingsPerPackage,
                 CaloriesPerServing = viewModel.CaloriesPerServing,
                 CreatedById = User.Identity.Name,
-                IsSystemIngredient = viewModel.IsSystemIngredient && User.IsInRole("Admin")
+                MaterialType = viewModel.MaterialType ?? "General",
+                Vendor = viewModel.Vendor ?? ""
+                // REMOVED: IsSystemIngredient assignment
             };
 
             // Let the service handle photo processing
             if (Request.Form.Files.Any())
             {
-                await _ingredientService.AddPhotosToIngredientAsync(ingredient, Request.Form.Files,userId);
+                await _ingredientService.AddPhotosToIngredientAsync(ingredient, Request.Form.Files, userId);
             }
 
             // Create the ingredient
@@ -132,18 +131,9 @@ public async Task<IActionResult> Index()
         }
     }
 
-
-
     // GET: Ingredient/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-//        Later, you can enhance this by:
-
-//        Adding actual usage statistics tracking
-//        Implementing recipe linking
-//Adding price history tracking
-//Including nutrition information
-//Adding comparison with similar ingredients
         if (id == null)
         {
             return NotFound();
@@ -155,8 +145,8 @@ public async Task<IActionResult> Index()
             var currentUserId = User.Identity.Name;
             var isAdmin = User.IsInRole("Admin");
 
-            // Check if user has permission to view
-            if (!ingredient.IsSystemIngredient && !isAdmin && ingredient.CreatedById != currentUserId)
+            // SIMPLIFIED: Check if user has permission to view (removed IsSystemIngredient check)
+            if (!isAdmin && ingredient.CreatedById != currentUserId)
             {
                 return Forbid();
             }
@@ -169,24 +159,24 @@ public async Task<IActionResult> Index()
                 CostPerPackage = ingredient.CostPerPackage,
                 ServingsPerPackage = ingredient.ServingsPerPackage,
                 CaloriesPerServing = ingredient.CaloriesPerServing,
-                IsSystemIngredient = ingredient.IsSystemIngredient,
+                // REMOVED: IsSystemIngredient and IsPromoted
                 CreatedBy = ingredient.CreatedById,
                 CreatedAt = ingredient.CreatedAt,
                 ModifiedAt = ingredient.ModifiedAt,
                 SystemIngredientId = ingredient.SystemIngredientId,
-                IsPromoted = ingredient.IsPromoted,
+                MaterialType = ingredient.MaterialType,
+                Vendor = ingredient.Vendor,
 
                 // Set permissions
                 CanEdit = isAdmin || ingredient.CreatedById == currentUserId,
-                CanDelete = isAdmin || (ingredient.CreatedById == currentUserId && !ingredient.IsSystemIngredient),
-                CanCopy = ingredient.IsSystemIngredient && ingredient.CreatedById != currentUserId,
+                CanDelete = isAdmin || ingredient.CreatedById == currentUserId,
+                CanCopy = ingredient.CreatedById != currentUserId, // SIMPLIFIED
 
                 // TODO: Implement these when adding usage tracking
-                RecipeCount = 0, // Replace with actual count
-                LastUsed = null, // Replace with actual last used date
-                AverageCostPerRecipe = 0, // Replace with actual average
+                RecipeCount = 0,
+                LastUsed = null,
+                AverageCostPerRecipe = 0,
                 Photos = ingredient.Photos?.ToList() ?? new List<RecipePhoto>()
-
             };
 
             return View(viewModel);
@@ -201,6 +191,7 @@ public async Task<IActionResult> Index()
             return RedirectToAction("Error", "Home");
         }
     }
+
     // GET: Ingredient/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
@@ -214,8 +205,8 @@ public async Task<IActionResult> Index()
             var currentUserId = User.Identity.Name;
             var isAdmin = User.IsInRole("Admin");
 
-            // Check if user has permission to edit
-            if (!isAdmin && ingredient.CreatedById != currentUserId && !ingredient.IsSystemIngredient)
+            // SIMPLIFIED: Check if user has permission to edit
+            if (!isAdmin && ingredient.CreatedById != currentUserId)
             {
                 return Forbid();
             }
@@ -229,9 +220,11 @@ public async Task<IActionResult> Index()
                 CostPerPackage = ingredient.CostPerPackage,
                 ServingsPerPackage = ingredient.ServingsPerPackage,
                 CaloriesPerServing = ingredient.CaloriesPerServing,
-                IsSystemIngredient = ingredient.IsSystemIngredient,
+                // REMOVED: IsSystemIngredient
                 SystemIngredientId = ingredient.SystemIngredientId,
-                Photos = ingredient.Photos?.ToList() ?? new List<RecipePhoto>() // Add this line
+                MaterialType = ingredient.MaterialType,
+                Vendor = ingredient.Vendor,
+                Photos = ingredient.Photos?.ToList() ?? new List<RecipePhoto>()
             };
 
             ViewBag.Units = new SelectList(IngredientViewModel.StandardUnits);
@@ -276,7 +269,9 @@ public async Task<IActionResult> Index()
             existingIngredient.CostPerPackage = viewModel.CostPerPackage;
             existingIngredient.ServingsPerPackage = viewModel.ServingsPerPackage;
             existingIngredient.CaloriesPerServing = viewModel.CaloriesPerServing;
-            existingIngredient.IsSystemIngredient = viewModel.IsSystemIngredient;
+            existingIngredient.MaterialType = viewModel.MaterialType ?? "General";
+            existingIngredient.Vendor = viewModel.Vendor ?? "";
+            // REMOVED: IsSystemIngredient assignment
 
             // Process new photos if any were uploaded
             if (Request.Form.Files.Any())
@@ -379,7 +374,6 @@ public async Task<IActionResult> Index()
         public int PhotoId { get; set; }
     }
 
-
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -407,6 +401,7 @@ public async Task<IActionResult> Index()
             return RedirectToAction(nameof(Details), new { id });
         }
     }
+
     // GET: Ingredient/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
@@ -435,7 +430,9 @@ public async Task<IActionResult> Index()
                 CostPerPackage = ingredient.CostPerPackage,
                 ServingsPerPackage = ingredient.ServingsPerPackage,
                 CaloriesPerServing = ingredient.CaloriesPerServing,
-                IsSystemIngredient = ingredient.IsSystemIngredient
+                MaterialType = ingredient.MaterialType,
+                Vendor = ingredient.Vendor
+                // REMOVED: IsSystemIngredient
             };
 
             return View(viewModel);
@@ -445,32 +442,4 @@ public async Task<IActionResult> Index()
             return NotFound();
         }
     }
-
-
-
-    //// GET: Ingredient/CopyFromSystem/5
-    //[HttpGet]
-    //public async Task<IActionResult> CopyFromSystem(int id)
-    //{
-    //    try
-    //    {
-    //        var userId = User.Identity?.Name;
-    //        if (!await _ingredientService.CanCopyIngredientAsync(id, userId))
-    //        {
-    //            return BadRequest("Cannot copy this ingredient");
-    //        }
-
-    //        var ingredient = await _ingredientService.GetIngredientAsync(id);
-    //        var viewModel = new IngredientViewModel
-    //        {
-    //            // ... populate viewModel
-    //        };
-
-    //        return View("Create", viewModel);
-    //    }
-    //    catch (KeyNotFoundException)
-    //    {
-    //        return NotFound();
-    //    }
-    //}
 }
