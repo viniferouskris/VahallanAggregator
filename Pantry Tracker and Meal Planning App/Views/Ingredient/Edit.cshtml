@@ -1,0 +1,206 @@
+﻿@model IngredientViewModel
+@{
+    ViewData["Title"] = $"Edit - {Model.Name}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/photo-gallery.css" />
+}
+
+<div class="container mt-4">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">Edit @Model.Name</h2>
+                        <div>
+                            @if (Model.IsSystemIngredient)
+                            {
+                                <span class="badge bg-info">System Ingredient</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Name" class="form-label"></label>
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Unit" class="form-label"></label>
+                                    <select asp-for="Unit" class="form-select" asp-items="ViewBag.Units">
+                                        <option value="">Select a unit...</option>
+                                    </select>
+                                    <span asp-validation-for="Unit" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="CostPerPackage" class="form-label"></label>
+                                    <input asp-for="CostPerPackage" class="form-control" type="number" step="0.01" />
+                                    <span asp-validation-for="CostPerPackage" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="ServingsPerPackage" class="form-label"></label>
+                                    <input asp-for="ServingsPerPackage" class="form-control" type="number" step="0.01" />
+                                    <span asp-validation-for="ServingsPerPackage" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="CaloriesPerServing" class="form-label"></label>
+                                    <input asp-for="CaloriesPerServing" class="form-control" type="number" step="0.01" />
+                                    <span asp-validation-for="CaloriesPerServing" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            @if (ViewBag.IsAdmin)
+                            {
+                                <div class="col-md-12">
+                                    <div class="form-check mb-3">
+                                        <input asp-for="IsSystemIngredient" class="form-check-input" />
+                                        <label asp-for="IsSystemIngredient" class="form-check-label">
+                                            System ingredient (available to all users)
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="btn-group">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                @if (Model.IsSystemIngredient)
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">System Ingredient</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                This is a system ingredient available to all users. Any changes will affect all users
+                                who have not created their own copy.
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row mb-4">
+            <!-- Photo Gallery -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Photos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3" id="photosGrid">
+                            @foreach (var photo in Model.Photos)
+                            {
+                                <div class="col-md-4" data-photo-id="@photo.Id">
+                                    <div class="card h-100">
+                                        <img src="@photo.ThumbnailPath" class="card-img-top" alt="@Model.Name">
+                                        <div class="card-body p-2">
+                                            <div class="btn-group w-100">
+                                                <button type="button" class="btn btn-sm btn-outline-danger delete-photo"
+                                                        data-photo-id="@photo.Id"
+                                                        data-ingredient-id="@Model.Id">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_PhotoUpload")
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/photo-upload.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            // Handle photo deletion
+            document.querySelectorAll('.delete-photo').forEach(button => {
+                button.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    if (!confirm('Are you sure you want to delete this photo?')) return;
+
+                    const photoId = parseInt(this.dataset.photoId);
+                    const ingredientId = parseInt(this.dataset.ingredientId);
+                    const photoElement = this.closest('[data-photo-id]');
+
+                    try {
+                        const response = await fetch('/Ingredient/DeletePhoto', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': token
+                            },
+                            body: JSON.stringify({
+                                ingredientId: ingredientId,
+                                photoId: photoId
+                            })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            photoElement.remove();
+                            const formData = new FormData(form);
+                            form.submit();
+
+                        } else {
+                            throw new Error(result.message || 'Failed to delete photo');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error deleting photo: ' + error.message);
+                    }
+                });
+            });
+        });
+    </script>
+}

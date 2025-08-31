@@ -1,0 +1,70 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
+
+public class IngredientViewModel
+{
+    public int Id { get; set; }
+
+    [Required]
+    [Display(Name = "Ingredient Name")]
+    [StringLength(200)]
+    public string Name { get; set; }
+
+    [Required]
+    [Display(Name = "Quantity")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
+    public decimal Quantity { get; set; }
+
+    [Required]
+    [Display(Name = "Unit")]
+    public string Unit { get; set; }
+
+    [Required]
+    [Display(Name = "Cost Per Package")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Cost must be greater than 0")]
+    [DataType(DataType.Currency)]
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal CostPerPackage { get; set; }
+
+    [Required]
+    [Display(Name = "Servings Per Package")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Servings must be greater than 0")]
+    public decimal ServingsPerPackage { get; set; }
+
+    [Required]
+    [Display(Name = "Calories Per Serving")]
+    [Range(0, double.MaxValue, ErrorMessage = "Calories cannot be negative")]
+    public decimal CaloriesPerServing { get; set; }
+
+    // Add these new properties
+    public bool IsSystemIngredient { get; set; }
+    public bool IsPromoted { get; set; }
+    public int? SystemIngredientId { get; set; }
+    public string? ReturnUrl { get; set; }
+
+    public ICollection<RecipePhoto> Photos { get; set; } = new List<RecipePhoto>();
+
+
+    [Display(Name = "Cost Per Serving")]
+    [DisplayFormat(DataFormatString = "{0:C}")]
+    public decimal ServingCost
+    {
+        get
+        {
+            // Protect against division by zero
+            if (ServingsPerPackage <= 0)
+            {
+                return 0;
+            }
+            return CostPerPackage / ServingsPerPackage;
+        }
+    }
+        // List of standard units for dropdown
+    public static List<string> StandardUnits = new List<string>
+    {
+        "g", "kg", "oz", "lb",        // Weight
+        "ml", "l", "cup", "tbsp", "tsp", // Volume
+        "count", "dozen"               // Count
+    };
+}

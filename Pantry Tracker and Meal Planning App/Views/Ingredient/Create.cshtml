@@ -1,0 +1,98 @@
+﻿@model IngredientViewModel
+
+@{
+    ViewData["Title"] = ViewBag.IsSystemIngredient ? "Copy System Ingredient" : "Create Ingredient";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/site.css" />
+}
+@using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2>
+
+    <form id="RecipeForm" asp-action="Create" asp-controller="Ingredient" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        @if (ViewBag.IsSystemIngredient)
+        {
+            <input type="hidden" asp-for="SystemIngredientId" />
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div class="alert alert-info">
+                <p>You are creating a personal copy of a system ingredient. You can customize the values below.</p>
+            </div>
+        }
+
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        @* Remove the Quantity field for initial creation as it's not needed *@
+        <input type="hidden" asp-for="Quantity" value="1" />
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Unit" class="control-label"></label>
+                    <select asp-for="Unit" class="form-select" asp-items="ViewBag.Units">
+                        <option value="">Select a unit...</option>
+                    </select>
+                    <span asp-validation-for="Unit" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="CostPerPackage" class="control-label"></label>
+                    <input asp-for="CostPerPackage" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="CostPerPackage" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="ServingsPerPackage" class="control-label"></label>
+                    <input asp-for="ServingsPerPackage" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="ServingsPerPackage" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="CaloriesPerServing" class="control-label"></label>
+                    <input asp-for="CaloriesPerServing" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="CaloriesPerServing" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewBag.IsAdmin ?? false)
+        {
+            <div class="form-group mb-3">
+                <div class="form-check">
+                    <input asp-for="IsSystemIngredient" class="form-check-input" />
+                    <label asp-for="IsSystemIngredient" class="form-check-label">
+                        Make this a system ingredient (available to all users)
+                    </label>
+                </div>
+            </div>
+        }
+
+        <div class="form-group mt-4">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+            <button type="submit" class="btn btn-primary">Create</button>
+            @await Html.PartialAsync("_PhotoUpload")
+
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/photo-upload.js"></script>
+
+}

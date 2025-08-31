@@ -1,0 +1,241 @@
+﻿@*
+  
+For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+*@
+@using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components
+
+@model Recipe
+@section Styles {
+    <link rel="stylesheet" href="~/css/site.css" />
+}
+
+@{
+    ViewData["Title"] = "Create Recipe";
+    var ingredientUnits = ViewBag.IngredientUnits as Dictionary<int, string>;
+
+}
+<div class="container">
+    <h2>Create New Recipe2</h2>
+
+
+    <form id="recipeForm" asp-action="Create" asp-controller="Recipe" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- Basic Recipe Information -->
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Recipe Name</label>
+            
+            <input asp-for="Name" class="form-control" required value="Test"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description" class="control-label">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="3" >Test</textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="PrepTimeMinutes" class="control-label">Prep Time (minutes)</label>
+                    <input asp-for="PrepTimeMinutes" type="number" class="form-control" min="0" required value="10" />
+                    <span asp-validation-for="PrepTimeMinutes" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="CookTimeMinutes" class="control-label">Cook Time (minutes)</label>
+                    <input asp-for="CookTimeMinutes" type="number" class="form-control" min="0" required value="10" />
+                    <span asp-validation-for="CookTimeMinutes" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="NumberOfServings" class="control-label">Servings</label>
+                    <input asp-for="NumberOfServings" type="number" class="form-control" min="1" required value="1" />
+                    <span asp-validation-for="NumberOfServings" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Ingredients Section -->
+        <div class="form-group mt-4">
+            <label class="control-label">Ingredients</label>
+            <div id="ingredientsContainer" class="mb-3">
+                <!-- Ingredients will be added here dynamically -->
+            </div>
+            <button type="button" id="addIngredientBtn" class="btn btn-secondary">
+                Add Ingredient
+            </button>
+        </div>
+
+        <!-- Hidden input to store serialized ingredients -->
+        <input type="hidden" id="ingredientsJson" name="ingredientsJson" />
+
+        <div class="form-group">
+            <label asp-for="Instructions" class="control-label">Instructions</label>
+            <textarea asp-for="Instructions" class="form-control" rows="6" required value="Test"></textarea>
+            <span asp-validation-for="Instructions" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-4">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+            <button type="submit" class="btn btn-primary">Create Recipe</button>
+            @await Html.PartialAsync("_PhotoUpload")
+
+        </div>
+
+        <!-- Add this to your Create.cshtml form -->@* 
+        <input type="file" id="fileInput" name="photos" multiple accept="image/*" style="display: none;" class="form-control" /> *@
+    </form>
+</div>
+
+<!-- Template for ingredient row -->
+<template id="ingredientRowTemplate">
+    <div class="ingredient-row border rounded p-3 mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Ingredient</label>
+                    <select class="form-control ingredient-select" required>
+                        <option value="">Select an ingredient...</option>
+                        @foreach (var ingredient in ViewBag.AvailableIngredients)
+                        {
+                            <option value="@ingredient.Value">@ingredient.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Quantity</label>
+                    <input type="number" class="form-control ingredient-quantity"
+                           step="0.01" min="0" required />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Unit</label>
+                    <input type="text" class="form-control ingredient-unit" readonly />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger remove-ingredient mt-4">
+                    Remove
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/photo-upload.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ingredientsContainer = document.getElementById('ingredientsContainer');
+            const addIngredientBtn = document.getElementById('addIngredientBtn');
+            const ingredientRowTemplate = document.getElementById('ingredientRowTemplate');
+            const ingredientsJson = document.getElementById('ingredientsJson');
+            const form = document.getElementById('recipeForm');
+
+            // Store ingredient units from server
+            const ingredientUnits = @Html.Raw(Json.Serialize(ingredientUnits));
+
+            // Add ingredient row
+            addIngredientBtn.addEventListener('click', function () {
+                const newRow = document.importNode(ingredientRowTemplate.content, true);
+                ingredientsContainer.appendChild(newRow);
+
+                // Add event listeners to the new row
+                const row = ingredientsContainer.lastElementChild;
+                initializeIngredientRow(row);
+            });
+
+            // Initialize ingredient row event listeners
+            function initializeIngredientRow(row) {
+                const select = row.querySelector('.ingredient-select');
+                const unitInput = row.querySelector('.ingredient-unit');
+                const removeBtn = row.querySelector('.remove-ingredient');
+
+                // Update unit when ingredient is selected
+                select.addEventListener('change', function () {
+                    const selectedIngredientId = parseInt(select.value);
+                    unitInput.value = ingredientUnits[selectedIngredientId] || '';
+                });
+
+                // Remove ingredient row
+                removeBtn.addEventListener('click', function () {
+                    row.remove();
+                    updateIngredientsJson();
+                });
+
+                // Update JSON when quantity changes
+                row.querySelector('.ingredient-quantity').addEventListener('input', updateIngredientsJson);
+                select.addEventListener('change', updateIngredientsJson);
+            }
+
+            // Update hidden input with ingredients data
+            function updateIngredientsJson() {
+                const ingredients = [];
+                document.querySelectorAll('.ingredient-row').forEach(row => {
+                    const select = row.querySelector('.ingredient-select');
+                    const quantity = row.querySelector('.ingredient-quantity');
+                    const unit = row.querySelector('.ingredient-unit');
+
+                    if (select.value && quantity.value) {
+                        const ingredient = {
+                            ingredientId: parseInt(select.value),
+                            quantity: parseFloat(quantity.value),
+                            unit: unit.value
+                        };
+                        ingredients.push(ingredient);
+                        console.log('Adding ingredient:', ingredient); // Debug log
+                    }
+                });
+                const json = JSON.stringify(ingredients);
+                console.log('Final JSON:', json); // Debug log
+                ingredientsJson.value = json;
+            } function updateIngredientsJson() {
+                const ingredients = [];
+                document.querySelectorAll('.ingredient-row').forEach(row => {
+                    const select = row.querySelector('.ingredient-select');
+                    const quantity = row.querySelector('.ingredient-quantity');
+                    const unit = row.querySelector('.ingredient-unit');
+
+                    if (select.value && quantity.value) {
+                        ingredients.push({
+                            ingredientId: parseInt(select.value),
+                            quantity: parseFloat(quantity.value),
+                            unit: unit.value
+                        });
+                    }
+                });
+                ingredientsJson.value = JSON.stringify(ingredients);
+            }
+
+            // // Form submission
+            // form.addEventListener('submit', function (e) {
+            //     e.preventDefault();
+            //     updateIngredientsJson();
+
+            //     // Validate that at least one ingredient is added
+            //     if (!ingredientsJson.value || JSON.parse(ingredientsJson.value).length === 0) {
+            //         alert('Please add at least one ingredient to the recipe.');
+            //         return;
+            //     }
+
+            //     // Submit the form
+            //     this.submit();
+            // });
+
+            // Add first ingredient row automatically
+            addIngredientBtn.click();
+        });
+    </script>
+}

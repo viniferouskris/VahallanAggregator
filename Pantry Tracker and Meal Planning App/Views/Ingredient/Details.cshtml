@@ -1,0 +1,193 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels
+@using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo
+@model IngredientDetailsViewModel
+
+@{
+    ViewData["Title"] = $"Ingredient Details - {Model.Name}";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/photo-gallery.css" />
+}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">@Model.Name</h2>
+                    <div>
+                        @if (Model.IsSystemIngredient)
+                        {
+                            <span class="badge bg-info">System Ingredient</span>
+                        }
+                        @if (Model.IsPromoted)
+                        {
+                            <span class="badge bg-success">Featured</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="card-subtitle mb-3">Basic Information</h5>
+                            <dl class="row">
+                                <dt class="col-sm-4">Unit</dt>
+                                <dd class="col-sm-8">@Model.Unit</dd>
+
+                                <dt class="col-sm-4">Cost Per Package</dt>
+                                <dd class="col-sm-8">@Model.CostPerPackage.ToString("C")</dd>
+
+                                <dt class="col-sm-4">Servings Per Package</dt>
+                                <dd class="col-sm-8">@Model.ServingsPerPackage</dd>
+
+                                <dt class="col-sm-4">Cost Per Serving</dt>
+                                <dd class="col-sm-8">@Model.ServingCost.ToString("C")</dd>
+
+                                <dt class="col-sm-4">Calories Per Serving</dt>
+                                <dd class="col-sm-8">@Model.CaloriesPerServing</dd>
+                            </dl>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5 class="card-subtitle mb-3">Additional Information</h5>
+                            <dl class="row">
+                                <dt class="col-sm-4">Created By</dt>
+                                <dd class="col-sm-8">@Model.CreatedBy</dd>
+
+                                <dt class="col-sm-4">Created At</dt>
+                                <dd class="col-sm-8">@Model.CreatedAt.ToString("g")</dd>
+
+                                @if (Model.ModifiedAt.HasValue)
+                                {
+                                    <dt class="col-sm-4">Last Modified</dt>
+                                    <dd class="col-sm-8">@Model.ModifiedAt.Value.ToString("g")</dd>
+                                }
+
+                                @if (Model.SystemIngredientId.HasValue)
+                                {
+                                    <dt class="col-sm-4">Based On</dt>
+                                    <dd class="col-sm-8">
+                                        <a asp-action="Details" asp-route-id="@Model.SystemIngredientId">
+                                            System Ingredient #@Model.SystemIngredientId
+                                        </a>
+                                    </dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (Model.RecipeCount > 0)
+                    {
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="card-subtitle mb-3">Usage Statistics</h5>
+                                <dl class="row">
+                                    <dt class="col-sm-3">Used In Recipes</dt>
+                                    <dd class="col-sm-9">@Model.RecipeCount recipes</dd>
+
+                                    @if (Model.LastUsed.HasValue)
+                                    {
+                                        <dt class="col-sm-3">Last Used</dt>
+                                        <dd class="col-sm-9">@Model.LastUsed.Value.ToString("g")</dd>
+                                    }
+
+                                    @if (Model.AverageCostPerRecipe > 0)
+                                    {
+                                        <dt class="col-sm-3">Avg. Cost/Recipe</dt>
+                                        <dd class="col-sm-9">@Model.AverageCostPerRecipe.ToString("C")</dd>
+                                    }
+                                </dl>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="card-footer">
+                    <div class="btn-group">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+
+                        @if (Model.CanEdit)
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                        }
+
+                        @if (Model.CanCopy)
+                        {
+                            <a asp-action="CopyFromSystem" asp-route-id="@Model.Id" class="btn btn-success">
+                                <i class="bi bi-plus-circle"></i> Add to My Ingredients
+                            </a>
+                        }
+
+                        @if (Model.CanDelete)
+                        {
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @if (Model.IsSystemIngredient)
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">System Ingredient</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            This is a system ingredient that is available to all users. Users can create their own copies
+                            of this ingredient with customized values.
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+
+
+    </div>
+
+    <!-- Photo Gallery Section -->
+    <div class="container">
+        <div id="photoGallery" class="photo-gallery mb-4">
+            <!-- Main photo container -->
+            <div id="mainPhoto" class="main-photo-container mb-3">
+                @if (Model.Photos.Any())
+                {
+                    var mainPhoto = Model.Photos.FirstOrDefault(p => p.IsMain) ?? Model.Photos.First();
+                    <img src="@mainPhoto.FilePath" class="img-fluid rounded" alt="@mainPhoto.Description" />
+                }
+            </div>
+
+            <!-- Thumbnail gallery -->
+            <div id="thumbnailGallery" class="row g-2">
+                @foreach (var photo in Model.Photos)
+                {
+                    <div class="col-3">
+                        <img src="@photo.ThumbnailPath"
+                             class="img-thumbnail @(photo.IsMain ? "border-primary" : "")"
+                             data-full-image="@photo.FilePath"
+                             alt="@photo.Description"
+                             style="cursor: pointer;" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        @section Scripts {
+            <script src="~/js/unified-photo-handler.js"></script>
+        }
+    </div>

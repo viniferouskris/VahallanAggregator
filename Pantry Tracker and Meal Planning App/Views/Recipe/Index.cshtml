@@ -1,0 +1,297 @@
+﻿@using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels
+@model RecipeIndexViewModel
+@{
+    ViewData["Title"] = "My Recipes";
+}
+
+<div class="container">
+    @Html.AntiForgeryToken()
+
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "user" ? "active" : "")" 
+               href="@Url.Action("Index", new { tab = "user" })">My Recipes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "shared" ? "active" : "")" 
+               href="@Url.Action("Index", new { tab = "shared" })">Shared Recipes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "external" ? "active" : "")" 
+               href="@Url.Action("Index", new { tab = "external" })">Find Recipes</a>
+        </li>
+    </ul>
+
+    @if (Model.ActiveTab == "user")
+    {
+        <partial name="_UserRecipes" model="Model.UserRecipes" />
+    }
+    else if (Model.ActiveTab == "shared")
+    {
+        <partial name="_SharedRecipes" model="Model.SharedRecipes" />
+    }
+    else if (Model.ActiveTab == "external")
+    {
+        <div id="external-recipes-section">
+            <div class="search-container mb-4">
+                <div class="input-group">
+                    <input type="text" id="recipe-search" class="form-control" placeholder="Search recipes by name or ingredient...">
+                    <button id="search-button" class="btn btn-primary">Search</button>
+                </div>
+                <div class="mt-2">
+                    <button id="load-random" class="btn btn-secondary">Load Random Recipe</button>
+                </div>
+            </div>
+
+            <div id="search-results" class="row">
+                <!-- Results will be loaded here -->
+            </div>
+
+            <div id="loading-spinner" class="text-center d-none">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@* <div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6">My Recipes</h1>
+            <div class="alert alert-info">
+                <p class="mb-0">
+                    <strong>Current User:</strong> @User.Identity?.Name
+                    | <strong>Role:</strong> @(User.IsInRole("Admin") ? "Admin" : "User")
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="recipeTabs">
+                <li class="nav-item">
+                    <a class="nav-link @(Model.ActiveTab == "user" ? "active" : "")"
+                       href="@Url.Action("Index", new { tab = "user" })">
+                        My Recipes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.ActiveTab == "shared" ? "active" : "")"
+                       href="@Url.Action("Index", new { tab = "shared" })">
+                        Shared Recipes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Model.ActiveTab == "external" ? "active" : "")"
+                       href="@Url.Action("Index", new { tab = "external" })">
+                        External Recipes
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            @switch (Model.ActiveTab)
+            {
+                case "user":
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Create New Recipe
+                    </a>
+                    break;
+                case "external":
+                    <a asp-action="SearchExternal" class="btn btn-success">
+                        <i class="bi bi-search me-2"></i>Search External Recipes
+                    </a>
+                    break;
+            }
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @switch (Model.ActiveTab)
+        {
+            case "user":
+                @if (!Model.UserRecipes.Any())
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <p class="mb-0">You haven't created any recipes yet. Click "Create New Recipe" to get started!</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var recipe in Model.UserRecipes)
+                    {
+                        <div class="col-md-4 col-lg-3">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">@recipe.Name</h5>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm @(recipe.IsPublic ? "btn-outline-success" : "btn-outline-secondary") toggle-visibility"
+                                                data-recipe-id="@recipe.Id"
+                                                data-toggle="tooltip"
+                                                title="@(recipe.IsPublic ? "Public" : "Private")">
+                                            <i class="bi @(recipe.IsPublic ? "bi-eye" : "bi-eye-slash")"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text text-muted">@recipe.Description</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>
+                                            @recipe.PrepTime + @recipe.CookTime mins
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="bi bi-list-ol me-1"></i>
+                                            @recipe.IngredientsCount ingredients
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between">
+                                        <a asp-action="Details" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>View
+                                        </a>
+                                        <div>
+                                            <a asp-action="Edit" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-secondary me-2">
+                                                <i class="bi bi-pencil me-1"></i>Edit
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger delete-recipe" data-recipe-id="@recipe.Id">
+                                                <i class="bi bi-trash me-1"></i>Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                break;
+
+            case "shared":
+                @if (!Model.SharedRecipes.Any())
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <p class="mb-0">No shared recipes available.</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    // Similar structure to UserRecipes, but without edit/delete/visibility options
+                    @foreach (var recipe in Model.SharedRecipes)
+                    {
+                        <div class="col-md-4 col-lg-3">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">@recipe.Name</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text text-muted">@recipe.Description</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>
+                                            @recipe.PrepTime + @recipe.CookTime mins
+                                        </small>
+                                        <small class="text-muted">Created by: @recipe.CreatedBy</small>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a asp-action="Details" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye me-1"></i>View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                break;
+
+            case "external":
+                @if (!Model.ExternalRecipes.Any())
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <p class="mb-0">No external recipes found. Try searching for new recipes!</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    // Implement external recipes display
+                    // Similar to shared recipes, but with an import option
+                }
+                break;
+        }
+    </div>
+</div> *@
+
+@section Scripts {
+    @if (Model.ActiveTab == "external")
+    {
+        <script src="~/js/externalRecipes.js"></script>
+    }
+    <script>
+        $(function () {
+            // Enable tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Recipe visibility toggle
+            $('.toggle-visibility').click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var recipeId = btn.data('recipe-id');
+                $.post('@Url.Action("ToggleVisibility", "Recipe")/' + recipeId, function (result) {
+                    if (result.success) {
+                        btn.find('i').toggleClass('bi-eye bi-eye-slash');
+                        btn.toggleClass('btn-outline-success btn-outline-secondary');
+                        location.reload();
+                    } else {
+                        alert(result.message || 'Error updating recipe visibility');
+                    }
+                });
+            });
+
+            // Recipe delete confirmation
+            // Recipe delete confirmation
+            $('.delete-recipe').click(function (e) {
+                e.preventDefault();
+                var recipeId = $(this).data('recipe-id');
+                if (confirm('Are you sure you want to delete this recipe?')) {
+                    // Get the token from the form
+                    var token = $('input[name="__RequestVerificationToken"]').val();
+
+                    $.ajax({
+                        url: '/Recipe/Delete/' + recipeId,
+                        type: 'POST',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("RequestVerificationToken", token);
+                        },
+                        success: function (result) {
+                            if (result.success) {
+                                location.reload();
+                            } else {
+                                alert('Error deleting recipe: ' + result.message);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('Delete error:', {
+                                status: textStatus,
+                                error: errorThrown,
+                                response: jqXHR.responseText
+                            });
+                            alert('An error occurred while deleting the recipe.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

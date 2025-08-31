@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold mb-4">Welcome to Recipe & Pantry Manager</h1>
+        <p class="text-xl text-gray-600">Manage your ingredients, recipes, and meal plans all in one place.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Ingredients Card -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Ingredient Management</h2>
+            <p class="text-gray-600 mb-4">Add and manage your ingredient inventory.</p>
+            <div class="space-y-2">
+                <a asp-controller="Ingredient" asp-action="Index"
+                   class="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    View All Ingredients
+                </a>
+                <a asp-controller="Ingredient" asp-action="Create"
+                   class="block w-full text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                    Add New Ingredient
+                </a>
+            </div>
+        </div>
+
+        <!-- Recipe Card (placeholder for future implementation) -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Recipe Management</h2>
+            <p class="text-gray-600 mb-4">Create and manage your recipes.</p>
+            <div class="space-y-2">
+                <button class="w-full bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded cursor-not-allowed">
+                    Coming Soon
+                </button>
+            </div>
+        </div>
+
+        <!-- Meal Plan Card (placeholder for future implementation) -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Meal Planning</h2>
+            <p class="text-gray-600 mb-4">Plan your meals and generate shopping lists.</p>
+            <div class="space-y-2">
+                <button class="w-full bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded cursor-not-allowed">
+                    Coming Soon
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

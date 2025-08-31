@@ -1,0 +1,32 @@
+﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
+
+namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels
+{
+    public class IngredientDetailsViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Unit { get; set; }
+        public decimal CostPerPackage { get; set; }
+        public decimal ServingsPerPackage { get; set; }
+        public decimal CaloriesPerServing { get; set; }
+        public decimal ServingCost => CostPerPackage / ServingsPerPackage;
+        public bool IsSystemIngredient { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+        public string SystemIngredientName { get; set; }
+        public int? SystemIngredientId { get; set; }
+        public bool IsPromoted { get; set; }
+        public bool CanEdit { get; set; }
+        public bool CanDelete { get; set; }
+        public bool CanCopy { get; set; }
+
+        // Usage statistics
+        public int RecipeCount { get; set; }
+        public DateTime? LastUsed { get; set; }
+        public decimal AverageCostPerRecipe { get; set; }
+        public ICollection<RecipePhoto> Photos { get; set; } = new List<RecipePhoto>();
+
+    }
+}

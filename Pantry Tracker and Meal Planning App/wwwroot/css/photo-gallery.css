@@ -1,0 +1,59 @@
+﻿.recipe-photo-section {
+    position: relative;
+    clear: both;
+    z-index: 1;
+    margin-bottom: 2rem;
+}
+
+.photo-gallery {
+    border-radius: 0.25rem;
+    background-color: #fff; /* White background */
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075); /* Subtle shadow to match cards */
+    border: 1px solid rgba(0,0,0,.125); /* Standard Bootstrap card border */
+    padding: 1.5rem; /* Add some internal spacing */
+}
+
+    .photo-gallery .main-photo-container {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.25rem;
+        margin-bottom: 100px; /* Space for thumbnails */
+        background-color: #f8f9fa; /* Light gray background */
+        padding: 1rem; /* Padding inside the image container */
+    }
+
+        .photo-gallery .main-photo-container img {
+            display: block;
+            width: auto !important;
+            height: auto !important;
+            max-width: 100%;
+            object-fit: none;
+        }
+
+    .photo-gallery .thumbnail-container {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        clear: both;
+        padding-top: 1rem;
+    }
+
+    .photo-gallery #thumbnailGallery img {
+        height: 80px;
+        width: 100%;
+        object-fit: cover;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+        .photo-gallery #thumbnailGallery img:hover {
+            transform: scale(1.05);
+            border-color: #6c757d;
+        }
+
+        .photo-gallery #thumbnailGallery img.border-primary {
+            border-width: 2px;
+        }

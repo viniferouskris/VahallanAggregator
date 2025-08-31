@@ -1,0 +1,54 @@
+﻿@*
+
+this page might not be used -check the create recipe and edit pages
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<RecipePhoto>
+
+<div class="photo-management mb-4">
+    <div class="row">
+        <!-- Upload Section -->
+        <div class="col-12 mb-3">
+            <div class="upload-container border rounded p-3">
+                <div class="drag-area text-center py-4" id="dragArea">
+                    <i class="bi bi-cloud-upload fs-1"></i>
+                    <h6>Drag & Drop photos here or</h6>
+                    <button class="btn btn-outline-primary btn-sm" id="browseBtn">Browse Files</button>
+                    <input type="file" hidden id="fileInput" multiple accept="image/*">
+                </div>
+                <div class="upload-progress d-none">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photos Grid with Management Controls -->
+        <div class="col-12">
+            <div class="row g-3" id="photosGrid">
+                @foreach (var photo in Model)
+                {
+                    <div class="col-md-4 col-lg-3" data-photo-id="@photo.Id">
+                        <div class="card h-100 @(photo.IsMain ? "border-primary" : "")">
+                            <img src="@photo.ThumbnailUrl" class="card-img-top" alt="Recipe photo">
+                            <div class="card-body p-2">
+                                <div class="btn-group w-100">
+                                    @if (!photo.IsMain)
+                                    {
+                                        <button class="btn btn-sm btn-outline-primary make-main-btn">
+                                            Make Main
+                                        </button>
+                                    }
+                                    <button class="btn btn-sm btn-outline-danger delete-photo-btn">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
