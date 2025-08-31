@@ -58,7 +58,6 @@ options.AddPolicy("PremiumUser", policy =>
 
 // Add this to your Program.cs file where you configure services
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<ITheMealDBService, TheMealDBService>();
 
 // Add PhotoStorage and Processing Services
 builder.Services.Configure<PhotoStorageSettings>(
@@ -69,8 +68,6 @@ builder.Services.AddScoped<IPhotoProcessingService, PhotoProcessingService>();
 
 // Register application services
 builder.Services.AddScoped<IMeasurementConversionService, MeasurementConversionService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<IPantryTrackingService, PantryTrackingService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IPhotoProcessingService, PhotoProcessingService>();

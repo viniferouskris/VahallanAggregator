@@ -26,6 +26,15 @@ namespace Vahallan_Ingredient_Aggregator.Models.ViewModels
         public bool IsPublic { get; set; }
 
         public string IngredientsJson { get; set; }
+        [Display(Name = "Collection")]
+        [StringLength(100)]
+        public string Collection { get; set; } = string.Empty;
+
+        [Display(Name = "Show in Ingredients List")]
+        public bool ShowInIngredientsList { get; set; } = false;
+
+        [Display(Name = "Accuracy Level")]
+        public RecipeAccuracyLevel AccuracyLevel { get; set; } = RecipeAccuracyLevel.Estimate;
     }
 
 }

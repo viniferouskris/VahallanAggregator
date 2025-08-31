@@ -41,6 +41,31 @@
                     </div>
                     <div class="card-body">
                         <p class="card-text text-muted">@recipe.Description</p>
+
+
+
+
+                        <!-- NEW: Show collection -->
+                        @if (!string.IsNullOrEmpty(recipe.Collection))
+                        {
+                            <span class="badge bg-secondary">@recipe.Collection</span>
+                        }
+
+                        <!-- NEW: Show accuracy level -->
+                        <span class="badge bg-@(recipe.AccuracyLevel == RecipeAccuracyLevel.Secured ? "success" :
+                               recipe.AccuracyLevel == RecipeAccuracyLevel.Tested ? "info" : "warning")">
+                            @recipe.AccuracyLevel
+                        </span>
+
+                        <!-- NEW: Show if available as ingredient -->
+                        @if (recipe.ShowInIngredientsList)
+                        {
+                            <span class="badge bg-info">Available as Ingredient</span>
+                        }
+
+
+
+
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
                                 <i class="bi bi-clock me-1"></i>

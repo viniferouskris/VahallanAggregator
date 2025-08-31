@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Vahallan_Ingredient_Aggregator.Migrations
 {
     /// <inheritdoc />
-    public partial class initCreate : Migration
+    public partial class initMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,6 +59,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Collection = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Quantity = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     Unit = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     StoredQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -67,10 +68,8 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ServingSize = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShowInIngredientsList = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    AccuracyLevel = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     CostPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     CaloriesPerServing = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
                     ServingsPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -95,67 +94,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BaseIngredientComponent", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "NotificationPreferences",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AutoConfirmMealPlanDeductions = table.Column<bool>(type: "bit", nullable: false),
-                    DefaultLowStockThreshold = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    DefaultReplenishmentDays = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NotificationPreferences", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Notifications",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReadAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RelatedItemId = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Notifications", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PantryItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IngredientId = table.Column<int>(type: "int", nullable: false),
-                    IngredientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CurrentQuantity = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    CurrentUnit = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastPurchaseQuantity = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    LastPurchaseUnit = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastPurchasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    LastPurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ReplenishmentDays = table.Column<int>(type: "int", nullable: true),
-                    DailyUsageRate = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    LowStockThreshold = table.Column<decimal>(type: "decimal(18,4)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PantryItems", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,34 +217,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MealPlanRecipe",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MealPlanId = table.Column<int>(type: "int", nullable: false),
-                    RecipeId = table.Column<int>(type: "int", nullable: false),
-                    PrepareOnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ServingSize = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MealPlanRecipe", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MealPlanRecipe_BaseIngredientComponent_MealPlanId",
-                        column: x => x.MealPlanId,
-                        principalTable: "BaseIngredientComponent",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MealPlanRecipe_BaseIngredientComponent_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "BaseIngredientComponent",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RecipeIngredients",
                 columns: table => new
                 {
@@ -394,33 +304,33 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", "b9f616e8-2215-41c4-9251-26ebebf7463f", "Admin", "ADMIN" },
-                    { "2", "186722cf-5464-4823-8e90-e2f16b1cb3fd", "User", "USER" }
+                    { "1", "99fa08c6-80e1-425e-a5b5-817b3914a5a6", "Admin", "ADMIN" },
+                    { "2", "ec192ce4-dc8f-4cbc-a2f7-171c3829335e", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin-user-id", 0, "ce6241af-70c6-43c1-a54c-c75ec1467c76", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEJftVca1LaVWXTnJErd7QQfo2Jy9ya06M6OOBB4XWhmOYfDyag8ysDv4aHIhSlyfRw==", null, false, "ff2bdfff-e047-455a-b405-3568638a53f6", false, "admin@yourapp.com" });
+                values: new object[] { "admin-user-id", 0, "829648d3-cbb9-4d2b-b7b5-c9d266e6656c", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEF17ZY+iCekmjO3DwPSEFrBZcsGVS0rYre1Pq6pGQOs5cLiZOezT3ELwzJh6waAo1A==", null, false, "8c6d288e-c3bc-47e0-a4df-388c9a79b80c", false, "admin@yourapp.com" });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
-                columns: new[] { "Id", "CaloriesPerServing", "CostPerPackage", "CreatedAt", "CreatedById", "IsPromoted", "IsSystemIngredient", "ModifiedAt", "Name", "PromotionEndDate", "PromotionStartDate", "Quantity", "ServingsPerPackage", "StoredQuantity", "StoredUnit", "SystemIngredientId", "Type", "Unit" },
+                columns: new[] { "Id", "CaloriesPerServing", "Collection", "CostPerPackage", "CreatedAt", "CreatedById", "IsPromoted", "IsSystemIngredient", "ModifiedAt", "Name", "PromotionEndDate", "PromotionStartDate", "Quantity", "ServingsPerPackage", "StoredQuantity", "StoredUnit", "SystemIngredientId", "Type", "Unit" },
                 values: new object[,]
                 {
-                    { 1, 70m, 5.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9186), "system", false, true, null, "Fresh Mozzarella", null, null, 1m, 16m, 28.35m, "g", null, "Ingredient", "oz" },
-                    { 2, 22m, 3.00m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9289), "system", false, true, null, "Ripe Tomatoes", null, null, 1m, 4m, 1m, "count", null, "Ingredient", "count" },
-                    { 3, 1m, 2.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9297), "system", false, true, null, "Fresh Basil Leaves", null, null, 1m, 30m, 1m, "count", null, "Ingredient", "count" },
-                    { 4, 120m, 8.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9303), "system", false, true, null, "Extra Virgin Olive Oil", null, null, 1m, 33.8m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
-                    { 5, 14m, 5.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9310), "system", false, true, null, "Balsamic Vinegar", null, null, 1m, 16.9m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
-                    { 6, 0m, 0.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9318), "system", false, true, null, "Salt", null, null, 1m, 156m, 4.92892m, "ml", null, "Ingredient", "tsp" },
-                    { 7, 0m, 3.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9325), "system", false, true, null, "Black Pepper", null, null, 1m, 144m, 4.92892m, "ml", null, "Ingredient", "tsp" }
+                    { 1, 70m, "", 5.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8044), "system", false, true, null, "Fresh Mozzarella", null, null, 1m, 16m, 28.35m, "g", null, "Ingredient", "oz" },
+                    { 2, 22m, "", 3.00m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8052), "system", false, true, null, "Ripe Tomatoes", null, null, 1m, 4m, 1m, "count", null, "Ingredient", "count" },
+                    { 3, 1m, "", 2.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8058), "system", false, true, null, "Fresh Basil Leaves", null, null, 1m, 30m, 1m, "count", null, "Ingredient", "count" },
+                    { 4, 120m, "", 8.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8063), "system", false, true, null, "Extra Virgin Olive Oil", null, null, 1m, 33.8m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
+                    { 5, 14m, "", 5.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8067), "system", false, true, null, "Balsamic Vinegar", null, null, 1m, 16.9m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
+                    { 6, 0m, "", 0.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8072), "system", false, true, null, "Salt", null, null, 1m, 156m, 4.92892m, "ml", null, "Ingredient", "tsp" },
+                    { 7, 0m, "", 3.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8076), "system", false, true, null, "Black Pepper", null, null, 1m, 144m, 4.92892m, "ml", null, "Ingredient", "tsp" }
                 });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
-                columns: new[] { "Id", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "ExternalId", "ExternalSource", "ExternalUrl", "ImportedAt", "Instructions", "IsPublic", "ModifiedAt", "Name", "NumberOfServings", "OriginalRecipeId", "PrepTimeMinutes", "Quantity", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
-                values: new object[] { 8, 0, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9162), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", null, null, null, null, "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\n5. Season with salt and freshly ground black pepper.\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 4m, null, 15, 4m, 4m, "serving", "Recipe", "serving", 1 });
+                columns: new[] { "Id", "AccuracyLevel", "Collection", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "ExternalId", "ExternalSource", "ExternalUrl", "ImportedAt", "Instructions", "IsPublic", "ModifiedAt", "Name", "NumberOfServings", "OriginalRecipeId", "PrepTimeMinutes", "Quantity", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
+                values: new object[] { 8, 1, "Appetizers", 0, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8023), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", null, null, null, null, "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 4m, null, 15, 4m, 4m, "serving", "Recipe", "serving", 1 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -446,8 +356,8 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ContentType", "Description", "FileName", "FilePath", "FileSize", "IsApproved", "IsMain", "IsMainPhoto", "ModifiedAt", "RecipeId", "ThumbnailPath", "UploadedAt", "UploadedById" },
                 values: new object[,]
                 {
-                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 19661L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9359), "system" },
-                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9364), "system" }
+                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 19661L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8103), "system" },
+                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8106), "system" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -490,27 +400,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MealPlanRecipe_MealPlanId_RecipeId_PrepareOnDate",
-                table: "MealPlanRecipe",
-                columns: new[] { "MealPlanId", "RecipeId", "PrepareOnDate" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MealPlanRecipe_RecipeId",
-                table: "MealPlanRecipe",
-                column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NotificationPreferences_UserId",
-                table: "NotificationPreferences",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PantryItems_ExpirationDate",
-                table: "PantryItems",
-                column: "ExpirationDate");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RecipeIngredients_IngredientId",
                 table: "RecipeIngredients",
                 column: "IngredientId");
@@ -548,18 +437,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "MealPlanRecipe");
-
-            migrationBuilder.DropTable(
-                name: "NotificationPreferences");
-
-            migrationBuilder.DropTable(
-                name: "Notifications");
-
-            migrationBuilder.DropTable(
-                name: "PantryItems");
 
             migrationBuilder.DropTable(
                 name: "RecipeIngredients");

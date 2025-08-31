@@ -14,6 +14,10 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         [StringLength(200)]
         public string Name { get; set; }
 
+        [StringLength(100)]
+        public string Collection { get; set; } = string.Empty;
+        
+
         [Column(TypeName = "decimal(18,4)")]
         public decimal Quantity { get; set; } = 0;
 
@@ -34,6 +38,10 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         // Required for EF Core TPH inheritance
         [Required]
         public string Type { get; set; }
+
+        public bool ShowInIngredientsList { get; set; } = false;
+        public RecipeAccuracyLevel AccuracyLevel { get; set; } = RecipeAccuracyLevel.Estimate;
+
 
         // Virtual navigation property for photos
         public virtual ICollection<RecipePhoto> Photos { get; set; }
@@ -95,4 +103,11 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
             return errors.Count == 0;
         }
     }
+}
+
+public enum RecipeAccuracyLevel
+{
+    Estimate = 0,
+    Tested = 1,
+    Secured = 2
 }

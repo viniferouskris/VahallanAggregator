@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Vahallan_Ingredient_Aggregator.Models.Components;
-using Vahallan_Ingredient_Aggregator.Models.Notifications;
-using Vahallan_Ingredient_Aggregator.Models.Pantry;
+
 using Vahallan_Ingredient_Aggregator.Models.Photo;
 using Vahallan_Ingredient_Aggregator.Models.Components;
 
@@ -19,13 +18,11 @@ namespace Vahallan_Ingredient_Aggregator.Data
 
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<MealPlan> MealPlans { get; set; }
-        public DbSet<PantryItem> PantryItems { get; set; }
+
         public DbSet<RecipePhoto> RecipePhotos { get; set; }
         public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
 
-        public DbSet<Notification> Notifications { get; set; }
-        public DbSet<NotificationPreference> NotificationPreferences { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,8 +32,15 @@ namespace Vahallan_Ingredient_Aggregator.Data
             modelBuilder.Entity<BaseIngredientComponent>()
            .HasDiscriminator<string>("Type")
            .HasValue<Ingredient>("Ingredient")
-           .HasValue<Recipe>("Recipe")
-           .HasValue<MealPlan>("MealPlan");
+           .HasValue<Recipe>("Recipe");
+
+            // ADD THIS SECTION - Configure base component properties
+            modelBuilder.Entity<BaseIngredientComponent>(entity =>
+            {
+                entity.Property(e => e.Collection).HasMaxLength(100);
+                entity.Property(e => e.ShowInIngredientsList).HasDefaultValue(false);
+                entity.Property(e => e.AccuracyLevel).HasDefaultValue(RecipeAccuracyLevel.Estimate);
+            });
 
             // Configure base component photo relationship
             modelBuilder.Entity<BaseIngredientComponent>()
@@ -118,8 +122,6 @@ namespace Vahallan_Ingredient_Aggregator.Data
                 entity.Property(e => e.Instructions).IsRequired();
                 entity.Property(e => e.NumberOfServings).HasColumnType("decimal(18,2)");
 
- 
-
             });
 
             // Configure Ingredient
@@ -144,49 +146,6 @@ namespace Vahallan_Ingredient_Aggregator.Data
 
 
 
-            // Configure MealPlanRecipe relationship
-            modelBuilder.Entity<MealPlanRecipe>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.HasOne(mpr => mpr.MealPlan)
-                    .WithMany(mp => mp.MealPlanRecipes)
-                    .HasForeignKey(mpr => mpr.MealPlanId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(mpr => mpr.Recipe)
-                    .WithMany()
-                    .HasForeignKey(mpr => mpr.RecipeId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
-                entity.Property(e => e.PrepareOnDate)
-                    .IsRequired();
-
-                entity.Property(e => e.ServingSize)
-                    .IsRequired();
-
-                entity.HasIndex(e => new { e.MealPlanId, e.RecipeId, e.PrepareOnDate })
-                    .IsUnique();
-            });
-            // Configure PantryItem decimal properties
-            modelBuilder.Entity<PantryItem>(entity =>
-            {
-                entity.Property(e => e.CurrentQuantity).HasColumnType("decimal(18,4)");
-                entity.Property(e => e.LastPurchaseQuantity).HasColumnType("decimal(18,4)");
-                entity.Property(e => e.LastPurchasePrice).HasColumnType("decimal(18,2)");
-                entity.Property(e => e.DailyUsageRate).HasColumnType("decimal(18,4)");
-                entity.Property(e => e.LowStockThreshold).HasColumnType("decimal(18,4)");
-                entity.HasIndex(e => e.ExpirationDate);
-            });
-
-
-
-            // Configure NotificationPreference decimal properties
-            modelBuilder.Entity<NotificationPreference>(entity =>
-            {
-                entity.Property(e => e.DefaultLowStockThreshold).HasColumnType("decimal(18,4)");
-                entity.HasIndex(e => e.UserId);
-            });
 
             //// Configure RecipePhoto required properties
             //modelBuilder.Entity<RecipePhoto>(entity =>

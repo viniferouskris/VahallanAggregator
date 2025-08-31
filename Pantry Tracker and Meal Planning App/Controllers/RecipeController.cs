@@ -8,7 +8,6 @@ using Vahallan_Ingredient_Aggregator.Services.Implementations;
 using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Vahallan_Ingredient_Aggregator.Models.External;
 using Vahallan_Ingredient_Aggregator.Models.Photo;
 using Microsoft.SqlServer.Server;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +23,6 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
     {
         private readonly IRecipeService _recipeService;
         private readonly IIngredientService _ingredientService;
-        private readonly ITheMealDBService _mealDbService;
         private readonly ILogger<RecipeController> _logger;
         private readonly IPhotoStorageService _photoStorageService;
         private readonly IPhotoProcessingService _photoProcessingService;
@@ -33,25 +31,18 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
         public RecipeController(
             IRecipeService recipeService,
             ILogger<RecipeController> logger,
-            ITheMealDBService mealDbService,
             IIngredientService ingredientService,
             IPhotoStorageService photoStorageService,
             IPhotoProcessingService photoProcessingService)
         {
             _recipeService = recipeService;
             _ingredientService = ingredientService;
-            _mealDbService = mealDbService;
             _logger = logger;
             _photoStorageService = photoStorageService;
             _photoProcessingService = photoProcessingService;
         }
         // Only admins can access this
         [Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> ManageAll()
-        //{
-        //    var recipes = await _recipeService.GetAllRecipesAsync(User.Identity.Name, true);
-        //    return View(recipes);
-        //}
 
         [Authorize(Policy = "RequireAdmin")]
         public IActionResult AdminDashboard()
@@ -91,9 +82,6 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
                         viewModel.SharedRecipes = (await _recipeService.GetSharedRecipesAsync(userId)).ToList();
                         break;
 
-                    case "external":
-                        viewModel.ExternalRecipes = (await _recipeService.GetExternalRecipesAsync()).ToList();
-                        break;
 
                     default:
                         viewModel.UserRecipes = (await _recipeService.GetUserRecipesAsync(userId)).ToList();
@@ -109,34 +97,6 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
                 return View(new RecipeIndexViewModel());
             }
         }
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    try
-        //    {
-        //        var userId = User.Identity?.Name;
-        //        var isAdmin = User.IsInRole("Admin");
-
-        //        _logger.LogInformation($"User {userId} accessing recipes. IsAdmin: {isAdmin}");
-
-        //        if (userId == null)
-        //        {
-        //            _logger.LogWarning("User ID is null");
-        //            return RedirectToAction("Login", "Account");
-        //        }
-
-        //        var recipes = await _recipeService.GetAllRecipesAsync(userId, isAdmin);
-
-        //        _logger.LogInformation($"Retrieved {recipes.Count()} recipes");
-        //        return View(recipes);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error in Recipe Index action");
-        //        TempData["Error"] = "An error occurred while loading recipes.";
-        //        return View(Enumerable.Empty<RecipeViewModel>());
-        //    }
-        //}
 
         [HttpPost]
         public async Task<IActionResult> ToggleVisibility(int id)
@@ -463,6 +423,9 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
                     CreatedBy = recipe.CreatedById ?? string.Empty,
                     IsOwner = recipe.CreatedById == currentUserId,
                     NumberOfServings = recipe.NumberOfServings,
+                    Collection = recipe.Collection,
+                    ShowInIngredientsList = recipe.ShowInIngredientsList,
+                    AccuracyLevel = recipe.AccuracyLevel,
                     Ingredients = recipe.RecipeIngredients?
                         .Where(ri => ri?.Ingredient != null)
                         .Select(ri => new RecipeIngredientViewModel
@@ -630,144 +593,8 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
 //            }
 //        }
 
-        ////////////////
-        //////////////
-        ///Exernal Recipe Handling
-        ///
-        /////////////////////
-        /////////////////////
-        ///
 
 
-
-        [HttpGet]
-        public async Task<IActionResult> GetRandomRecipes()
-        {
-            try
-            {
-                var results = new List<ExternalRecipeViewModel>();
-                for (int i = 0; i < 6; i++) // Get 6 random recipes
-                {
-                    var meal = await _mealDbService.GetRandomMealAsync();
-                    if (meal != null)
-                    {
-                        results.Add(new ExternalRecipeViewModel
-                        {
-                            ExternalId = meal.IdMeal,
-                            Name = meal.StrMeal,
-                            Category = meal.StrCategory,
-                            Area = meal.StrArea,
-                            ThumbnailUrl = meal.StrMealThumb,
-                            Description = $"Category: {meal.StrCategory}, Area: {meal.StrArea}",
-                            Source = "TheMealDB",
-                            IsImported = await _recipeService.IsRecipeImportedAsync(meal.IdMeal)
-                        });
-                    }
-                }
-
-                return Json(new { results });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting random recipes");
-                return Json(new { error = "Failed to load random recipes" });
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> SearchExternal(string searchTerm)
-        {
-            try
-            {
-                var searchResults = await _mealDbService.SearchMealsAsync(searchTerm);
-                var results = new List<ExternalRecipeViewModel>();
-
-                foreach (var meal in searchResults)
-                {
-                    if (meal is MealDBMeal mealTyped)
-                    {
-                        var isImported = await _recipeService.IsRecipeImportedAsync(mealTyped.IdMeal);
-                        var ingredients = new List<string>();
-                        var measurements = new List<string>();
-
-                        // Get all ingredients and measurements from meal properties
-                        for (int i = 1; i <= 20; i++)
-                        {
-                            var ingredient = mealTyped.GetType().GetProperty($"StrIngredient{i}")?.GetValue(mealTyped) as string;
-                            var measurement = mealTyped.GetType().GetProperty($"StrMeasure{i}")?.GetValue(mealTyped) as string;
-
-                            if (!string.IsNullOrWhiteSpace(ingredient) && !string.IsNullOrWhiteSpace(measurement))
-                            {
-                                ingredients.Add(ingredient.Trim());
-                                measurements.Add(measurement.Trim());
-                            }
-                        }
-
-                        results.Add(new ExternalRecipeViewModel
-                        {
-                            ExternalId = mealTyped.IdMeal,
-                            Name = mealTyped.StrMeal,
-                            Category = mealTyped.StrCategory,
-                            Area = mealTyped.StrArea,
-                            ThumbnailUrl = mealTyped.StrMealThumb,
-                           // Instructions = mealTyped.StrInstructions,
-                            Description = $"Category: {mealTyped.StrCategory}, Area: {mealTyped.StrArea}",
-                            Source = "TheMealDB",
-                          //  Ingredients = ingredients,
-                          //  Measurements = measurements,
-                            IsImported = isImported
-                        });
-                    }
-                }
-
-                return Json(new { results });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error searching external recipes: {Error}", ex.Message);
-                return Json(new { error = "Failed to search recipes" });
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ImportExternalRecipe([FromBody] ImportRecipeRequest request)
-        {
-            try
-            {
-                var meal = await _mealDbService.GetByIdAsync(request.Id);
-                if (meal == null)
-                {
-                    return NotFound();
-                }
-
-                // Create a proper MealDBResponse object
-                var mealResponse = new MealDBResponse
-                {
-                    Meals = new List<MealDBMeal> { meal }
-                };
-
-                var userId = User.Identity?.Name ?? "system";
-
-                // Pass the photo services to the import method
-                await _recipeService.ImportExternalRecipeAsync(
-                    mealResponse,
-                    userId,
-                    _photoStorageService,
-                    _photoProcessingService);
-
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error importing external recipe");
-                return StatusCode(500, new { error = "Failed to import recipe" });
-            }
-        }
-        public class ImportRecipeRequest
-        {
-            public string Id { get; set; }
-        }
-
+ 
     }
 }

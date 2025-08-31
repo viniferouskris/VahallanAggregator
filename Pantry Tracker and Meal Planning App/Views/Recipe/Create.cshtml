@@ -30,6 +30,33 @@ For more information on enabling MVC for empty projects, visit https://go.micros
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
+        <div class="form-group mb-3">
+            <label asp-for="Collection" class="control-label">Collection</label>
+            <input asp-for="Collection" class="form-control" placeholder="e.g., Appetizers, Main Courses, Desserts" />
+            <span asp-validation-for="Collection" class="text-danger"></span>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="ShowInIngredientsList" class="form-check-input" type="checkbox" />
+            <label asp-for="ShowInIngredientsList" class="form-check-label">
+                Show this recipe in ingredients list when building other recipes
+            </label>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="control-label">Recipe Accuracy Level</label>
+            <div class="btn-group" role="group" data-bs-toggle="buttons">
+                <input type="radio" asp-for="AccuracyLevel" value="0" class="btn-check" id="estimate" />
+                <label class="btn btn-outline-warning" for="estimate">Estimate</label>
+
+                <input type="radio" asp-for="AccuracyLevel" value="1" class="btn-check" id="tested" />
+                <label class="btn btn-outline-info" for="tested">Tested</label>
+
+                <input type="radio" asp-for="AccuracyLevel" value="2" class="btn-check" id="secured" />
+                <label class="btn btn-outline-success" for="secured">Secured</label>
+            </div>
+        </div>
+
         <div class="form-group">
             <label asp-for="Description" class="control-label">Description</label>
             <textarea asp-for="Description" class="form-control" rows="3" >Test</textarea>

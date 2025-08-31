@@ -22,40 +22,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MealPlanRecipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("MealPlanId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PrepareOnDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServingSize")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.HasIndex("MealPlanId", "RecipeId", "PrepareOnDate")
-                        .IsUnique();
-
-                    b.ToTable("MealPlanRecipe");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -86,14 +52,14 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "b9f616e8-2215-41c4-9251-26ebebf7463f",
+                            ConcurrencyStamp = "99fa08c6-80e1-425e-a5b5-817b3914a5a6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "186722cf-5464-4823-8e90-e2f16b1cb3fd",
+                            ConcurrencyStamp = "ec192ce4-dc8f-4cbc-a2f7-171c3829335e",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -193,15 +159,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         {
                             Id = "admin-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ce6241af-70c6-43c1-a54c-c75ec1467c76",
+                            ConcurrencyStamp = "829648d3-cbb9-4d2b-b7b5-c9d266e6656c",
                             Email = "admin@yourapp.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@YOURAPP.COM",
                             NormalizedUserName = "ADMIN@YOURAPP.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJftVca1LaVWXTnJErd7QQfo2Jy9ya06M6OOBB4XWhmOYfDyag8ysDv4aHIhSlyfRw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF17ZY+iCekmjO3DwPSEFrBZcsGVS0rYre1Pq6pGQOs5cLiZOezT3ELwzJh6waAo1A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ff2bdfff-e047-455a-b405-3568638a53f6",
+                            SecurityStamp = "8c6d288e-c3bc-47e0-a4df-388c9a79b80c",
                             TwoFactorEnabled = false,
                             UserName = "admin@yourapp.com"
                         });
@@ -342,6 +308,16 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccuracyLevel")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Collection")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -359,6 +335,11 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,4)");
+
+                    b.Property<bool>("ShowInIngredientsList")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<decimal>("StoredQuantity")
                         .HasColumnType("decimal(18,2)");
@@ -475,133 +456,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Notifications.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RelatedItemId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Notifications.NotificationPreference", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AutoConfirmMealPlanDeductions")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("DefaultLowStockThreshold")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<int>("DefaultReplenishmentDays")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("NotificationPreferences");
-                });
-
-            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Pantry.PantryItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("CurrentQuantity")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<string>("CurrentUnit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("DailyUsageRate")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IngredientName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastPurchaseDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("LastPurchasePrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("LastPurchaseQuantity")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<string>("LastPurchaseUnit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("LowStockThreshold")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<int?>("ReplenishmentDays")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExpirationDate");
-
-                    b.ToTable("PantryItems");
-                });
-
             modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Photo.RecipePhoto", b =>
                 {
                     b.Property<int>("Id")
@@ -679,7 +533,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-main.jpg",
-                            UploadedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9359),
+                            UploadedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8103),
                             UploadedById = "system"
                         },
                         new
@@ -695,29 +549,9 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg",
-                            UploadedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9364),
+                            UploadedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8106),
                             UploadedById = "system"
                         });
-                });
-
-            modelBuilder.Entity("MealPlan", b =>
-                {
-                    b.HasBaseType("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ServingSize")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("MealPlan");
                 });
 
             modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.Ingredient", b =>
@@ -754,10 +588,13 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9186),
+                            AccuracyLevel = 0,
+                            Collection = "",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8044),
                             CreatedById = "system",
                             Name = "Fresh Mozzarella",
                             Quantity = 1m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 28.35m,
                             StoredUnit = "g",
                             Type = "Ingredient",
@@ -771,10 +608,13 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9289),
+                            AccuracyLevel = 0,
+                            Collection = "",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8052),
                             CreatedById = "system",
                             Name = "Ripe Tomatoes",
                             Quantity = 1m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 1m,
                             StoredUnit = "count",
                             Type = "Ingredient",
@@ -788,10 +628,13 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9297),
+                            AccuracyLevel = 0,
+                            Collection = "",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8058),
                             CreatedById = "system",
                             Name = "Fresh Basil Leaves",
                             Quantity = 1m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 1m,
                             StoredUnit = "count",
                             Type = "Ingredient",
@@ -805,10 +648,13 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9303),
+                            AccuracyLevel = 0,
+                            Collection = "",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8063),
                             CreatedById = "system",
                             Name = "Extra Virgin Olive Oil",
                             Quantity = 1m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 14.7868m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
@@ -822,10 +668,13 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9310),
+                            AccuracyLevel = 0,
+                            Collection = "",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8067),
                             CreatedById = "system",
                             Name = "Balsamic Vinegar",
                             Quantity = 1m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 14.7868m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
@@ -839,10 +688,13 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9318),
+                            AccuracyLevel = 0,
+                            Collection = "",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8072),
                             CreatedById = "system",
                             Name = "Salt",
                             Quantity = 1m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 4.92892m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
@@ -856,10 +708,13 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9325),
+                            AccuracyLevel = 0,
+                            Collection = "",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8076),
                             CreatedById = "system",
                             Name = "Black Pepper",
                             Quantity = 1m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 4.92892m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
@@ -921,41 +776,25 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9162),
+                            AccuracyLevel = 1,
+                            Collection = "Appetizers",
+                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8023),
                             CreatedById = "system",
                             Name = "Classic Caprese Salad",
                             Quantity = 4m,
+                            ShowInIngredientsList = false,
                             StoredQuantity = 4m,
                             StoredUnit = "serving",
                             Type = "Recipe",
                             Unit = "serving",
                             CookTimeMinutes = 0,
                             Description = "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.",
-                            Instructions = "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\n5. Season with salt and freshly ground black pepper.\n6. Serve immediately at room temperature.",
+                            Instructions = "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.",
                             IsPublic = true,
                             NumberOfServings = 4m,
                             PrepTimeMinutes = 15,
                             Version = 1
                         });
-                });
-
-            modelBuilder.Entity("MealPlanRecipe", b =>
-                {
-                    b.HasOne("MealPlan", "MealPlan")
-                        .WithMany("MealPlanRecipes")
-                        .HasForeignKey("MealPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vahallan_Ingredient_Aggregator.Models.Components.Recipe", "Recipe")
-                        .WithMany()
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("MealPlan");
-
-                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1055,11 +894,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
             modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent", b =>
                 {
                     b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("MealPlan", b =>
-                {
-                    b.Navigation("MealPlanRecipes");
                 });
 
             modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.Ingredient", b =>

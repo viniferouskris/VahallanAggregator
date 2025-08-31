@@ -2,7 +2,6 @@
 using Vahallan_Ingredient_Aggregator.Models.Photo;
 using Vahallan_Ingredient_Aggregator.Models.Components;
 
-
 public static class RecipeSeeder
 {
     public static void SeedCapreseSalad(ModelBuilder modelBuilder)
@@ -49,7 +48,12 @@ public static class RecipeSeeder
             Unit = "serving",
             Quantity = 4,
             StoredUnit = "serving",
-            StoredQuantity = 4
+            StoredQuantity = 4,
+
+            // NEW PROPERTIES ADDED:
+            Collection = "Appetizers",                           // Set collection to "Appetizers"
+            ShowInIngredientsList = false,                       // This is a finished dish, not an ingredient
+            AccuracyLevel = RecipeAccuracyLevel.Tested          // Mark as tested since it's a classic recipe
         };
 
         // Create base ingredients
@@ -270,5 +274,41 @@ public static class RecipeSeeder
         modelBuilder.Entity<Ingredient>().HasData(ingredients);
         modelBuilder.Entity<RecipeIngredient>().HasData(recipeIngredients);
         modelBuilder.Entity<RecipePhoto>().HasData(photos);
+    }
+
+    // OPTIONAL: Add another recipe to showcase different property values
+    public static void SeedAdditionalRecipes(ModelBuilder modelBuilder)
+    {
+        // Example of a recipe that WOULD show in ingredients list (like a sauce)
+        var marinara = new Recipe
+        {
+            Id = 9,
+            Name = "Basic Marinara Sauce",
+            Description = "A simple tomato-based sauce that can be used in many dishes.",
+            Instructions = @"1. Heat olive oil in a pan.
+2. Add garlic and cook until fragrant.
+3. Add crushed tomatoes and seasonings.
+4. Simmer for 20 minutes.
+5. Season to taste.",
+            PrepTimeMinutes = 10,
+            CookTimeMinutes = 25,
+            CreatedById = "system",
+            CreatedAt = DateTime.UtcNow,
+            Version = 1,
+            IsPublic = true,
+            NumberOfServings = 8,
+            Type = "Recipe",
+            Unit = "serving",
+            Quantity = 8,
+            StoredUnit = "serving",
+            StoredQuantity = 8,
+
+            // NEW PROPERTIES - Different values to show variety:
+            Collection = "Sauces",                               // Different collection
+            ShowInIngredientsList = true,                        // This sauce can be used as ingredient
+            AccuracyLevel = RecipeAccuracyLevel.Estimate         // Still being refined
+        };
+
+        modelBuilder.Entity<Recipe>().HasData(marinara);
     }
 }

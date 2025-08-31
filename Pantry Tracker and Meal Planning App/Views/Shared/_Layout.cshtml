@@ -54,6 +54,14 @@
                                 }
                             </ul>
                         </li>
+                        <!-- processing production board -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Order" asp-action="Upload">Process Orders</a>
+                            </li>
+                        }
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

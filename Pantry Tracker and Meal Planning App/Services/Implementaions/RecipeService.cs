@@ -3,7 +3,6 @@
 using Microsoft.EntityFrameworkCore;
 using Vahallan_Ingredient_Aggregator.Data;
 using Vahallan_Ingredient_Aggregator.Models.Components;
-using Vahallan_Ingredient_Aggregator.Models.External;
 using Vahallan_Ingredient_Aggregator.Models.Photo;
 using Vahallan_Ingredient_Aggregator.Models.ViewModels;
 using Vahallan_Ingredient_Aggregator.Services.Interfaces;
@@ -53,171 +52,171 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
     }
 
     // Modified ImportExternalRecipeAsync method to include photo downloading
-    public async Task<Recipe> ImportExternalRecipeAsync(
-        MealDBResponse mealResponse,
-        string userId,
-        IPhotoStorageService photoStorageService,
-        IPhotoProcessingService photoProcessingService)
-    {
-        // Check if there are any meals in the response
-        if (mealResponse?.Meals == null || !mealResponse.Meals.Any())
-        {
-            throw new InvalidOperationException("No meals found in the response.");
-        }
+    //public async Task<Recipe> ImportExternalRecipeAsync(
+    //    MealDBResponse mealResponse,
+    //    string userId,
+    //    IPhotoStorageService photoStorageService,
+    //    IPhotoProcessingService photoProcessingService)
+    //{
+    //    // Check if there are any meals in the response
+    //    if (mealResponse?.Meals == null || !mealResponse.Meals.Any())
+    //    {
+    //        throw new InvalidOperationException("No meals found in the response.");
+    //    }
 
-        var meal = mealResponse.Meals.First(); // Get the first meal
+    //    var meal = mealResponse.Meals.First(); // Get the first meal
 
-        if (await IsRecipeImportedAsync(meal.IdMeal))
-        {
-            throw new InvalidOperationException($"Recipe {meal.StrMeal} is already imported.");
-        }
+    //    if (await IsRecipeImportedAsync(meal.IdMeal))
+    //    {
+    //        throw new InvalidOperationException($"Recipe {meal.StrMeal} is already imported.");
+    //    }
 
-          _logger.LogInformation($"Importing recipe: {meal.StrMeal} (ID: {meal.IdMeal})");
-
-
-            var recipe = new Recipe
-        {
-            Name = meal.StrMeal,
-            Description = $"Category: {meal.StrCategory}, Area: {meal.StrArea}",
-            Instructions = meal.StrInstructions,
-            ExternalId = meal.IdMeal,
-            ExternalSource = "TheMealDB",
-            CreatedById = userId,
-            IsPublic = true,
-            Type = "Recipe",
-            Unit = "serving", // Set a default value
-            StoredUnit = "serving", // Set a default value
-            Quantity = 1, // Set a default value
-            StoredQuantity = 1, // Set a default value
-            NumberOfServings = 4, // Set a default value
-            PrepTimeMinutes = 30, // Set a reasonable default
-            CookTimeMinutes = 30, // Set a reasonable default
-            Photos = new List<RecipePhoto>(),
-            RecipeIngredients = new List<RecipeIngredient>()
-        };
-
-        // Add ingredients using RecipeIngredient relationships
-        var ingredients = meal.GetIngredientPairs()
-            .Where(pair => !string.IsNullOrWhiteSpace(pair.Ingredient));
-
-        foreach (var (ingredientName, measurementText) in ingredients)
-        {
-            // Create or get the ingredient
-            var existingIngredient = await _context.Ingredients
-                .FirstOrDefaultAsync(i => i.Name.ToLower() == ingredientName.ToLower());
-
-            // Parse the measurement text into quantity and unit
-            (decimal quantity, string unit) = ParseMeasurement(measurementText);
-
-            if (existingIngredient == null)
-            {
-                // If unit is still empty after parsing, use a default
-                if (string.IsNullOrWhiteSpace(unit))
-                {
-                    unit = "count";
-                }
-
-                existingIngredient = new Ingredient
-                {
-                    Name = ingredientName,
-                    CreatedById = userId,
-                    CreatedAt = DateTime.UtcNow,
-                    Type = "Ingredient",
-                    // Set default values for required fields
-                    CostPerPackage = 0, // Default value
-                    ServingsPerPackage = 1, // Default value
-                    CaloriesPerServing = 0, // Default value
-                    Quantity = 1, // Default value
-                    Unit = unit, // Use the parsed unit
-                    StoredQuantity = 1,
-                    StoredUnit = unit
-                };
-
-                _context.Ingredients.Add(existingIngredient);
-                await _context.SaveChangesAsync(); // Save to get the Id
-            }
-
-            // Create the recipe-ingredient relationship
-            var recipeIngredient = new RecipeIngredient
-            {
-                Recipe = recipe,
-                Ingredient = existingIngredient,
-                Quantity = quantity, // Use the parsed quantity
-                Unit = unit // Use the parsed unit
-            };
-
-            recipe.RecipeIngredients.Add(recipeIngredient);
-        }
-
-        // Save the recipe first to get its ID
-        await CreateRecipeAsync(recipe, userId);
-
-        // Now download and add the photo from TheMealDB if available
-        if (!string.IsNullOrEmpty(meal.StrMealThumb))
-        {
-            try
-            {
-                _logger.LogInformation($"Downloading photo from URL: {meal.StrMealThumb}");
-
-                // Download the image from TheMealDB
-                using var imageStream = await DownloadImageAsync(meal.StrMealThumb);
-
-                // Convert the stream to a FormFile for compatibility with your existing services
-                var fileName = $"theMealDB_{meal.IdMeal}.jpg";
-                    // Create a form file from the stream using our utility
-                    var formFile = Utilities.StreamToFormFileConverter.ConvertToFormFile(
-                        imageStream,
-                        fileName,
-                        "image/jpeg");
-
-                    // Use the existing photo storage service to save the photo
-                    var photoUrl = await photoStorageService.SavePhotoAsync(formFile, userId);
-
-                    // Create a reusable copy of the stream for thumbnail generation
-                    using var thumbnailStream = await Utilities.StreamToFormFileConverter.CreateReusableStreamAsync(imageStream);
-                    var thumbnailFormFile = Utilities.StreamToFormFileConverter.ConvertToFormFile(
-                        thumbnailStream,
-                        fileName,
-                        "image/jpeg");
+    //      _logger.LogInformation($"Importing recipe: {meal.StrMeal} (ID: {meal.IdMeal})");
 
 
-                    // Generate a thumbnail using the photo processing service
-                    var thumbnailData = await photoProcessingService.CreateThumbnailAsync(formFile);
-                var thumbnailUrl = await photoStorageService.SaveThumbnailAsync(thumbnailData, photoUrl);
+    //        var recipe = new Recipe
+    //    {
+    //        Name = meal.StrMeal,
+    //        Description = $"Category: {meal.StrCategory}, Area: {meal.StrArea}",
+    //        Instructions = meal.StrInstructions,
+    //        ExternalId = meal.IdMeal,
+    //        ExternalSource = "TheMealDB",
+    //        CreatedById = userId,
+    //        IsPublic = true,
+    //        Type = "Recipe",
+    //        Unit = "serving", // Set a default value
+    //        StoredUnit = "serving", // Set a default value
+    //        Quantity = 1, // Set a default value
+    //        StoredQuantity = 1, // Set a default value
+    //        NumberOfServings = 4, // Set a default value
+    //        PrepTimeMinutes = 30, // Set a reasonable default
+    //        CookTimeMinutes = 30, // Set a reasonable default
+    //        Photos = new List<RecipePhoto>(),
+    //        RecipeIngredients = new List<RecipeIngredient>()
+    //    };
 
-                // Create a photo record
-                var recipePhoto = new RecipePhoto
-                {
-                    RecipeId = recipe.Id,
-                    FilePath = photoUrl,
-                    ThumbnailPath = thumbnailUrl,
-                    ContentType = "image/jpeg",
-                    FileSize = imageStream.Length,
-                    FileName = fileName,
-                    Description = $"Photo for {recipe.Name} imported from TheMealDB",
-                    IsMain = true, // Mark as main photo
-                    IsApproved = true,
-                    UploadedById = userId,
-                    UploadedAt = DateTime.UtcNow
-                };
+    //    // Add ingredients using RecipeIngredient relationships
+    //    var ingredients = meal.GetIngredientPairs()
+    //        .Where(pair => !string.IsNullOrWhiteSpace(pair.Ingredient));
 
-                // Add the photo to the recipe
-                recipe.Photos.Add(recipePhoto);
+    //    foreach (var (ingredientName, measurementText) in ingredients)
+    //    {
+    //        // Create or get the ingredient
+    //        var existingIngredient = await _context.Ingredients
+    //            .FirstOrDefaultAsync(i => i.Name.ToLower() == ingredientName.ToLower());
 
-                // Update the recipe with the new photo
-                await UpdateRecipeAsync(recipe);
+    //        // Parse the measurement text into quantity and unit
+    //        (decimal quantity, string unit) = ParseMeasurement(measurementText);
 
-                _logger.LogInformation($"Successfully added TheMealDB photo to recipe {recipe.Id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error downloading TheMealDB photo for recipe {recipe.Id}. The recipe was created but without the photo.");
-                // Continue without the photo - don't fail the whole import
-            }
-        }
+    //        if (existingIngredient == null)
+    //        {
+    //            // If unit is still empty after parsing, use a default
+    //            if (string.IsNullOrWhiteSpace(unit))
+    //            {
+    //                unit = "count";
+    //            }
 
-        return recipe;
-    }
+    //            existingIngredient = new Ingredient
+    //            {
+    //                Name = ingredientName,
+    //                CreatedById = userId,
+    //                CreatedAt = DateTime.UtcNow,
+    //                Type = "Ingredient",
+    //                // Set default values for required fields
+    //                CostPerPackage = 0, // Default value
+    //                ServingsPerPackage = 1, // Default value
+    //                CaloriesPerServing = 0, // Default value
+    //                Quantity = 1, // Default value
+    //                Unit = unit, // Use the parsed unit
+    //                StoredQuantity = 1,
+    //                StoredUnit = unit
+    //            };
+
+    //            _context.Ingredients.Add(existingIngredient);
+    //            await _context.SaveChangesAsync(); // Save to get the Id
+    //        }
+
+    //        // Create the recipe-ingredient relationship
+    //        var recipeIngredient = new RecipeIngredient
+    //        {
+    //            Recipe = recipe,
+    //            Ingredient = existingIngredient,
+    //            Quantity = quantity, // Use the parsed quantity
+    //            Unit = unit // Use the parsed unit
+    //        };
+
+    //        recipe.RecipeIngredients.Add(recipeIngredient);
+    //    }
+
+    //    // Save the recipe first to get its ID
+    //    await CreateRecipeAsync(recipe, userId);
+
+    //    // Now download and add the photo from TheMealDB if available
+    //    if (!string.IsNullOrEmpty(meal.StrMealThumb))
+    //    {
+    //        try
+    //        {
+    //            _logger.LogInformation($"Downloading photo from URL: {meal.StrMealThumb}");
+
+    //            // Download the image from TheMealDB
+    //            using var imageStream = await DownloadImageAsync(meal.StrMealThumb);
+
+    //            // Convert the stream to a FormFile for compatibility with your existing services
+    //            var fileName = $"theMealDB_{meal.IdMeal}.jpg";
+    //                // Create a form file from the stream using our utility
+    //                var formFile = Utilities.StreamToFormFileConverter.ConvertToFormFile(
+    //                    imageStream,
+    //                    fileName,
+    //                    "image/jpeg");
+
+    //                // Use the existing photo storage service to save the photo
+    //                var photoUrl = await photoStorageService.SavePhotoAsync(formFile, userId);
+
+    //                // Create a reusable copy of the stream for thumbnail generation
+    //                using var thumbnailStream = await Utilities.StreamToFormFileConverter.CreateReusableStreamAsync(imageStream);
+    //                var thumbnailFormFile = Utilities.StreamToFormFileConverter.ConvertToFormFile(
+    //                    thumbnailStream,
+    //                    fileName,
+    //                    "image/jpeg");
+
+
+    //                // Generate a thumbnail using the photo processing service
+    //                var thumbnailData = await photoProcessingService.CreateThumbnailAsync(formFile);
+    //            var thumbnailUrl = await photoStorageService.SaveThumbnailAsync(thumbnailData, photoUrl);
+
+    //            // Create a photo record
+    //            var recipePhoto = new RecipePhoto
+    //            {
+    //                RecipeId = recipe.Id,
+    //                FilePath = photoUrl,
+    //                ThumbnailPath = thumbnailUrl,
+    //                ContentType = "image/jpeg",
+    //                FileSize = imageStream.Length,
+    //                FileName = fileName,
+    //                Description = $"Photo for {recipe.Name} imported from TheMealDB",
+    //                IsMain = true, // Mark as main photo
+    //                IsApproved = true,
+    //                UploadedById = userId,
+    //                UploadedAt = DateTime.UtcNow
+    //            };
+
+    //            // Add the photo to the recipe
+    //            recipe.Photos.Add(recipePhoto);
+
+    //            // Update the recipe with the new photo
+    //            await UpdateRecipeAsync(recipe);
+
+    //            _logger.LogInformation($"Successfully added TheMealDB photo to recipe {recipe.Id}");
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            _logger.LogError(ex, $"Error downloading TheMealDB photo for recipe {recipe.Id}. The recipe was created but without the photo.");
+    //            // Continue without the photo - don't fail the whole import
+    //        }
+    //    }
+
+    //    return recipe;
+    //}
     public async Task<Recipe> GetRecipeByIdAsync(int id)
         {
             var recipe = await _context.Recipes
@@ -340,29 +339,6 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
                 .ToListAsync();
         }
 
-        public async Task<List<ExternalRecipeViewModel>> GetExternalRecipesAsync()
-        {
-            var externalRecipes = await _context.Recipes
-                .Where(r => r.ExternalSource != null)
-                .Select(r => new ExternalRecipeViewModel
-                {
-                    ExternalId = r.ExternalId,
-                    Name = r.Name,
-                    Description = r.Description,
-                    //PrepTime = r.PrepTimeMinutes,
-                    //CookTime = r.CookTimeMinutes,
-                    //TotalTime = r.PrepTimeMinutes + r.CookTimeMinutes,
-                    //IsPublic = true,
-                    //IsOwner = false,
-                    //CreatedBy = r.CreatedById,
-                    //IngredientsCount = r.Components.Count,
-                    //ExternalSource = r.ExternalSource,
-                    //ExternalId = r.ExternalId
-                })
-                .ToListAsync();
-
-            return new List<ExternalRecipeViewModel>();
-        }
 
         public async Task<bool> IsRecipeImportedAsync(string externalId)
         {
@@ -737,19 +713,13 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
             throw new NotImplementedException();
         }
 
-        Task<List<ExternalRecipeViewModel>> IRecipeService.GetExternalRecipeIdsAsync()
-        {
-            throw new NotImplementedException();
-        }
+  
 
         Task<List<RecipeViewModel>> IRecipeService.GetAllRecipesAsync(string userId, bool isAdmin)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Recipe> ImportExternalRecipeAsync(MealDBResponse meal, string userId)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Vahallan_Ingredient_Aggregator.Models.Components;
-using Vahallan_Ingredient_Aggregator.Models.External;
 using Vahallan_Ingredient_Aggregator.Models.ViewModels;
 
 
@@ -20,23 +19,13 @@ namespace Vahallan_Ingredient_Aggregator.Services.Interfaces
         Task ToggleRecipeVisibilityAsync(int recipeId, string userId);
 
         // External recipe handling
-        Task<List<ExternalRecipeViewModel>> GetExternalRecipeIdsAsync();
         Task<int?> GetLocalRecipeIdByExternalIdAsync(string externalId);
 
         // Recipe listing methods
         Task<List<RecipeViewModel>> GetUserRecipesAsync(string userId);
         Task<List<RecipeViewModel>> GetSharedRecipesAsync(string userId);
-        Task<List<ExternalRecipeViewModel>> GetExternalRecipesAsync();
         Task<List<RecipeViewModel>> GetAllRecipesAsync(string userId, bool isAdmin);
 
-        // Import management
-        Task<bool> IsRecipeImportedAsync(string externalId);
-        Task<Recipe> ImportExternalRecipeAsync(MealDBResponse meal, string userId);
-        Task<Recipe> ImportExternalRecipeAsync(
-            MealDBResponse meal,
-            string userId,
-            IPhotoStorageService photoStorageService,
-            IPhotoProcessingService photoProcessingService);
 
     }
 }

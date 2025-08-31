@@ -21,6 +21,10 @@ namespace Vahallan_Ingredient_Aggregator.Models.ViewModels
         public decimal TotalCost { get; set; }
 
         public decimal TotalCalories { get; set; }
+
+        public string Collection { get; set; }
+        public bool ShowInIngredientsList { get; set; }
+        public RecipeAccuracyLevel AccuracyLevel { get; set; }
     }
 
     public class RecipeIngredientViewModel
