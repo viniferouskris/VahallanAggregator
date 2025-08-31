@@ -1,6 +1,6 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+﻿using Vahallan_Ingredient_Aggregator.Models.Components;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces
+namespace Vahallan_Ingredient_Aggregator.Services.Interfaces
 {
     // IIngredientService.cs
     public interface IIngredientService

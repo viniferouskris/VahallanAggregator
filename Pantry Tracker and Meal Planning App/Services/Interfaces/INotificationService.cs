@@ -1,6 +1,6 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Notifications;
+﻿using Vahallan_Ingredient_Aggregator.Models.Notifications;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces
+namespace Vahallan_Ingredient_Aggregator.Services.Interfaces
 {
     public interface INotificationService
     {

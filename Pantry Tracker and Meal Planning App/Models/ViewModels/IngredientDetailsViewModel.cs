@@ -1,6 +1,6 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
+﻿using Vahallan_Ingredient_Aggregator.Models.Photo;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels
+namespace Vahallan_Ingredient_Aggregator.Models.ViewModels
 {
     public class IngredientDetailsViewModel
     {

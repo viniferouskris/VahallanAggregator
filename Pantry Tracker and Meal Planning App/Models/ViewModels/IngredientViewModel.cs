@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
 
 public class IngredientViewModel
 {

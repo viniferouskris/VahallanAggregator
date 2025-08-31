@@ -1,9 +1,9 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.External;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels;
+﻿using Vahallan_Ingredient_Aggregator.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.External;
+using Vahallan_Ingredient_Aggregator.Models.ViewModels;
 
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces
+namespace Vahallan_Ingredient_Aggregator.Services.Interfaces
 {
   
     public interface IRecipeService

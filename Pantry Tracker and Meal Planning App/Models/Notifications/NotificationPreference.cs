@@ -1,4 +1,4 @@
-﻿namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Notifications
+﻿namespace Vahallan_Ingredient_Aggregator.Models.Notifications
 {
     public class NotificationPreference
     {

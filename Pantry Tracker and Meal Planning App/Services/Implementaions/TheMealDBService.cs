@@ -1,10 +1,10 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.External;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.External;
+using Vahallan_Ingredient_Aggregator.Models;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementations
+namespace Vahallan_Ingredient_Aggregator.Services.Implementations
 {
     public class TheMealDBService : ITheMealDBService
     {

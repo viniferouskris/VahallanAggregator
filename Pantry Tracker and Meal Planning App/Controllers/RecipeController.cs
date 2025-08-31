@@ -1,23 +1,23 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.DTOs;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementations;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.DTOs;
+using Vahallan_Ingredient_Aggregator.Models.ViewModels;
+using Vahallan_Ingredient_Aggregator.Services.Implementations;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.External;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Models.External;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
 using Microsoft.SqlServer.Server;
 using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.VisualBasic;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Components;
 
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Controllers
+namespace Vahallan_Ingredient_Aggregator.Controllers
 {
     [Authorize]
     public class RecipeController : Controller

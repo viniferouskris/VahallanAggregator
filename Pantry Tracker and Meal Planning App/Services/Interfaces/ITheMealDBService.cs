@@ -1,6 +1,6 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.External;
+﻿using Vahallan_Ingredient_Aggregator.Models.External;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces
+namespace Vahallan_Ingredient_Aggregator.Services.Interfaces
 {
     public interface ITheMealDBService
     {

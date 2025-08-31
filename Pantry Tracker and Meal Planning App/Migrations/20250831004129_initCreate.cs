@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
+namespace Vahallan_Ingredient_Aggregator.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,21 +61,24 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Quantity = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     Unit = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ParentId = table.Column<int>(type: "int", nullable: true),
+                    StoredQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    StoredUnit = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StoredQuantity = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    StoredUnit = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
-                    RecipeId = table.Column<int>(type: "int", nullable: true),
-                    CostPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    CaloriesPerServing = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
-                    ServingsPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ServingSize = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CostPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CaloriesPerServing = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
+                    ServingsPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    IsSystemIngredient = table.Column<bool>(type: "bit", nullable: true),
+                    IsPromoted = table.Column<bool>(type: "bit", nullable: true),
+                    PromotionStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PromotionEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SystemIngredientId = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     Instructions = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PrepTimeMinutes = table.Column<int>(type: "int", nullable: true),
@@ -92,16 +95,6 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BaseIngredientComponent", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BaseIngredientComponent_BaseIngredientComponent_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "BaseIngredientComponent",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_BaseIngredientComponent_BaseIngredientComponent_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "BaseIngredientComponent",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -314,6 +307,34 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RecipeIngredients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RecipeId = table.Column<int>(type: "int", nullable: false),
+                    IngredientId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeIngredients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RecipeIngredients_BaseIngredientComponent_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "BaseIngredientComponent",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RecipeIngredients_BaseIngredientComponent_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "BaseIngredientComponent",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RecipePhotos",
                 columns: table => new
                 {
@@ -373,19 +394,33 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", "31ee4e09-e30d-4e53-8a77-b0d422751890", "Admin", "ADMIN" },
-                    { "2", "9c4af1b2-806b-4ae8-b6dd-b2ab5e430edf", "User", "USER" }
+                    { "1", "b9f616e8-2215-41c4-9251-26ebebf7463f", "Admin", "ADMIN" },
+                    { "2", "186722cf-5464-4823-8e90-e2f16b1cb3fd", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin-user-id", 0, "cf9a335b-6e16-42ee-a378-cee45852c532", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEHB+AqZii0JZda6EoUj3tXt/3mfJaqWp0fzwGH2ibfjYX/5FMUuPjn+3wLulAmeRQA==", null, false, "dff3cd6d-8653-4a2c-bfd6-dcc5181c0bf8", false, "admin@yourapp.com" });
+                values: new object[] { "admin-user-id", 0, "ce6241af-70c6-43c1-a54c-c75ec1467c76", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEJftVca1LaVWXTnJErd7QQfo2Jy9ya06M6OOBB4XWhmOYfDyag8ysDv4aHIhSlyfRw==", null, false, "ff2bdfff-e047-455a-b405-3568638a53f6", false, "admin@yourapp.com" });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
-                columns: new[] { "Id", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "ExternalId", "ExternalSource", "ExternalUrl", "ImportedAt", "Instructions", "IsPublic", "ModifiedAt", "Name", "NumberOfServings", "OriginalRecipeId", "ParentId", "PrepTimeMinutes", "Quantity", "RecipeId", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
-                values: new object[] { 8, 0, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3317), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", null, null, null, null, "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 0m, null, null, 15, 4m, null, 4m, "serving", "Recipe", "serving", 1 });
+                columns: new[] { "Id", "CaloriesPerServing", "CostPerPackage", "CreatedAt", "CreatedById", "IsPromoted", "IsSystemIngredient", "ModifiedAt", "Name", "PromotionEndDate", "PromotionStartDate", "Quantity", "ServingsPerPackage", "StoredQuantity", "StoredUnit", "SystemIngredientId", "Type", "Unit" },
+                values: new object[,]
+                {
+                    { 1, 70m, 5.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9186), "system", false, true, null, "Fresh Mozzarella", null, null, 1m, 16m, 28.35m, "g", null, "Ingredient", "oz" },
+                    { 2, 22m, 3.00m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9289), "system", false, true, null, "Ripe Tomatoes", null, null, 1m, 4m, 1m, "count", null, "Ingredient", "count" },
+                    { 3, 1m, 2.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9297), "system", false, true, null, "Fresh Basil Leaves", null, null, 1m, 30m, 1m, "count", null, "Ingredient", "count" },
+                    { 4, 120m, 8.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9303), "system", false, true, null, "Extra Virgin Olive Oil", null, null, 1m, 33.8m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
+                    { 5, 14m, 5.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9310), "system", false, true, null, "Balsamic Vinegar", null, null, 1m, 16.9m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
+                    { 6, 0m, 0.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9318), "system", false, true, null, "Salt", null, null, 1m, 156m, 4.92892m, "ml", null, "Ingredient", "tsp" },
+                    { 7, 0m, 3.99m, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9325), "system", false, true, null, "Black Pepper", null, null, 1m, 144m, 4.92892m, "ml", null, "Ingredient", "tsp" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "BaseIngredientComponent",
+                columns: new[] { "Id", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "ExternalId", "ExternalSource", "ExternalUrl", "ImportedAt", "Instructions", "IsPublic", "ModifiedAt", "Name", "NumberOfServings", "OriginalRecipeId", "PrepTimeMinutes", "Quantity", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
+                values: new object[] { 8, 0, new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9162), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", null, null, null, null, "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\n5. Season with salt and freshly ground black pepper.\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 4m, null, 15, 4m, 4m, "serving", "Recipe", "serving", 1 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -393,17 +428,17 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                 values: new object[] { "1", "admin-user-id" });
 
             migrationBuilder.InsertData(
-                table: "BaseIngredientComponent",
-                columns: new[] { "Id", "CaloriesPerServing", "CostPerPackage", "CreatedAt", "CreatedById", "ModifiedAt", "Name", "ParentId", "Quantity", "RecipeId", "ServingsPerPackage", "StoredQuantity", "StoredUnit", "Type", "Unit" },
+                table: "RecipeIngredients",
+                columns: new[] { "Id", "IngredientId", "Quantity", "RecipeId", "Unit" },
                 values: new object[,]
                 {
-                    { 1, 70m, 5.99m, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3337), "system", null, "Fresh Mozzarella", 8, 16m, null, 16m, 453.592m, "g", "Ingredient", "oz" },
-                    { 2, 22m, 3.00m, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3344), "system", null, "Ripe Tomatoes", 8, 4m, null, 4m, 4m, "count", "Ingredient", "count" },
-                    { 3, 1m, 2.99m, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3350), "system", null, "Fresh Basil Leaves", 8, 20m, null, 30m, 20m, "count", "Ingredient", "count" },
-                    { 4, 120m, 8.99m, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3355), "system", null, "Extra Virgin Olive Oil", 8, 2m, null, 33.8m, 29.5735m, "ml", "Ingredient", "tbsp" },
-                    { 5, 14m, 5.99m, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3360), "system", null, "Balsamic Vinegar", 8, 2m, null, 16.9m, 29.5735m, "ml", "Ingredient", "tbsp" },
-                    { 6, 0m, 0.99m, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3366), "system", null, "Salt", 8, 0.5m, null, 156m, 2.46446m, "ml", "Ingredient", "tsp" },
-                    { 7, 0m, 3.99m, new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3371), "system", null, "Black Pepper", 8, 0.25m, null, 144m, 1.23223m, "ml", "Ingredient", "tsp" }
+                    { 1, 1, 16m, 8, "oz" },
+                    { 2, 2, 4m, 8, "count" },
+                    { 3, 3, 20m, 8, "count" },
+                    { 4, 4, 2m, 8, "tbsp" },
+                    { 5, 5, 2m, 8, "tbsp" },
+                    { 6, 6, 0.5m, 8, "tsp" },
+                    { 7, 7, 0.25m, 8, "tsp" }
                 });
 
             migrationBuilder.InsertData(
@@ -411,8 +446,8 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                 columns: new[] { "Id", "ContentType", "Description", "FileName", "FilePath", "FileSize", "IsApproved", "IsMain", "IsMainPhoto", "ModifiedAt", "RecipeId", "ThumbnailPath", "UploadedAt", "UploadedById" },
                 values: new object[,]
                 {
-                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 20L, true, false, true, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3384), "system" },
-                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 1, 29, 0, 57, 46, 780, DateTimeKind.Utc).AddTicks(3388), "system" }
+                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 19661L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9359), "system" },
+                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9364), "system" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -455,16 +490,6 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BaseIngredientComponent_ParentId",
-                table: "BaseIngredientComponent",
-                column: "ParentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BaseIngredientComponent_RecipeId",
-                table: "BaseIngredientComponent",
-                column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_MealPlanRecipe_MealPlanId_RecipeId_PrepareOnDate",
                 table: "MealPlanRecipe",
                 columns: new[] { "MealPlanId", "RecipeId", "PrepareOnDate" },
@@ -484,6 +509,16 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                 name: "IX_PantryItems_ExpirationDate",
                 table: "PantryItems",
                 column: "ExpirationDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeIngredients_IngredientId",
+                table: "RecipeIngredients",
+                column: "IngredientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeIngredients_RecipeId",
+                table: "RecipeIngredients",
+                column: "RecipeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipePhotos_RecipeId",
@@ -525,6 +560,9 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
 
             migrationBuilder.DropTable(
                 name: "PantryItems");
+
+            migrationBuilder.DropTable(
+                name: "RecipeIngredients");
 
             migrationBuilder.DropTable(
                 name: "RecipePhotos");

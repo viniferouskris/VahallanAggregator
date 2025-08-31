@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Data;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+using Vahallan_Ingredient_Aggregator.Data;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.Components;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
 
 //Place functions that handle CRUD operations
 //Methods that interact with the database
@@ -19,7 +19,7 @@ using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
 //Convert units -> Ingredient model (operates on the ingredient's own properties)
 
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services
+namespace Vahallan_Ingredient_Aggregator.Services
 {
     public class IngredientService : IIngredientService
     {

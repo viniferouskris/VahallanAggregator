@@ -1,6 +1,6 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+﻿using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementaions
+namespace Vahallan_Ingredient_Aggregator.Services.Implementaions
 {
     // Services/Implementations/MeasurementConversionService.cs
     public class MeasurementConversionService : IMeasurementConversionService

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models;
+using Vahallan_Ingredient_Aggregator.Models;
 using System.Diagnostics;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Controllers
+namespace Vahallan_Ingredient_Aggregator.Controllers
 {
     public class HomeController : Controller
     {

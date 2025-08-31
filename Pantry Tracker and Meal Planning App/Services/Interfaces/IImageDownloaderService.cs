@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces
+namespace Vahallan_Ingredient_Aggregator.Services.Interfaces
 {
     public interface IImageDownloaderService
     {

@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Notifications;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Pantry;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Notifications;
+using Vahallan_Ingredient_Aggregator.Models.Pantry;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Models.Components;
 
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Data
+namespace Vahallan_Ingredient_Aggregator.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

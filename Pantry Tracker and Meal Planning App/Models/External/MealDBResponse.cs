@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.External
+namespace Vahallan_Ingredient_Aggregator.Models.External
 {
     public class MealDBResponse
     {

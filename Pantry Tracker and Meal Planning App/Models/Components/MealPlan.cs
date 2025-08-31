@@ -1,4 +1,4 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+﻿using Vahallan_Ingredient_Aggregator.Models.Components;
 
 public class MealPlan : BaseIngredientComponent
 {

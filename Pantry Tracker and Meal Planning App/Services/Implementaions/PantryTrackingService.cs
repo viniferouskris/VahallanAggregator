@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Data;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Notifications;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Pantry;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Data;
+using Vahallan_Ingredient_Aggregator.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Notifications;
+using Vahallan_Ingredient_Aggregator.Models.Pantry;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 using System.Collections.Generic;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementaions
+namespace Vahallan_Ingredient_Aggregator.Services.Implementaions
 {
     public class PantryTrackingService : IPantryTrackingService
     {

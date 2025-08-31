@@ -5,9 +5,9 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementations
+namespace Vahallan_Ingredient_Aggregator.Services.Implementations
 {
     public class ImageDownloaderService : IImageDownloaderService
     {

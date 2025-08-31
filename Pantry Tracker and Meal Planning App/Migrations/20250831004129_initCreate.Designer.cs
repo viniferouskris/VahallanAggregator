@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Data;
+using Vahallan_Ingredient_Aggregator.Data;
 
 #nullable disable
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
+namespace Vahallan_Ingredient_Aggregator.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250209232318_ingredientPhotoDetails")]
-    partial class ingredientPhotoDetails
+    [Migration("20250831004129_initCreate")]
+    partial class initCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,14 +89,14 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "4bfcdecf-f518-46bd-97cd-c4ba2f348a0b",
+                            ConcurrencyStamp = "b9f616e8-2215-41c4-9251-26ebebf7463f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "cf55bfdb-349f-4cc8-84be-a36829c2756a",
+                            ConcurrencyStamp = "186722cf-5464-4823-8e90-e2f16b1cb3fd",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -196,15 +196,15 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         {
                             Id = "admin-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f2c580b3-09f3-4471-a852-bac2bdfc46d1",
+                            ConcurrencyStamp = "ce6241af-70c6-43c1-a54c-c75ec1467c76",
                             Email = "admin@yourapp.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@YOURAPP.COM",
                             NormalizedUserName = "ADMIN@YOURAPP.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDeolEj/IMd+lx0KWqjw1IdRPzYSCuHXyQXAF1JEIlU3INdSGHzh94nQu7HcStVK2g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJftVca1LaVWXTnJErd7QQfo2Jy9ya06M6OOBB4XWhmOYfDyag8ysDv4aHIhSlyfRw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "14b2f218-5e47-493d-bce8-f103718b24a4",
+                            SecurityStamp = "ff2bdfff-e047-455a-b405-3568638a53f6",
                             TwoFactorEnabled = false,
                             UserName = "admin@yourapp.com"
                         });
@@ -302,7 +302,183 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Notifications.Notification", b =>
+            modelBuilder.Entity("RecipeTag", b =>
+                {
+                    b.Property<int>("RecipesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecipesId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("RecipeTags", (string)null);
+                });
+
+            modelBuilder.Entity("Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tag");
+                });
+
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("StoredQuantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("StoredUnit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(34)
+                        .HasColumnType("nvarchar(34)");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BaseIngredientComponent");
+
+                    b.HasDiscriminator<string>("Type").HasValue("BaseIngredientComponent");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.RecipeIngredient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IngredientId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeIngredients");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IngredientId = 1,
+                            Quantity = 16m,
+                            RecipeId = 8,
+                            Unit = "oz"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IngredientId = 2,
+                            Quantity = 4m,
+                            RecipeId = 8,
+                            Unit = "count"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IngredientId = 3,
+                            Quantity = 20m,
+                            RecipeId = 8,
+                            Unit = "count"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IngredientId = 4,
+                            Quantity = 2m,
+                            RecipeId = 8,
+                            Unit = "tbsp"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IngredientId = 5,
+                            Quantity = 2m,
+                            RecipeId = 8,
+                            Unit = "tbsp"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IngredientId = 6,
+                            Quantity = 0.5m,
+                            RecipeId = 8,
+                            Unit = "tsp"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IngredientId = 7,
+                            Quantity = 0.25m,
+                            RecipeId = 8,
+                            Unit = "tsp"
+                        });
+                });
+
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Notifications.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -340,7 +516,7 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Notifications.NotificationPreference", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Notifications.NotificationPreference", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -368,7 +544,7 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                     b.ToTable("NotificationPreferences");
                 });
 
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Pantry.PantryItem", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Pantry.PantryItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -429,7 +605,7 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                     b.ToTable("PantryItems");
                 });
 
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo.RecipePhoto", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Photo.RecipePhoto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -500,13 +676,13 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                             Description = "Classic Caprese Salad with alternating slices of mozzarella and tomato",
                             FileName = "caprese-main.jpg",
                             FilePath = "/recipe-photos/originals/caprese-main.jpg",
-                            FileSize = 20L,
+                            FileSize = 19661L,
                             IsApproved = true,
-                            IsMain = false,
-                            IsMainPhoto = true,
+                            IsMain = true,
+                            IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-main.jpg",
-                            UploadedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4929),
+                            UploadedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9359),
                             UploadedById = "system"
                         },
                         new
@@ -522,112 +698,34 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                             IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg",
-                            UploadedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4935),
+                            UploadedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9364),
                             UploadedById = "system"
                         });
                 });
 
-            modelBuilder.Entity("RecipeTag", b =>
+            modelBuilder.Entity("MealPlan", b =>
                 {
-                    b.Property<int>("RecipesId")
-                        .HasColumnType("int");
+                    b.HasBaseType("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent");
 
-                    b.Property<int>("TagsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RecipesId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("RecipeTags", (string)null);
-                });
-
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreatedById")
+                    b.Property<int>("ServingSize")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<int?>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("StoredQuantity")
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<string>("StoredUnit")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(34)
-                        .HasColumnType("nvarchar(34)");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("BaseIngredientComponent");
-
-                    b.HasDiscriminator<string>("Type").HasValue("BaseIngredientComponent");
-
-                    b.UseTphMappingStrategy();
+                    b.HasDiscriminator().HasValue("MealPlan");
                 });
 
-            modelBuilder.Entity("Tag", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.Ingredient", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tag");
-                });
-
-            modelBuilder.Entity("Ingredient", b =>
-                {
-                    b.HasBaseType("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent");
+                    b.HasBaseType("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent");
 
                     b.Property<decimal>("CaloriesPerServing")
                         .HasColumnType("decimal(10,2)");
@@ -659,12 +757,11 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4864),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9186),
                             CreatedById = "system",
                             Name = "Fresh Mozzarella",
-                            ParentId = 8,
-                            Quantity = 16m,
-                            StoredQuantity = 453.592m,
+                            Quantity = 1m,
+                            StoredQuantity = 28.35m,
                             StoredUnit = "g",
                             Type = "Ingredient",
                             Unit = "oz",
@@ -677,12 +774,11 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4876),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9289),
                             CreatedById = "system",
                             Name = "Ripe Tomatoes",
-                            ParentId = 8,
-                            Quantity = 4m,
-                            StoredQuantity = 4m,
+                            Quantity = 1m,
+                            StoredQuantity = 1m,
                             StoredUnit = "count",
                             Type = "Ingredient",
                             Unit = "count",
@@ -695,12 +791,11 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4884),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9297),
                             CreatedById = "system",
                             Name = "Fresh Basil Leaves",
-                            ParentId = 8,
-                            Quantity = 20m,
-                            StoredQuantity = 20m,
+                            Quantity = 1m,
+                            StoredQuantity = 1m,
                             StoredUnit = "count",
                             Type = "Ingredient",
                             Unit = "count",
@@ -713,12 +808,11 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4891),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9303),
                             CreatedById = "system",
                             Name = "Extra Virgin Olive Oil",
-                            ParentId = 8,
-                            Quantity = 2m,
-                            StoredQuantity = 29.5735m,
+                            Quantity = 1m,
+                            StoredQuantity = 14.7868m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tbsp",
@@ -731,12 +825,11 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4898),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9310),
                             CreatedById = "system",
                             Name = "Balsamic Vinegar",
-                            ParentId = 8,
-                            Quantity = 2m,
-                            StoredQuantity = 29.5735m,
+                            Quantity = 1m,
+                            StoredQuantity = 14.7868m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tbsp",
@@ -749,12 +842,11 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4906),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9318),
                             CreatedById = "system",
                             Name = "Salt",
-                            ParentId = 8,
-                            Quantity = 0.5m,
-                            StoredQuantity = 2.46446m,
+                            Quantity = 1m,
+                            StoredQuantity = 4.92892m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tsp",
@@ -767,12 +859,11 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4913),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9325),
                             CreatedById = "system",
                             Name = "Black Pepper",
-                            ParentId = 8,
-                            Quantity = 0.25m,
-                            StoredQuantity = 1.23223m,
+                            Quantity = 1m,
+                            StoredQuantity = 4.92892m,
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tsp",
@@ -784,29 +875,9 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MealPlan", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.Recipe", b =>
                 {
-                    b.HasBaseType("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ServingSize")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("MealPlan");
-                });
-
-            modelBuilder.Entity("Recipe", b =>
-                {
-                    b.HasBaseType("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent");
+                    b.HasBaseType("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent");
 
                     b.Property<int>("CookTimeMinutes")
                         .HasColumnType("int");
@@ -853,7 +924,7 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2025, 2, 9, 23, 23, 17, 694, DateTimeKind.Utc).AddTicks(4608),
+                            CreatedAt = new DateTime(2025, 8, 31, 0, 41, 27, 834, DateTimeKind.Utc).AddTicks(9162),
                             CreatedById = "system",
                             Name = "Classic Caprese Salad",
                             Quantity = 4m,
@@ -863,9 +934,9 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                             Unit = "serving",
                             CookTimeMinutes = 0,
                             Description = "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.",
-                            Instructions = "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.",
+                            Instructions = "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\n5. Season with salt and freshly ground black pepper.\n6. Serve immediately at room temperature.",
                             IsPublic = true,
-                            NumberOfServings = 0m,
+                            NumberOfServings = 4m,
                             PrepTimeMinutes = 15,
                             Version = 1
                         });
@@ -879,7 +950,7 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Recipe", "Recipe")
+                    b.HasOne("Vahallan_Ingredient_Aggregator.Models.Components.Recipe", "Recipe")
                         .WithMany()
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -941,18 +1012,9 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo.RecipePhoto", b =>
-                {
-                    b.HasOne("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent", null)
-                        .WithMany("Photos")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("RecipeTag", b =>
                 {
-                    b.HasOne("Recipe", null)
+                    b.HasOne("Vahallan_Ingredient_Aggregator.Models.Components.Recipe", null)
                         .WithMany()
                         .HasForeignKey("RecipesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -965,21 +1027,35 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.RecipeIngredient", b =>
                 {
-                    b.HasOne("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.HasOne("Vahallan_Ingredient_Aggregator.Models.Components.Ingredient", "Ingredient")
+                        .WithMany("RecipeIngredients")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("Recipe", null)
-                        .WithMany("Components")
-                        .HasForeignKey("RecipeId");
+                    b.HasOne("Vahallan_Ingredient_Aggregator.Models.Components.Recipe", "Recipe")
+                        .WithMany("RecipeIngredients")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Parent");
+                    b.Navigation("Ingredient");
+
+                    b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components.BaseIngredientComponent", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Photo.RecipePhoto", b =>
+                {
+                    b.HasOne("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent", null)
+                        .WithMany("Photos")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent", b =>
                 {
                     b.Navigation("Photos");
                 });
@@ -989,9 +1065,14 @@ namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Migrations
                     b.Navigation("MealPlanRecipes");
                 });
 
-            modelBuilder.Entity("Recipe", b =>
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.Ingredient", b =>
                 {
-                    b.Navigation("Components");
+                    b.Navigation("RecipeIngredients");
+                });
+
+            modelBuilder.Entity("Vahallan_Ingredient_Aggregator.Models.Components.Recipe", b =>
+                {
+                    b.Navigation("RecipeIngredients");
                 });
 #pragma warning restore 612, 618
         }

@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.VisualBasic;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementations;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Models.ViewModels;
+using Vahallan_Ingredient_Aggregator.Services.Implementations;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;

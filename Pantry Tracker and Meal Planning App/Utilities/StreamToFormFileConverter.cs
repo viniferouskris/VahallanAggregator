@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Utilities
+namespace Vahallan_Ingredient_Aggregator.Utilities
 {
     public static class StreamToFormFileConverter
     {

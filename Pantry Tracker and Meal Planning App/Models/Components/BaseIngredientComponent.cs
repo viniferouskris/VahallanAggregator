@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components
+namespace Vahallan_Ingredient_Aggregator.Models.Components
 {
     public abstract class BaseIngredientComponent
     {

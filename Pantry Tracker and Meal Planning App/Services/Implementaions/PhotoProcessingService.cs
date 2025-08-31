@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementations
+namespace Vahallan_Ingredient_Aggregator.Services.Implementations
 {
     public class PhotoProcessingService : IPhotoProcessingService
     {

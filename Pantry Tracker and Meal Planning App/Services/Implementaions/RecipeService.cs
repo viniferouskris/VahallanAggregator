@@ -1,17 +1,17 @@
 ﻿// File: Services/Implementations/RecipeService.cs
 
 using Microsoft.EntityFrameworkCore;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Data;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.External;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.ViewModels;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+using Vahallan_Ingredient_Aggregator.Data;
+using Vahallan_Ingredient_Aggregator.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.External;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Models.ViewModels;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.Components;
 using System.Net.Http;
 using System.IO;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementations
+namespace Vahallan_Ingredient_Aggregator.Services.Implementations
 {
     public class RecipeService : IRecipeService
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Controllers
+namespace Vahallan_Ingredient_Aggregator.Controllers
 {
     public class MealPlanController : Controller
     {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Data;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Notifications;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Data;
+using Vahallan_Ingredient_Aggregator.Models.Notifications;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementaions
+namespace Vahallan_Ingredient_Aggregator.Services.Implementaions
 {
     public class NotificationService : INotificationService
     {

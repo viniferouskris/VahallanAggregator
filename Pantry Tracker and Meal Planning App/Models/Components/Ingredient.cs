@@ -1,14 +1,14 @@
-﻿using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+﻿using Vahallan_Ingredient_Aggregator.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.Components;
 using System.ComponentModel.DataAnnotations.Schema;
 
 //Place functions that are intrinsic to what an Ingredient "is" or "does"
 //Methods that operate on the ingredient's own properties
 //Business logic specific to a single ingredient instance
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components
+namespace Vahallan_Ingredient_Aggregator.Models.Components
 {
     public class Ingredient : BaseIngredientComponent
     {

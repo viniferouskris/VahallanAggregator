@@ -1,12 +1,12 @@
 ﻿using Azure;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Components;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Models.Components;
 
 
-namespace Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Components
+namespace Vahallan_Ingredient_Aggregator.Models.Components
 {
     public class Recipe : BaseIngredientComponent
     {

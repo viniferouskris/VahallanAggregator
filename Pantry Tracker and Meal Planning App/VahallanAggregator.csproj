@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App-bcd41bef-a0f1-43ce-87de-93345c652ef9</UserSecretsId>
-    <RootNamespace>Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App</RootNamespace>
+    <UserSecretsId>aspnet-Vahallan_Ingredient_Aggregator-bcd41bef-a0f1-43ce-87de-93345c652ef9</UserSecretsId>
+    <RootNamespace>Vahallan_Ingredient_Aggregator</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

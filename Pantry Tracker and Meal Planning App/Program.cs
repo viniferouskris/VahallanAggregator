@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Data;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementaions;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Implementations;
+using Vahallan_Ingredient_Aggregator.Data;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Services.Implementaions;
+using Vahallan_Ingredient_Aggregator.Models;
+using Vahallan_Ingredient_Aggregator.Services.Implementations;
 using Microsoft.Extensions.Options;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services.Interfaces;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Models.Photo;
-using Pantry_Tracker_and_Meal_Planning_with_TheMealAPI_App.Services;
+using Vahallan_Ingredient_Aggregator.Services.Interfaces;
+using Vahallan_Ingredient_Aggregator.Models.Photo;
+using Vahallan_Ingredient_Aggregator.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
