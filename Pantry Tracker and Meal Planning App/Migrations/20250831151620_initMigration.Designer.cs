@@ -12,7 +12,7 @@ using Vahallan_Ingredient_Aggregator.Data;
 namespace Vahallan_Ingredient_Aggregator.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250831024350_initMigration")]
+    [Migration("20250831151620_initMigration")]
     partial class initMigration
     {
         /// <inheritdoc />
@@ -55,14 +55,14 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "99fa08c6-80e1-425e-a5b5-817b3914a5a6",
+                            ConcurrencyStamp = "15872cac-a9ef-489b-960f-84126587473d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "ec192ce4-dc8f-4cbc-a2f7-171c3829335e",
+                            ConcurrencyStamp = "6ad17ed5-7771-4dae-88dd-78254e34e888",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -162,15 +162,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         {
                             Id = "admin-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "829648d3-cbb9-4d2b-b7b5-c9d266e6656c",
+                            ConcurrencyStamp = "3a5ac411-cd93-4802-a834-aa2eaaad964d",
                             Email = "admin@yourapp.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@YOURAPP.COM",
                             NormalizedUserName = "ADMIN@YOURAPP.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF17ZY+iCekmjO3DwPSEFrBZcsGVS0rYre1Pq6pGQOs5cLiZOezT3ELwzJh6waAo1A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEENZXYbAYyF5ia3L95aKlI5RL6vLPH8UFOJuiW8KLAJ8V0OKw1Oz/8nRfPEf3EPa+w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8c6d288e-c3bc-47e0-a4df-388c9a79b80c",
+                            SecurityStamp = "3edf5685-1938-4ee7-a824-923c2464557b",
                             TwoFactorEnabled = false,
                             UserName = "admin@yourapp.com"
                         });
@@ -536,7 +536,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-main.jpg",
-                            UploadedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8103),
+                            UploadedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2227),
                             UploadedById = "system"
                         },
                         new
@@ -552,7 +552,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg",
-                            UploadedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8106),
+                            UploadedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2230),
                             UploadedById = "system"
                         });
                 });
@@ -593,7 +593,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 1,
                             AccuracyLevel = 0,
                             Collection = "",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8044),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2114),
                             CreatedById = "system",
                             Name = "Fresh Mozzarella",
                             Quantity = 1m,
@@ -613,7 +613,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 2,
                             AccuracyLevel = 0,
                             Collection = "",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8052),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2121),
                             CreatedById = "system",
                             Name = "Ripe Tomatoes",
                             Quantity = 1m,
@@ -633,7 +633,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 3,
                             AccuracyLevel = 0,
                             Collection = "",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8058),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2125),
                             CreatedById = "system",
                             Name = "Fresh Basil Leaves",
                             Quantity = 1m,
@@ -653,7 +653,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 4,
                             AccuracyLevel = 0,
                             Collection = "",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8063),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2128),
                             CreatedById = "system",
                             Name = "Extra Virgin Olive Oil",
                             Quantity = 1m,
@@ -673,7 +673,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 5,
                             AccuracyLevel = 0,
                             Collection = "",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8067),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2132),
                             CreatedById = "system",
                             Name = "Balsamic Vinegar",
                             Quantity = 1m,
@@ -693,7 +693,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 6,
                             AccuracyLevel = 0,
                             Collection = "",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8072),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2136),
                             CreatedById = "system",
                             Name = "Salt",
                             Quantity = 1m,
@@ -713,7 +713,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 7,
                             AccuracyLevel = 0,
                             Collection = "",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8076),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2139),
                             CreatedById = "system",
                             Name = "Black Pepper",
                             Quantity = 1m,
@@ -781,7 +781,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             Id = 8,
                             AccuracyLevel = 1,
                             Collection = "Appetizers",
-                            CreatedAt = new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8023),
+                            CreatedAt = new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2097),
                             CreatedById = "system",
                             Name = "Classic Caprese Salad",
                             Quantity = 4m,

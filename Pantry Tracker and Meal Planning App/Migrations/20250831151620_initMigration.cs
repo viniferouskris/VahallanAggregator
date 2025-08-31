@@ -304,33 +304,33 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", "99fa08c6-80e1-425e-a5b5-817b3914a5a6", "Admin", "ADMIN" },
-                    { "2", "ec192ce4-dc8f-4cbc-a2f7-171c3829335e", "User", "USER" }
+                    { "1", "15872cac-a9ef-489b-960f-84126587473d", "Admin", "ADMIN" },
+                    { "2", "6ad17ed5-7771-4dae-88dd-78254e34e888", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin-user-id", 0, "829648d3-cbb9-4d2b-b7b5-c9d266e6656c", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEF17ZY+iCekmjO3DwPSEFrBZcsGVS0rYre1Pq6pGQOs5cLiZOezT3ELwzJh6waAo1A==", null, false, "8c6d288e-c3bc-47e0-a4df-388c9a79b80c", false, "admin@yourapp.com" });
+                values: new object[] { "admin-user-id", 0, "3a5ac411-cd93-4802-a834-aa2eaaad964d", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEENZXYbAYyF5ia3L95aKlI5RL6vLPH8UFOJuiW8KLAJ8V0OKw1Oz/8nRfPEf3EPa+w==", null, false, "3edf5685-1938-4ee7-a824-923c2464557b", false, "admin@yourapp.com" });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
                 columns: new[] { "Id", "CaloriesPerServing", "Collection", "CostPerPackage", "CreatedAt", "CreatedById", "IsPromoted", "IsSystemIngredient", "ModifiedAt", "Name", "PromotionEndDate", "PromotionStartDate", "Quantity", "ServingsPerPackage", "StoredQuantity", "StoredUnit", "SystemIngredientId", "Type", "Unit" },
                 values: new object[,]
                 {
-                    { 1, 70m, "", 5.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8044), "system", false, true, null, "Fresh Mozzarella", null, null, 1m, 16m, 28.35m, "g", null, "Ingredient", "oz" },
-                    { 2, 22m, "", 3.00m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8052), "system", false, true, null, "Ripe Tomatoes", null, null, 1m, 4m, 1m, "count", null, "Ingredient", "count" },
-                    { 3, 1m, "", 2.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8058), "system", false, true, null, "Fresh Basil Leaves", null, null, 1m, 30m, 1m, "count", null, "Ingredient", "count" },
-                    { 4, 120m, "", 8.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8063), "system", false, true, null, "Extra Virgin Olive Oil", null, null, 1m, 33.8m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
-                    { 5, 14m, "", 5.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8067), "system", false, true, null, "Balsamic Vinegar", null, null, 1m, 16.9m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
-                    { 6, 0m, "", 0.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8072), "system", false, true, null, "Salt", null, null, 1m, 156m, 4.92892m, "ml", null, "Ingredient", "tsp" },
-                    { 7, 0m, "", 3.99m, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8076), "system", false, true, null, "Black Pepper", null, null, 1m, 144m, 4.92892m, "ml", null, "Ingredient", "tsp" }
+                    { 1, 70m, "", 5.99m, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2114), "system", false, true, null, "Fresh Mozzarella", null, null, 1m, 16m, 28.35m, "g", null, "Ingredient", "oz" },
+                    { 2, 22m, "", 3.00m, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2121), "system", false, true, null, "Ripe Tomatoes", null, null, 1m, 4m, 1m, "count", null, "Ingredient", "count" },
+                    { 3, 1m, "", 2.99m, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2125), "system", false, true, null, "Fresh Basil Leaves", null, null, 1m, 30m, 1m, "count", null, "Ingredient", "count" },
+                    { 4, 120m, "", 8.99m, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2128), "system", false, true, null, "Extra Virgin Olive Oil", null, null, 1m, 33.8m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
+                    { 5, 14m, "", 5.99m, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2132), "system", false, true, null, "Balsamic Vinegar", null, null, 1m, 16.9m, 14.7868m, "ml", null, "Ingredient", "tbsp" },
+                    { 6, 0m, "", 0.99m, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2136), "system", false, true, null, "Salt", null, null, 1m, 156m, 4.92892m, "ml", null, "Ingredient", "tsp" },
+                    { 7, 0m, "", 3.99m, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2139), "system", false, true, null, "Black Pepper", null, null, 1m, 144m, 4.92892m, "ml", null, "Ingredient", "tsp" }
                 });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
                 columns: new[] { "Id", "AccuracyLevel", "Collection", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "ExternalId", "ExternalSource", "ExternalUrl", "ImportedAt", "Instructions", "IsPublic", "ModifiedAt", "Name", "NumberOfServings", "OriginalRecipeId", "PrepTimeMinutes", "Quantity", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
-                values: new object[] { 8, 1, "Appetizers", 0, new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8023), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", null, null, null, null, "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 4m, null, 15, 4m, 4m, "serving", "Recipe", "serving", 1 });
+                values: new object[] { 8, 1, "Appetizers", 0, new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2097), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", null, null, null, null, "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 4m, null, 15, 4m, 4m, "serving", "Recipe", "serving", 1 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -356,8 +356,8 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ContentType", "Description", "FileName", "FilePath", "FileSize", "IsApproved", "IsMain", "IsMainPhoto", "ModifiedAt", "RecipeId", "ThumbnailPath", "UploadedAt", "UploadedById" },
                 values: new object[,]
                 {
-                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 19661L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8103), "system" },
-                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 8, 31, 2, 43, 49, 284, DateTimeKind.Utc).AddTicks(8106), "system" }
+                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 19661L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2227), "system" },
+                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 8, 31, 15, 16, 19, 827, DateTimeKind.Utc).AddTicks(2230), "system" }
                 });
 
             migrationBuilder.CreateIndex(
