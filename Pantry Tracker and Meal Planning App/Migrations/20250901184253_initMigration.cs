@@ -78,13 +78,12 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     CookTimeMinutes = table.Column<int>(type: "int", nullable: true),
                     Version = table.Column<int>(type: "int", nullable: true),
                     OriginalRecipeId = table.Column<int>(type: "int", nullable: true),
-                    NumberOfServings = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    IsPublic = table.Column<bool>(type: "bit", nullable: true),
+                    IsPublic = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
                     Collection = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ShowInIngredientsList = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
                     AccuracyLevel = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
                     PatternCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    StandardSquareFeet = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValue: 100m)
+                    StandardSheetSize = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValue: 100m)
                 },
                 constraints: table =>
                 {
@@ -299,33 +298,32 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", "6b99ba17-807a-4ff0-a441-35e52b0ef578", "Admin", "ADMIN" },
-                    { "2", "36c4cd21-5c7d-4c36-b831-ada7c14d9d86", "User", "USER" }
+                    { "1", "20afc4e2-687d-4776-83f9-e0bf3e58554e", "Admin", "ADMIN" },
+                    { "2", "8a7b8a57-dee2-49ef-a3a3-d6de222034a9", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin-user-id", 0, "0062e930-d372-44e8-94cb-3d31f588934a", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEKnxDeHvS/hC1Tma6kADzSdUgCH7mLVJJmFuGwZQHvF7UXg8d8A+ZmCAX0+pOkcdCg==", null, false, "4ca1c946-7aef-4a15-bb4c-5d0132f3f16e", false, "admin@yourapp.com" });
+                values: new object[] { "admin-user-id", 0, "f5d3eeed-f051-4a58-a211-8030e0ddb58d", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEExCNkVacy6HOtzxkfKqsz6HDAT/aHrJ83b4y+igrQilbzNPVAYvbHCOoDtTzs++tQ==", null, false, "a48f44ac-dc53-41c0-813f-9dadb7fa5745", false, "admin@yourapp.com" });
+
+            migrationBuilder.InsertData(
+                table: "BaseIngredientComponent",
+                columns: new[] { "Id", "AccuracyLevel", "Collection", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "Instructions", "IsPublic", "ModifiedAt", "Name", "OriginalRecipeId", "PatternCode", "PrepTimeMinutes", "Quantity", "StandardSheetSize", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
+                values: new object[] { 100, 1, "Enchanted Collection", 0, new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8458), "system", "Luxurious textured wallpaper with metallic accents and organic cork elements, creating an enchanted forest ambiance.", "1. Prepare the wall surface by cleaning and priming if necessary.\r\n2. Apply base coat of Off-White Egg latex paint using roller in even strokes.\r\n3. Allow base coat to dry completely (4-6 hours).\r\n4. Apply Pearl metallic paint using sea sponge in circular motions for texture.\r\n5. While Pearl is still tacky, lightly dab Champagne metallic accents.\r\n6. Sprinkle White Gold glitter sparingly over wet metallic areas.\r\n7. Press cork pieces into designated areas while paint is workable.\r\n8. Allow to dry overnight before applying Polycrylic sealer with brush.\r\n9. Apply thin, even coat of sealer avoiding drips or runs.\r\n10. Allow 24 hours cure time before normal use.", 1m, null, "Eden", null, "EDEN-001", 45, 100m, 25m, 1m, "serving", "Recipe", "sq ft", 1 });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
                 columns: new[] { "Id", "CostPerPackage", "CreatedAt", "CreatedById", "MaterialType", "ModifiedAt", "Name", "Quantity", "StoredQuantity", "StoredUnit", "SystemIngredientId", "Type", "Unit", "UnitsPerPackage", "Vendor" },
                 values: new object[,]
                 {
-                    { 1, 5.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2388), "system", "Dairy", null, "Fresh Mozzarella", 16m, 453.592m, "g", null, "Ingredient", "oz", 16m, "Local Farm" },
-                    { 2, 3.00m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2394), "system", "Produce", null, "Ripe Tomatoes", 4m, 4m, "count", null, "Ingredient", "count", 4m, "Local Market" },
-                    { 3, 2.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2398), "system", "Herbs", null, "Fresh Basil Leaves", 20m, 20m, "count", null, "Ingredient", "count", 30m, "Garden Center" },
-                    { 4, 8.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2402), "system", "Oil", null, "Extra Virgin Olive Oil", 2m, 29.5735m, "ml", null, "Ingredient", "tbsp", 33.8m, "Mediterranean Imports" },
-                    { 5, 5.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2405), "system", "Condiment", null, "Balsamic Vinegar", 2m, 29.5735m, "ml", null, "Ingredient", "tbsp", 16.9m, "Mediterranean Imports" },
-                    { 6, 0.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2408), "system", "Seasoning", null, "Salt", 0.5m, 2.46446m, "ml", null, "Ingredient", "tsp", 156m, "General Store" },
-                    { 7, 3.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2412), "system", "Seasoning", null, "Black Pepper", 0.25m, 1.23223m, "ml", null, "Ingredient", "tsp", 144m, "Spice Company" }
+                    { 101, 45.99m, new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8473), "system", "Paint", null, "Off-White Egg Latex Paint", 3m, 3m, "gallons", null, "Ingredient", "gallons", 1m, "Pittsburgh Paints" },
+                    { 102, 24.95m, new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8482), "system", "Metallic Paint", null, "Pearl Metallic Paint", 2m, 2m, "quarts", null, "Ingredient", "quarts", 1m, "Modern Masters" },
+                    { 103, 26.50m, new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8486), "system", "Metallic Paint", null, "Champagne Metallic Paint", 1.5m, 1.5m, "quarts", null, "Ingredient", "quarts", 1m, "Modern Masters" },
+                    { 104, 18.75m, new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8489), "system", "Sealer", null, "Polycrylic Semi-Gloss Sealer", 4m, 4m, "quarts", null, "Ingredient", "quarts", 1m, "Pittsburgh Paints" },
+                    { 105, 89.99m, new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8493), "system", "Texture", null, "Natural Cork Pieces", 15m, 15m, "lbs", null, "Ingredient", "lbs", 20m, "Cork Supply Co" },
+                    { 106, 12.95m, new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8497), "system", "Glitter", null, "White Gold Glitter", 8m, 8m, "oz", null, "Ingredient", "oz", 4m, "Craft Essentials" }
                 });
-
-            migrationBuilder.InsertData(
-                table: "BaseIngredientComponent",
-                columns: new[] { "Id", "AccuracyLevel", "Collection", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "Instructions", "IsPublic", "ModifiedAt", "Name", "NumberOfServings", "OriginalRecipeId", "PatternCode", "PrepTimeMinutes", "Quantity", "StandardSquareFeet", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
-                values: new object[] { 8, 1, "Sample Recipes", 0, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2366), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 0m, null, "CAPRESE-001", 15, 4m, 100m, 4m, "serving", "Recipe", "serving", 1 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -337,13 +335,12 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "IngredientId", "Quantity", "RecipeId", "Unit" },
                 values: new object[,]
                 {
-                    { 1, 1, 8m, 8, "oz" },
-                    { 2, 2, 2m, 8, "count" },
-                    { 3, 3, 10m, 8, "count" },
-                    { 4, 4, 2m, 8, "tbsp" },
-                    { 5, 5, 1m, 8, "tbsp" },
-                    { 6, 6, 0.25m, 8, "tsp" },
-                    { 7, 7, 0.125m, 8, "tsp" }
+                    { 101, 101, 0.75m, 100, "gallons" },
+                    { 102, 102, 0.5m, 100, "quarts" },
+                    { 103, 103, 0.25m, 100, "quarts" },
+                    { 104, 104, 0.33m, 100, "quarts" },
+                    { 105, 105, 2.5m, 100, "lbs" },
+                    { 106, 106, 1m, 100, "oz" }
                 });
 
             migrationBuilder.InsertData(
@@ -351,8 +348,8 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ContentType", "Description", "FileName", "FilePath", "FileSize", "IsApproved", "IsMain", "IsMainPhoto", "ModifiedAt", "RecipeId", "ThumbnailPath", "UploadedAt", "UploadedById" },
                 values: new object[,]
                 {
-                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 20L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2423), "system" },
-                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2426), "system" }
+                    { 101, "image/jpeg", "Eden wallpaper pattern showing metallic texture with cork accents", "eden-main.jpg", "/recipe-photos/originals/eden-main.jpg", 25000L, true, true, false, null, 100, "/recipe-photos/thumbnails/eden-main.jpg", new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8506), "system" },
+                    { 102, "image/jpeg", "Close-up detail of Eden pattern texture and metallic finish", "eden-detail.jpg", "/recipe-photos/originals/eden-detail.jpg", 18500L, true, false, false, null, 100, "/recipe-photos/thumbnails/eden-detail.jpg", new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8509), "system" }
                 });
 
             migrationBuilder.CreateIndex(

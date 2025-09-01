@@ -43,13 +43,34 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
                 var isAdmin = User.IsInRole("Admin");
 
                 // Get all public recipes for everyone to see
-                var recipes = await _recipeService.GetAllPublicRecipesAsync();
+                var recipes = await _recipeService.GetAllRecipesAsync();
+
+                // Set ownership for display purposes
+                var recipesList = recipes.Select(r => new RecipeViewModel
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                    Collection = r.Collection,
+                    StandardSheetSize = r.StandardSheetSize,
+                    AccuracyLevel = r.AccuracyLevel,
+                    MainPhotoUrl = r.MainPhotoUrl,
+                    IngredientsCount = r.IngredientsCount,
+                    IsPublic = true, // All recipes are public
+                    IsOwner = isAdmin, // Only admin can manage
+                    CreatedBy = r.CreatedBy,
+                    PrepTime = r.PrepTime,
+                    CookTime = r.CookTime,
+                    TotalTime = r.TotalTime,
+
+                }).ToList();
+
 
                 ViewBag.IsAdmin = isAdmin;
                 ViewBag.CanManageRecipes = isAdmin; // Only admins can manage
                 ViewBag.CurrentUserId = userId;
 
-                return View(recipes);
+                return View(recipesList);
             }
             catch (Exception ex)
             {
@@ -87,12 +108,12 @@ namespace Vahallan_Ingredient_Aggregator.Controllers
                     IsPublic = true, // Always true now
                     CreatedBy = recipe.CreatedById ?? string.Empty,
                     IsOwner = isAdmin, // Only admin can manage
-                    NumberOfServings = recipe.NumberOfServings,
+                    StandardSheetSize = recipe.StandardSheetSize,
                     Collection = recipe.Collection,
                     ShowInIngredientsList = recipe.ShowInIngredientsList,
-                    AccuracyLevel = recipe.AccuracyLevel,
+                    AccuracyLevel = (Models.ViewModels.RecipeAccuracyLevel)recipe.AccuracyLevel,
                    // PatternCode = recipe.PatternCode,
-                    StandardSquareFeet = recipe.StandardSquareFeet,
+                   // StandardSquareFeet = recipe.StandardSquareFeet,
                     Ingredients = recipe.RecipeIngredients?
                         .Where(ri => ri?.Ingredient != null)
                         .Select(ri => new RecipeIngredientViewModel

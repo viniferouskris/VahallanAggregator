@@ -120,13 +120,13 @@ namespace Vahallan_Ingredient_Aggregator.Data
             {
                 entity.Property(e => e.Description).HasMaxLength(2000);
                 entity.Property(e => e.Instructions).IsRequired();
-                entity.Property(e => e.NumberOfServings).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.StandardSheetSize).HasColumnType("decimal(18,2)");
 
                 entity.Property(e => e.Collection).HasMaxLength(100);
                 entity.Property(e => e.ShowInIngredientsList).HasDefaultValue(false);
                 entity.Property(e => e.AccuracyLevel).HasDefaultValue(RecipeAccuracyLevel.Estimate);
                 entity.Property(e => e.PatternCode).HasMaxLength(50);
-                entity.Property(e => e.StandardSquareFeet).HasColumnType("decimal(18,2)").HasDefaultValue(100);
+                entity.Property(e => e.StandardSheetSize).HasColumnType("decimal(18,2)").HasDefaultValue(100);
 
             });
 
@@ -180,7 +180,7 @@ namespace Vahallan_Ingredient_Aggregator.Data
 
             
 
-            RecipeSeeder.SeedCapreseSalad(modelBuilder);
+            RecipeSeeder.SeedEdenWallpaper(modelBuilder);
         }
     }
 }

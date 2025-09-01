@@ -12,7 +12,7 @@ using Vahallan_Ingredient_Aggregator.Data;
 namespace Vahallan_Ingredient_Aggregator.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250901155716_initMigration")]
+    [Migration("20250901184253_initMigration")]
     partial class initMigration
     {
         /// <inheritdoc />
@@ -55,14 +55,14 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "6b99ba17-807a-4ff0-a441-35e52b0ef578",
+                            ConcurrencyStamp = "20afc4e2-687d-4776-83f9-e0bf3e58554e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "36c4cd21-5c7d-4c36-b831-ada7c14d9d86",
+                            ConcurrencyStamp = "8a7b8a57-dee2-49ef-a3a3-d6de222034a9",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -162,15 +162,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         {
                             Id = "admin-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0062e930-d372-44e8-94cb-3d31f588934a",
+                            ConcurrencyStamp = "f5d3eeed-f051-4a58-a211-8030e0ddb58d",
                             Email = "admin@yourapp.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@YOURAPP.COM",
                             NormalizedUserName = "ADMIN@YOURAPP.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKnxDeHvS/hC1Tma6kADzSdUgCH7mLVJJmFuGwZQHvF7UXg8d8A+ZmCAX0+pOkcdCg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEExCNkVacy6HOtzxkfKqsz6HDAT/aHrJ83b4y+igrQilbzNPVAYvbHCOoDtTzs++tQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4ca1c946-7aef-4a15-bb4c-5d0132f3f16e",
+                            SecurityStamp = "a48f44ac-dc53-41c0-813f-9dadb7fa5745",
                             TwoFactorEnabled = false,
                             UserName = "admin@yourapp.com"
                         });
@@ -388,59 +388,51 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            IngredientId = 1,
-                            Quantity = 8m,
-                            RecipeId = 8,
-                            Unit = "oz"
+                            Id = 101,
+                            IngredientId = 101,
+                            Quantity = 0.75m,
+                            RecipeId = 100,
+                            Unit = "gallons"
                         },
                         new
                         {
-                            Id = 2,
-                            IngredientId = 2,
-                            Quantity = 2m,
-                            RecipeId = 8,
-                            Unit = "count"
+                            Id = 102,
+                            IngredientId = 102,
+                            Quantity = 0.5m,
+                            RecipeId = 100,
+                            Unit = "quarts"
                         },
                         new
                         {
-                            Id = 3,
-                            IngredientId = 3,
-                            Quantity = 10m,
-                            RecipeId = 8,
-                            Unit = "count"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IngredientId = 4,
-                            Quantity = 2m,
-                            RecipeId = 8,
-                            Unit = "tbsp"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IngredientId = 5,
-                            Quantity = 1m,
-                            RecipeId = 8,
-                            Unit = "tbsp"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            IngredientId = 6,
+                            Id = 103,
+                            IngredientId = 103,
                             Quantity = 0.25m,
-                            RecipeId = 8,
-                            Unit = "tsp"
+                            RecipeId = 100,
+                            Unit = "quarts"
                         },
                         new
                         {
-                            Id = 7,
-                            IngredientId = 7,
-                            Quantity = 0.125m,
-                            RecipeId = 8,
-                            Unit = "tsp"
+                            Id = 104,
+                            IngredientId = 104,
+                            Quantity = 0.33m,
+                            RecipeId = 100,
+                            Unit = "quarts"
+                        },
+                        new
+                        {
+                            Id = 105,
+                            IngredientId = 105,
+                            Quantity = 2.5m,
+                            RecipeId = 100,
+                            Unit = "lbs"
+                        },
+                        new
+                        {
+                            Id = 106,
+                            IngredientId = 106,
+                            Quantity = 1m,
+                            RecipeId = 100,
+                            Unit = "oz"
                         });
                 });
 
@@ -510,34 +502,34 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = 101,
                             ContentType = "image/jpeg",
-                            Description = "Classic Caprese Salad with alternating slices of mozzarella and tomato",
-                            FileName = "caprese-main.jpg",
-                            FilePath = "/recipe-photos/originals/caprese-main.jpg",
-                            FileSize = 20L,
+                            Description = "Eden wallpaper pattern showing metallic texture with cork accents",
+                            FileName = "eden-main.jpg",
+                            FilePath = "/recipe-photos/originals/eden-main.jpg",
+                            FileSize = 25000L,
                             IsApproved = true,
                             IsMain = true,
                             IsMainPhoto = false,
-                            RecipeId = 8,
-                            ThumbnailPath = "/recipe-photos/thumbnails/caprese-main.jpg",
-                            UploadedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2423),
+                            RecipeId = 100,
+                            ThumbnailPath = "/recipe-photos/thumbnails/eden-main.jpg",
+                            UploadedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8506),
                             UploadedById = "system"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = 102,
                             ContentType = "image/jpeg",
-                            Description = "Caprese Salad from a different angle",
-                            FileName = "caprese-salad-recipe-1.jpg",
-                            FilePath = "/recipe-photos/originals/caprese-salad-recipe-1.jpg",
-                            FileSize = 18432L,
+                            Description = "Close-up detail of Eden pattern texture and metallic finish",
+                            FileName = "eden-detail.jpg",
+                            FilePath = "/recipe-photos/originals/eden-detail.jpg",
+                            FileSize = 18500L,
                             IsApproved = true,
                             IsMain = false,
                             IsMainPhoto = false,
-                            RecipeId = 8,
-                            ThumbnailPath = "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg",
-                            UploadedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2426),
+                            RecipeId = 100,
+                            ThumbnailPath = "/recipe-photos/thumbnails/eden-detail.jpg",
+                            UploadedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8509),
                             UploadedById = "system"
                         });
                 });
@@ -568,115 +560,99 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2388),
+                            Id = 101,
+                            CreatedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8473),
                             CreatedById = "system",
-                            Name = "Fresh Mozzarella",
-                            Quantity = 16m,
-                            StoredQuantity = 453.592m,
-                            StoredUnit = "g",
+                            Name = "Off-White Egg Latex Paint",
+                            Quantity = 3m,
+                            StoredQuantity = 3m,
+                            StoredUnit = "gallons",
                             Type = "Ingredient",
-                            Unit = "oz",
-                            CostPerPackage = 5.99m,
-                            MaterialType = "Dairy",
-                            UnitsPerPackage = 16m,
-                            Vendor = "Local Farm"
+                            Unit = "gallons",
+                            CostPerPackage = 45.99m,
+                            MaterialType = "Paint",
+                            UnitsPerPackage = 1m,
+                            Vendor = "Pittsburgh Paints"
                         },
                         new
                         {
-                            Id = 2,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2394),
+                            Id = 102,
+                            CreatedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8482),
                             CreatedById = "system",
-                            Name = "Ripe Tomatoes",
+                            Name = "Pearl Metallic Paint",
+                            Quantity = 2m,
+                            StoredQuantity = 2m,
+                            StoredUnit = "quarts",
+                            Type = "Ingredient",
+                            Unit = "quarts",
+                            CostPerPackage = 24.95m,
+                            MaterialType = "Metallic Paint",
+                            UnitsPerPackage = 1m,
+                            Vendor = "Modern Masters"
+                        },
+                        new
+                        {
+                            Id = 103,
+                            CreatedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8486),
+                            CreatedById = "system",
+                            Name = "Champagne Metallic Paint",
+                            Quantity = 1.5m,
+                            StoredQuantity = 1.5m,
+                            StoredUnit = "quarts",
+                            Type = "Ingredient",
+                            Unit = "quarts",
+                            CostPerPackage = 26.50m,
+                            MaterialType = "Metallic Paint",
+                            UnitsPerPackage = 1m,
+                            Vendor = "Modern Masters"
+                        },
+                        new
+                        {
+                            Id = 104,
+                            CreatedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8489),
+                            CreatedById = "system",
+                            Name = "Polycrylic Semi-Gloss Sealer",
                             Quantity = 4m,
                             StoredQuantity = 4m,
-                            StoredUnit = "count",
+                            StoredUnit = "quarts",
                             Type = "Ingredient",
-                            Unit = "count",
-                            CostPerPackage = 3.00m,
-                            MaterialType = "Produce",
+                            Unit = "quarts",
+                            CostPerPackage = 18.75m,
+                            MaterialType = "Sealer",
+                            UnitsPerPackage = 1m,
+                            Vendor = "Pittsburgh Paints"
+                        },
+                        new
+                        {
+                            Id = 105,
+                            CreatedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8493),
+                            CreatedById = "system",
+                            Name = "Natural Cork Pieces",
+                            Quantity = 15m,
+                            StoredQuantity = 15m,
+                            StoredUnit = "lbs",
+                            Type = "Ingredient",
+                            Unit = "lbs",
+                            CostPerPackage = 89.99m,
+                            MaterialType = "Texture",
+                            UnitsPerPackage = 20m,
+                            Vendor = "Cork Supply Co"
+                        },
+                        new
+                        {
+                            Id = 106,
+                            CreatedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8497),
+                            CreatedById = "system",
+                            Name = "White Gold Glitter",
+                            Quantity = 8m,
+                            StoredQuantity = 8m,
+                            StoredUnit = "oz",
+                            Type = "Ingredient",
+                            Unit = "oz",
+                            CostPerPackage = 12.95m,
+                            MaterialType = "Glitter",
                             UnitsPerPackage = 4m,
-                            Vendor = "Local Market"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2398),
-                            CreatedById = "system",
-                            Name = "Fresh Basil Leaves",
-                            Quantity = 20m,
-                            StoredQuantity = 20m,
-                            StoredUnit = "count",
-                            Type = "Ingredient",
-                            Unit = "count",
-                            CostPerPackage = 2.99m,
-                            MaterialType = "Herbs",
-                            UnitsPerPackage = 30m,
-                            Vendor = "Garden Center"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2402),
-                            CreatedById = "system",
-                            Name = "Extra Virgin Olive Oil",
-                            Quantity = 2m,
-                            StoredQuantity = 29.5735m,
-                            StoredUnit = "ml",
-                            Type = "Ingredient",
-                            Unit = "tbsp",
-                            CostPerPackage = 8.99m,
-                            MaterialType = "Oil",
-                            UnitsPerPackage = 33.8m,
-                            Vendor = "Mediterranean Imports"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2405),
-                            CreatedById = "system",
-                            Name = "Balsamic Vinegar",
-                            Quantity = 2m,
-                            StoredQuantity = 29.5735m,
-                            StoredUnit = "ml",
-                            Type = "Ingredient",
-                            Unit = "tbsp",
-                            CostPerPackage = 5.99m,
-                            MaterialType = "Condiment",
-                            UnitsPerPackage = 16.9m,
-                            Vendor = "Mediterranean Imports"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2408),
-                            CreatedById = "system",
-                            Name = "Salt",
-                            Quantity = 0.5m,
-                            StoredQuantity = 2.46446m,
-                            StoredUnit = "ml",
-                            Type = "Ingredient",
-                            Unit = "tsp",
-                            CostPerPackage = 0.99m,
-                            MaterialType = "Seasoning",
-                            UnitsPerPackage = 156m,
-                            Vendor = "General Store"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2412),
-                            CreatedById = "system",
-                            Name = "Black Pepper",
-                            Quantity = 0.25m,
-                            StoredQuantity = 1.23223m,
-                            StoredUnit = "ml",
-                            Type = "Ingredient",
-                            Unit = "tsp",
-                            CostPerPackage = 3.99m,
-                            MaterialType = "Seasoning",
-                            UnitsPerPackage = 144m,
-                            Vendor = "Spice Company"
+                            Vendor = "Craft Essentials"
                         });
                 });
 
@@ -706,11 +682,8 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("NumberOfServings")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("IsPublic")
+                        .HasColumnType("decimal");
 
                     b.Property<int?>("OriginalRecipeId")
                         .HasColumnType("int");
@@ -728,7 +701,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<decimal>("StandardSquareFeet")
+                    b.Property<decimal>("StandardSheetSize")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(18,2)")
                         .HasDefaultValue(100m);
@@ -741,26 +714,25 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 8,
-                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2366),
+                            Id = 100,
+                            CreatedAt = new DateTime(2025, 9, 1, 18, 42, 52, 345, DateTimeKind.Utc).AddTicks(8458),
                             CreatedById = "system",
-                            Name = "Classic Caprese Salad",
-                            Quantity = 4m,
-                            StoredQuantity = 4m,
+                            Name = "Eden",
+                            Quantity = 100m,
+                            StoredQuantity = 1m,
                             StoredUnit = "serving",
                             Type = "Recipe",
-                            Unit = "serving",
+                            Unit = "sq ft",
                             AccuracyLevel = 1,
-                            Collection = "Sample Recipes",
+                            Collection = "Enchanted Collection",
                             CookTimeMinutes = 0,
-                            Description = "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.",
-                            Instructions = "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.",
-                            IsPublic = true,
-                            NumberOfServings = 0m,
-                            PatternCode = "CAPRESE-001",
-                            PrepTimeMinutes = 15,
+                            Description = "Luxurious textured wallpaper with metallic accents and organic cork elements, creating an enchanted forest ambiance.",
+                            Instructions = "1. Prepare the wall surface by cleaning and priming if necessary.\r\n2. Apply base coat of Off-White Egg latex paint using roller in even strokes.\r\n3. Allow base coat to dry completely (4-6 hours).\r\n4. Apply Pearl metallic paint using sea sponge in circular motions for texture.\r\n5. While Pearl is still tacky, lightly dab Champagne metallic accents.\r\n6. Sprinkle White Gold glitter sparingly over wet metallic areas.\r\n7. Press cork pieces into designated areas while paint is workable.\r\n8. Allow to dry overnight before applying Polycrylic sealer with brush.\r\n9. Apply thin, even coat of sealer avoiding drips or runs.\r\n10. Allow 24 hours cure time before normal use.",
+                            IsPublic = 1m,
+                            PatternCode = "EDEN-001",
+                            PrepTimeMinutes = 45,
                             ShowInIngredientsList = false,
-                            StandardSquareFeet = 100m,
+                            StandardSheetSize = 25m,
                             Version = 1
                         });
                 });

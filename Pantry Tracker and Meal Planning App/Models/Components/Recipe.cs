@@ -18,22 +18,19 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         public int? OriginalRecipeId { get; set; }
         [Display(Name = "Number of Servings")]
         [Column(TypeName = "decimal")]
-        public decimal NumberOfServings { get; set; }
+    
         public bool IsPublic { get; set; }
 
-        //// New properties for external recipe sources
-        //public string? ExternalId { get; set; }
-        //public string? ExternalSource { get; set; }
-        //public string? ExternalUrl { get; set; }
-        //public DateTime? ImportedAt { get; set; }
 
-        //public bool IsExternalRecipe => !string.IsNullOrEmpty(ExternalId);
 
         public string Collection { get; set; } = string.Empty;
         public bool ShowInIngredientsList { get; set; } = false;
         public RecipeAccuracyLevel AccuracyLevel { get; set; } = RecipeAccuracyLevel.Estimate;
         public string PatternCode { get; set; }  // For wallpaper pattern codes
-        public decimal StandardSquareFeet { get; set; }  // Standard size for scaling
+
+        [Display(Name = "Standard Sheet Size (sq ft)")]
+        [Column(TypeName = "decimal")]
+        public decimal StandardSheetSize { get; set; } = 25m; // Default sheet size
 
 
         public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();

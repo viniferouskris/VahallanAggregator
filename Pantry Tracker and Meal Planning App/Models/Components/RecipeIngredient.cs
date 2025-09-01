@@ -13,9 +13,17 @@
             public virtual Recipe Recipe { get; set; }
             public virtual Ingredient Ingredient { get; set; }
 
-     //   public string Notes { get; set; } // "Apply with sponge texture"
+        //   public string Notes { get; set; } // "Apply with sponge texture"
 
-
+        //public decimal PurchaseQuantityNeeded
+        //{
+        //    get
+        //    {
+        //        // This would use a conversion service to convert working units to purchase units
+        //        // e.g., 2 cups -> 0.125 gallons
+        //        return ConvertToPurchaseUnits(Quantity, Unit, Ingredient.Unit);
+        //    }
+        //}
 
         public bool Validate(out List<string> errors)
         {

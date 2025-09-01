@@ -1,5 +1,6 @@
 ﻿@using Vahallan_Ingredient_Aggregator.Models.ViewModels
 @using Vahallan_Ingredient_Aggregator.Models.Photo
+@using UnitsNet
 @model RecipeDetailsViewModel
 @{
     ViewData["Title"] = Model.Name;
@@ -20,7 +21,7 @@
                         @if (Model.IsOwner)
                         {
                             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
-                                <i class="bi bi-pencil"></i> Edit Recipe
+                                <i class="bi bi-pencil"></i> Edit Pattern
                             </a>
                         }
                     </div>
@@ -56,18 +57,16 @@
                         <p>@Model.Description</p>
                     </div>
 
-                    <!-- Ingredients -->
+                    <!-- Materials -->
                     <div class="mb-4">
-                        <h5>Ingredients</h5>
+                        <h5>Materials & Amounts</h5>
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Ingredient</th>
+                                        <th>Material</th>
                                         <th>Quantity</th>
                                         <th>Unit</th>
-                                        <th>Cost</th>
-                                        <th>Calories</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -75,20 +74,11 @@
                                     {
                                         <tr>
                                             <td>@ingredient.Name</td>
-                                            <td>@ingredient.Quantity</td>
-                                            <td>@ingredient.Unit</td>
-                                          @*   <td>@ingredient.Cost.ToString("C")</td>
-                                            <td>@ingredient.Calories</td> *@
+                                            <td>@ConvertQuantity(ingredient.Quantity, ingredient.Unit)</td>
+                                            <td>@ConvertUnit(ingredient.Quantity, ingredient.Unit)</td>
                                         </tr>
                                     }
                                 </tbody>
-                                <tfoot>
-                                    <tr class="table-info">
-                                        <th colspan="3">Totals:</th>
-                                        <th>@Model.TotalCost.ToString("C")</th>
-                                        <th>@Model.TotalCalories calories</th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -116,39 +106,223 @@
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Recipe Information</h5>
+                    <h5 class="mb-0">Pattern Information</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-5">Created By:</dt>
-                        <dd class="col-sm-7">@Model.CreatedBy</dd>
+                        <dt class="col-sm-6">Standard Sheet Size:</dt>
+                        <dd class="col-sm-6">@Model.StandardSheetSize sq ft</dd>
 
-                        <dt class="col-sm-5">Visibility:</dt>
-                        <dd class="col-sm-7">@(Model.IsPublic ? "Public" : "Private")</dd>
+                        <dt class="col-sm-6">Total Time:</dt>
+                        <dd class="col-sm-6">@(Model.PrepTimeMinutes + Model.CookTimeMinutes) minutes</dd>
 
-                        <dt class="col-sm-5">Prep Time:</dt>
-                        <dd class="col-sm-7">@Model.PrepTimeMinutes minutes</dd>
-
-                        <dt class="col-sm-5">Cook Time:</dt>
-                        <dd class="col-sm-7">@Model.CookTimeMinutes minutes</dd>
-
-                        <dt class="col-sm-5">Total Time:</dt>
-                        <dd class="col-sm-7">@(Model.PrepTimeMinutes + Model.CookTimeMinutes) minutes</dd>
-
-                        <dt class="col-sm-5">Servings:</dt>
-                        <dd class="col-sm-7">@Model.NumberOfServings</dd>
-
-@*                         <dt class="col-sm-5">Cost per Serving:</dt>
-                        <dd class="col-sm-7">@((Model.TotalCost / Model.NumberOfServings).ToString("C"))</dd>
-
-                        <dt class="col-sm-5">Calories per Serving:</dt>
-                        <dd class="col-sm-7">@((Model.TotalCalories / Model.NumberOfServings).ToString("N0"))</dd> *@
+                        @if (!string.IsNullOrEmpty(Model.Collection))
+                        {
+                            <dt class="col-sm-6">Collection:</dt>
+                            <dd class="col-sm-6"><span class="badge bg-info">@Model.Collection</span></dd>
+                        }
                     </dl>
+                </div>
+            </div>
+
+            <!-- Materials List -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Materials List</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var ingredient in Model.Ingredients)
+                        {
+                            <li class="mb-2">
+                                <i class="fas fa-circle text-primary" style="font-size: 0.5rem;"></i>
+                                @ingredient.Name
+                                @if (!string.IsNullOrEmpty(ingredient.MaterialType))
+                                {
+                                    <br>
+
+                                    <small class="text-muted">@ingredient.MaterialType</small>
+                                }
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@functions {
+    private string ConvertQuantity(decimal quantity, string unit)
+    {
+        try
+        {
+            // First try volume conversions using UnitsNet
+            if (TryConvertVolume((double)quantity, unit, out double convertedQty, out string convertedUnit))
+            {
+                return Math.Round(convertedQty, 2).ToString();
+            }
+
+            // Then try mass conversions
+            if (TryConvertMass((double)quantity, unit, out convertedQty, out convertedUnit))
+            {
+                return Math.Round(convertedQty, 2).ToString();
+            }
+        }
+        catch
+        {
+            // Fall back to original if conversion fails
+        }
+        return Math.Round(quantity, 2).ToString();
+    }
+
+    private string ConvertUnit(decimal quantity, string unit)
+    {
+        try
+        {
+            if (TryConvertVolume((double)quantity, unit, out double convertedQty, out string convertedUnit))
+            {
+                return convertedUnit;
+            }
+
+            if (TryConvertMass((double)quantity, unit, out convertedQty, out convertedUnit))
+            {
+                return convertedUnit;
+            }
+        }
+        catch
+        {
+            // Fall back to original if conversion fails
+        }
+        return unit ?? "units";
+    }
+
+    private bool TryConvertVolume(double quantity, string unit, out double convertedQuantity, out string convertedUnit)
+    {
+        convertedQuantity = 0;
+        convertedUnit = "";
+
+        try
+        {
+            Volume? volume = null;
+
+            switch (unit?.ToLower().Trim())
+            {
+                case "gallon":
+                case "gallons":
+                case "gal":
+                    volume = Volume.FromUsGallons(quantity);
+                    break;
+                case "quart":
+                case "quarts":
+                case "qt":
+                    volume = Volume.FromUsQuarts(quantity);
+                    break;
+                case "liter":
+                case "liters":
+                case "l":
+                    volume = Volume.FromLiters(quantity);
+                    break;
+                case "cup":
+                case "cups":
+                    volume = Volume.FromLiters(quantity * 0.236588); // Convert cups to liters first
+                    break;
+                case "fl oz":
+                case "fluid ounce":
+                case "fluid ounces":
+                case "ounces": // Add this for your case
+                    volume = Volume.FromLiters(quantity * 0.0295735); // Convert fl oz to liters
+                    break;
+                default:
+                    return false;
+            }
+
+            if (volume.HasValue)
+            {
+                // Convert to most appropriate unit
+                if (volume.Value.UsGallons >= 1)
+                {
+                    convertedQuantity = volume.Value.UsGallons;
+                    convertedUnit = "gallons";
+                }
+                else if (volume.Value.UsQuarts >= 1)
+                {
+                    convertedQuantity = volume.Value.UsQuarts;
+                    convertedUnit = "quarts";
+                }
+                else
+                {
+                    convertedQuantity = volume.Value.Liters * 33.814; // Convert to fl oz
+                    convertedUnit = "fl oz";
+                }
+                return true;
+            }
+        }
+        catch
+        {
+            // Fall through
+        }
+        return false;
+    }
+
+    private bool TryConvertMass(double quantity, string unit, out double convertedQuantity, out string convertedUnit)
+    {
+        convertedQuantity = 0;
+        convertedUnit = "";
+
+        try
+        {
+            Mass? mass = null;
+
+            switch (unit?.ToLower().Trim())
+            {
+                case "pound":
+                case "pounds":
+                case "lb":
+                case "lbs":
+                    mass = Mass.FromPounds(quantity);
+                    break;
+                case "ounce":
+                case "ounces":
+                case "oz":
+                    mass = Mass.FromOunces(quantity);
+                    break;
+                case "kilogram":
+                case "kilograms":
+                case "kg":
+                    mass = Mass.FromKilograms(quantity);
+                    break;
+                case "gram":
+                case "grams":
+                case "g":
+                    mass = Mass.FromGrams(quantity);
+                    break;
+                default:
+                    return false;
+            }
+
+            if (mass.HasValue)
+            {
+                if (mass.Value.Pounds >= 1)
+                {
+                    convertedQuantity = mass.Value.Pounds;
+                    convertedUnit = "lbs";
+                }
+                else
+                {
+                    convertedQuantity = mass.Value.Ounces;
+                    convertedUnit = "oz";
+                }
+                return true;
+            }
+        }
+        catch
+        {
+            // Fall through
+        }
+        return false;
+    }
+}
 
 @section Scripts {
     <script src="~/js/unified-photo-handler.js"></script>
