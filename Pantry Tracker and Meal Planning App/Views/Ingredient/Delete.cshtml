@@ -33,13 +33,12 @@
                                 <dd class="col-sm-8">@Model.CostPerPackage.ToString("C")</dd>
 
                                 <dt class="col-sm-4">Servings Per Package</dt>
-                                <dd class="col-sm-8">@Model.ServingsPerPackage</dd>
+                                <dd class="col-sm-8">@Model.UnitsPerPackage</dd>
 
                                 <dt class="col-sm-4">Cost Per Serving</dt>
-                                <dd class="col-sm-8">@((Model.CostPerPackage / Model.ServingsPerPackage).ToString("C"))</dd>
+                                <dd class="col-sm-8">@((Model.CostPerPackage / Model.UnitsPerPackage).ToString("C"))</dd>
 
-                                <dt class="col-sm-4">Calories Per Serving</dt>
-                                <dd class="col-sm-8">@Model.CaloriesPerServing</dd>
+
                             </dl>
                         </div>
                     </div>

@@ -124,7 +124,7 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
     //                Type = "Ingredient",
     //                // Set default values for required fields
     //                CostPerPackage = 0, // Default value
-    //                ServingsPerPackage = 1, // Default value
+    //                UnitsPerPackage = 1, // Default value
     //                CaloriesPerServing = 0, // Default value
     //                Quantity = 1, // Default value
     //                Unit = unit, // Use the parsed unit
@@ -612,7 +612,7 @@ namespace Vahallan_Ingredient_Aggregator.Services.Implementations
         //                Type = "Ingredient",
         //                // Set default values for required fields
         //                CostPerPackage = 0, // You might want to set a different default
-        //                ServingsPerPackage = 1,
+        //                UnitsPerPackage = 1,
         //                CaloriesPerServing = 0, // You might want to set a different default
         //               StoredQuantity = 1, // You might want to convert this
         //                StoredUnit = measurement // You might want to convert this

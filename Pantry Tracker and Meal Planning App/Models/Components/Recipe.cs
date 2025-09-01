@@ -68,13 +68,7 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         public override decimal GetTotalCost()
         {
             return RecipeIngredients.Sum(ri =>
-                ri.Ingredient.CostPerPackage / ri.Ingredient.ServingsPerPackage * ri.Quantity);
-        }
-
-        public override decimal GetTotalCalories()
-        {
-            return RecipeIngredients.Sum(ri =>
-                ri.Ingredient.CaloriesPerServing * ri.Quantity);
+                ri.Ingredient.CostPerPackage / ri.Ingredient.UnitsPerPackage * ri.Quantity);
         }
 
         public override List<Ingredient> GetIngredientList()
@@ -186,28 +180,7 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
 
             return isValid;
         }
-        // Method to create recipe from external source
-        //public static Recipe FromExternalSource(
-        //    string externalId,
-        //    string source,
-        //    string name,
-        //    string description,
-        //    string instructions,
-        //    string userId)
-        //{
-        //    return new Recipe
-        //    {
-        //        ExternalId = externalId,
-        //        ExternalSource = source,
-        //        Name = name,
-        //        Description = description,
-        //        Instructions = instructions,
-        //        ImportedAt = DateTime.UtcNow,
-        //        CreatedById = userId,
-        //        CreatedAt = DateTime.UtcNow,
-        //        IsPublic = true // External recipes are public by default
-        //    };
-        //}
+
         public override BaseIngredientComponent Clone()
         {
             var clone = (Recipe)base.Clone();

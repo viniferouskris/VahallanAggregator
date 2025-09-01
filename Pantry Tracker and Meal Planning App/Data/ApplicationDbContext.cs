@@ -137,8 +137,7 @@ namespace Vahallan_Ingredient_Aggregator.Data
                     entity.Property(e => e.Unit).IsRequired().HasMaxLength(50);
                     entity.Property(e => e.Quantity).HasColumnType("decimal(18,4)");
                     entity.Property(e => e.CostPerPackage).HasColumnType("decimal(18,2)");
-                    entity.Property(e => e.CaloriesPerServing).HasColumnType("decimal(10,2)");
-                    entity.Property(e => e.ServingsPerPackage).HasColumnType("decimal(18,2)");
+                    entity.Property(e => e.UnitsPerPackage).HasColumnType("decimal(18,2)");
                     // ServingCost is not mapped as it's a computed property
                 
 

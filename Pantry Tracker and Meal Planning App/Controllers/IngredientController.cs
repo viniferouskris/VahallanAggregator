@@ -48,8 +48,8 @@ public class IngredientController : Controller
                 Name = i.Name,
                 Unit = i.Unit,
                 CostPerPackage = i.CostPerPackage,
-                ServingsPerPackage = i.ServingsPerPackage,
-                CaloriesPerServing = i.CaloriesPerServing,
+                UnitsPerPackage = i.UnitsPerPackage,
+               
                 // REMOVED: IsSystemIngredient and IsPromoted
                 SystemIngredientId = i.SystemIngredientId,
                 MaterialType = i.MaterialType,
@@ -77,8 +77,8 @@ public class IngredientController : Controller
         var viewModel = new IngredientViewModel
         {
             Quantity = 1,
-            ServingsPerPackage = 1,
-            CaloriesPerServing = 0
+            UnitsPerPackage = 1,
+
         };
 
         return View(viewModel);
@@ -104,8 +104,7 @@ public class IngredientController : Controller
                 Unit = viewModel.Unit,
                 Quantity = 1,
                 CostPerPackage = viewModel.CostPerPackage,
-                ServingsPerPackage = viewModel.ServingsPerPackage,
-                CaloriesPerServing = viewModel.CaloriesPerServing,
+                UnitsPerPackage = viewModel.UnitsPerPackage,
                 CreatedById = User.Identity.Name,
                 MaterialType = viewModel.MaterialType ?? "General",
                 Vendor = viewModel.Vendor ?? ""
@@ -157,8 +156,7 @@ public class IngredientController : Controller
                 Name = ingredient.Name,
                 Unit = ingredient.Unit,
                 CostPerPackage = ingredient.CostPerPackage,
-                ServingsPerPackage = ingredient.ServingsPerPackage,
-                CaloriesPerServing = ingredient.CaloriesPerServing,
+                UnitsPerPackage = ingredient.UnitsPerPackage,
                 // REMOVED: IsSystemIngredient and IsPromoted
                 CreatedBy = ingredient.CreatedById,
                 CreatedAt = ingredient.CreatedAt,
@@ -218,8 +216,7 @@ public class IngredientController : Controller
                 Quantity = 1,
                 Unit = ingredient.Unit,
                 CostPerPackage = ingredient.CostPerPackage,
-                ServingsPerPackage = ingredient.ServingsPerPackage,
-                CaloriesPerServing = ingredient.CaloriesPerServing,
+                UnitsPerPackage = ingredient.UnitsPerPackage,
                 // REMOVED: IsSystemIngredient
                 SystemIngredientId = ingredient.SystemIngredientId,
                 MaterialType = ingredient.MaterialType,
@@ -267,8 +264,7 @@ public class IngredientController : Controller
             existingIngredient.Name = viewModel.Name;
             existingIngredient.Unit = viewModel.Unit;
             existingIngredient.CostPerPackage = viewModel.CostPerPackage;
-            existingIngredient.ServingsPerPackage = viewModel.ServingsPerPackage;
-            existingIngredient.CaloriesPerServing = viewModel.CaloriesPerServing;
+            existingIngredient.UnitsPerPackage = viewModel.UnitsPerPackage;
             existingIngredient.MaterialType = viewModel.MaterialType ?? "General";
             existingIngredient.Vendor = viewModel.Vendor ?? "";
             // REMOVED: IsSystemIngredient assignment
@@ -428,8 +424,7 @@ public class IngredientController : Controller
                 Name = ingredient.Name,
                 Unit = ingredient.Unit,
                 CostPerPackage = ingredient.CostPerPackage,
-                ServingsPerPackage = ingredient.ServingsPerPackage,
-                CaloriesPerServing = ingredient.CaloriesPerServing,
+                UnitsPerPackage = ingredient.UnitsPerPackage,
                 MaterialType = ingredient.MaterialType,
                 Vendor = ingredient.Vendor
                 // REMOVED: IsSystemIngredient

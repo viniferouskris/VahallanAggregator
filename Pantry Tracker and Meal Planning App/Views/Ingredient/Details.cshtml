@@ -36,20 +36,22 @@
                         <div class="col-md-6">
                             <h5 class="card-subtitle mb-3">Basic Information</h5>
                             <dl class="row">
+
+                                <dt class="col-sm-4">Name</dt>
+                                <dd class="col-sm-8">@Model.Name</dd>
+
                                 <dt class="col-sm-4">Unit</dt>
                                 <dd class="col-sm-8">@Model.Unit</dd>
-
+                                
                                 <dt class="col-sm-4">Cost Per Package</dt>
                                 <dd class="col-sm-8">@Model.CostPerPackage.ToString("C")</dd>
 
-                                <dt class="col-sm-4">Servings Per Package</dt>
-                                <dd class="col-sm-8">@Model.ServingsPerPackage</dd>
+                                <dt class="col-sm-4">Units Per Package</dt>
+                                <dd class="col-sm-8">@Model.UnitsPerPackage</dd>
 
-                                <dt class="col-sm-4">Cost Per Serving</dt>
+                                <dt class="col-sm-4">Cost Per Unit</dt>
                                 <dd class="col-sm-8">@Model.ServingCost.ToString("C")</dd>
 
-                                <dt class="col-sm-4">Calories Per Serving</dt>
-                                <dd class="col-sm-8">@Model.CaloriesPerServing</dd>
                             </dl>
                         </div>
 

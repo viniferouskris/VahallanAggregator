@@ -46,18 +46,12 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label asp-for="ServingsPerPackage" class="control-label"></label>
-                    <input asp-for="ServingsPerPackage" class="form-control" type="number" step="0.01" />
-                    <span asp-validation-for="ServingsPerPackage" class="text-danger"></span>
+                    <label asp-for="UnitsPerPackage" class="control-label"></label>
+                    <input asp-for="UnitsPerPackage" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="UnitsPerPackage" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label asp-for="CaloriesPerServing" class="control-label"></label>
-                    <input asp-for="CaloriesPerServing" class="form-control" type="number" step="0.01" />
-                    <span asp-validation-for="CaloriesPerServing" class="text-danger"></span>
-                </div>
-            </div>
+
         </div>
 
         @if (ViewBag.IsAdmin ?? false)

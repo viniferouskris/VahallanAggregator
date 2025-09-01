@@ -8,9 +8,8 @@ namespace Vahallan_Ingredient_Aggregator.Models.ViewModels
         public string Name { get; set; }
         public string Unit { get; set; }
         public decimal CostPerPackage { get; set; }
-        public decimal ServingsPerPackage { get; set; }
-        public decimal CaloriesPerServing { get; set; }
-        public decimal ServingCost => CostPerPackage / ServingsPerPackage;
+        public decimal UnitsPerPackage { get; set; }
+        public decimal ServingCost => CostPerPackage / UnitsPerPackage;
         public bool IsSystemIngredient { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

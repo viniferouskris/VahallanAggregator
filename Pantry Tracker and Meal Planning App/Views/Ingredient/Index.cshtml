@@ -1,16 +1,19 @@
 ﻿@model IEnumerable<IngredientViewModel>
-
 @{
-    ViewData["Title"] = "Ingredients";
+    ViewData["Title"] = "Materials";
     var currentUserId = ViewBag.CurrentUserId;
+    var isAdmin = ViewBag.IsAdmin ?? false;
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>@ViewData["Title"]</h2>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus"></i> Add New Ingredient
-        </a>
+        @if (isAdmin)
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus"></i> Add New Material
+            </a>
+        }
     </div>
 
     <div class="card">
@@ -21,12 +24,10 @@
                         <tr>
                             <th>Type</th>
                             <th>@Html.DisplayNameFor(model => model.Name)</th>
-                            <th>@Html.DisplayNameFor(model => model.Quantity)</th>
+                            <th>@Html.DisplayNameFor(model => model.UnitsPerPackage)</th>
                             <th>@Html.DisplayNameFor(model => model.Unit)</th>
                             <th>@Html.DisplayNameFor(model => model.CostPerPackage)</th>
-                            <th>@Html.DisplayNameFor(model => model.ServingsPerPackage)</th>
-                            <th>@Html.DisplayNameFor(model => model.ServingCost)</th>
-                            <th>@Html.DisplayNameFor(model => model.CaloriesPerServing)</th>
+                            <th>Vendor</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -35,48 +36,53 @@
                         {
                             <tr>
                                 <td>
-                                    @if (!string.IsNullOrEmpty(item.MaterialType))
+                                    @if (!string.IsNullOrEmpty(item.MaterialType) && item.MaterialType != "General")
                                     {
-                                        <span class="badge badge-secondary">@item.MaterialType</span>
-                                    }
-                                    @if (!string.IsNullOrEmpty(item.Vendor))
-                                    {
-                                        <small class="text-muted">@item.Vendor</small>
+                                        <span class="badge bg-secondary">@item.MaterialType</span>
                                     }
                                 </td>
+@*                                 <td>
+                                    <strong>@item.Name</strong>
+                                    @if (!string.IsNullOrEmpty(item.Vendor))
+                                    {
+                                        <br>
+
+                                        <small class="text-muted">@item.Vendor</small>
+                                    }
+                                </td> *@
                                 <td>@item.Name</td>
-                                <td>@item.Quantity</td>
+
+                                <td>@item.UnitsPerPackage</td>
                                 <td>@item.Unit</td>
                                 <td>@item.CostPerPackage.ToString("C")</td>
-                                <td>@item.ServingsPerPackage</td>
-                                <td>@item.ServingCost.ToString("C")</td>
-                                <td>@item.CaloriesPerServing</td>
+                                <td>@item.Vendor</td>
                                 <td>
-@*                                     <div class="btn-group">
-                                        @if (item.IsSystemIngredient && !User.IsInRole("Admin"))
+                                    <div class="btn-group" role="group">
+                                        <!-- View/Details Button - All users can view -->
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="btn btn-outline-info btn-sm"
+                                           title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        @if (isAdmin)
                                         {
-                                            <a asp-action="CopyFromSystem" asp-route-id="@item.Id"
-                                               class="btn btn-sm btn-outline-success"
-                                               title="Add to My Ingredients">
-                                                <i class="bi bi-plus-circle"></i>
-                                            </a>
-                                        }
-                                        else
-                                        {
+                                            <!-- Edit Button - Admin only -->
                                             <a asp-action="Edit" asp-route-id="@item.Id"
-                                               class="btn btn-sm btn-outline-primary">
+                                               class="btn btn-outline-primary btn-sm"
+                                               title="Edit Material">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <a asp-action="Details" asp-route-id="@item.Id"
-                                               class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-info-circle"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id"
-                                               class="btn btn-sm btn-outline-danger">
+
+                                            <!-- Delete Button - Admin only -->
+                                            <button type="button"
+                                                    class="btn btn-outline-danger btn-sm"
+                                                    title="Delete Material"
+                                                    onclick="confirmDelete(@item.Id, '@item.Name')">
                                                 <i class="bi bi-trash"></i>
-                                            </a>
+                                            </button>
                                         }
-                                    </div> *@
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -89,8 +95,50 @@
     @if (!Model.Any())
     {
         <div class="text-center mt-4">
-            <p class="lead text-muted">No ingredients available.</p>
-            <a asp-action="Create" class="btn btn-primary">Add Your First Ingredient</a>
+            <p class="lead text-muted">No materials available.</p>
+            @if (isAdmin)
+            {
+                <a asp-action="Create" class="btn btn-primary">Add Your First Material</a>
+            }
         </div>
     }
 </div>
+
+@if (isAdmin)
+{
+    <!-- JavaScript for delete confirmation - Admin only -->
+    <script>
+        function confirmDelete(ingredientId, ingredientName) {
+            if (confirm(`Are you sure you want to delete "${ingredientName}"?`)) {
+                // Create and submit a form for the delete action
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("Delete")';
+
+                // Add anti-forgery token
+                const token = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (token) {
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = '__RequestVerificationToken';
+                    tokenInput.value = token.value;
+                    form.appendChild(tokenInput);
+                }
+
+                // Add ingredient ID
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                idInput.value = ingredientId;
+                form.appendChild(idInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+}
+
+@section Scripts {
+    @Html.AntiForgeryToken()
+}

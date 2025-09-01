@@ -68,8 +68,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
                     CostPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    CaloriesPerServing = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
-                    ServingsPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    UnitsPerPackage = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MaterialType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Vendor = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SystemIngredientId = table.Column<int>(type: "int", nullable: true),
@@ -300,33 +299,33 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", "1f158e86-c2c9-4550-b8cb-7723d5468cbc", "Admin", "ADMIN" },
-                    { "2", "f2719a1e-3d6a-437b-8279-8b30c756835e", "User", "USER" }
+                    { "1", "6b99ba17-807a-4ff0-a441-35e52b0ef578", "Admin", "ADMIN" },
+                    { "2", "36c4cd21-5c7d-4c36-b831-ada7c14d9d86", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin-user-id", 0, "3b5e520e-35ed-4b74-9c99-c65395bb7f6f", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEDxV2ZkpGgq+SASa5MRkJplTdWNEnkyJX10Weub/6uBYZp69f9I//qxmnWcD4lzHMg==", null, false, "68275353-d67e-458a-9e50-63d5ba0740c3", false, "admin@yourapp.com" });
+                values: new object[] { "admin-user-id", 0, "0062e930-d372-44e8-94cb-3d31f588934a", "admin@yourapp.com", true, false, null, "ADMIN@YOURAPP.COM", "ADMIN@YOURAPP.COM", "AQAAAAIAAYagAAAAEKnxDeHvS/hC1Tma6kADzSdUgCH7mLVJJmFuGwZQHvF7UXg8d8A+ZmCAX0+pOkcdCg==", null, false, "4ca1c946-7aef-4a15-bb4c-5d0132f3f16e", false, "admin@yourapp.com" });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
-                columns: new[] { "Id", "CaloriesPerServing", "CostPerPackage", "CreatedAt", "CreatedById", "MaterialType", "ModifiedAt", "Name", "Quantity", "ServingsPerPackage", "StoredQuantity", "StoredUnit", "SystemIngredientId", "Type", "Unit", "Vendor" },
+                columns: new[] { "Id", "CostPerPackage", "CreatedAt", "CreatedById", "MaterialType", "ModifiedAt", "Name", "Quantity", "StoredQuantity", "StoredUnit", "SystemIngredientId", "Type", "Unit", "UnitsPerPackage", "Vendor" },
                 values: new object[,]
                 {
-                    { 1, 70m, 5.99m, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3327), "system", "Dairy", null, "Fresh Mozzarella", 16m, 16m, 453.592m, "g", null, "Ingredient", "oz", "Local Farm" },
-                    { 2, 22m, 3.00m, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3335), "system", "Produce", null, "Ripe Tomatoes", 4m, 4m, 4m, "count", null, "Ingredient", "count", "Local Market" },
-                    { 3, 1m, 2.99m, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3341), "system", "Herbs", null, "Fresh Basil Leaves", 20m, 30m, 20m, "count", null, "Ingredient", "count", "Garden Center" },
-                    { 4, 120m, 8.99m, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3346), "system", "Oil", null, "Extra Virgin Olive Oil", 2m, 33.8m, 29.5735m, "ml", null, "Ingredient", "tbsp", "Mediterranean Imports" },
-                    { 5, 14m, 5.99m, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3351), "system", "Condiment", null, "Balsamic Vinegar", 2m, 16.9m, 29.5735m, "ml", null, "Ingredient", "tbsp", "Mediterranean Imports" },
-                    { 6, 0m, 0.99m, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3357), "system", "Seasoning", null, "Salt", 0.5m, 156m, 2.46446m, "ml", null, "Ingredient", "tsp", "General Store" },
-                    { 7, 0m, 3.99m, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3361), "system", "Seasoning", null, "Black Pepper", 0.25m, 144m, 1.23223m, "ml", null, "Ingredient", "tsp", "Spice Company" }
+                    { 1, 5.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2388), "system", "Dairy", null, "Fresh Mozzarella", 16m, 453.592m, "g", null, "Ingredient", "oz", 16m, "Local Farm" },
+                    { 2, 3.00m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2394), "system", "Produce", null, "Ripe Tomatoes", 4m, 4m, "count", null, "Ingredient", "count", 4m, "Local Market" },
+                    { 3, 2.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2398), "system", "Herbs", null, "Fresh Basil Leaves", 20m, 20m, "count", null, "Ingredient", "count", 30m, "Garden Center" },
+                    { 4, 8.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2402), "system", "Oil", null, "Extra Virgin Olive Oil", 2m, 29.5735m, "ml", null, "Ingredient", "tbsp", 33.8m, "Mediterranean Imports" },
+                    { 5, 5.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2405), "system", "Condiment", null, "Balsamic Vinegar", 2m, 29.5735m, "ml", null, "Ingredient", "tbsp", 16.9m, "Mediterranean Imports" },
+                    { 6, 0.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2408), "system", "Seasoning", null, "Salt", 0.5m, 2.46446m, "ml", null, "Ingredient", "tsp", 156m, "General Store" },
+                    { 7, 3.99m, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2412), "system", "Seasoning", null, "Black Pepper", 0.25m, 1.23223m, "ml", null, "Ingredient", "tsp", 144m, "Spice Company" }
                 });
 
             migrationBuilder.InsertData(
                 table: "BaseIngredientComponent",
                 columns: new[] { "Id", "AccuracyLevel", "Collection", "CookTimeMinutes", "CreatedAt", "CreatedById", "Description", "Instructions", "IsPublic", "ModifiedAt", "Name", "NumberOfServings", "OriginalRecipeId", "PatternCode", "PrepTimeMinutes", "Quantity", "StandardSquareFeet", "StoredQuantity", "StoredUnit", "Type", "Unit", "Version" },
-                values: new object[] { 8, 1, "Sample Recipes", 0, new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3306), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 0m, null, "CAPRESE-001", 15, 4m, 100m, 4m, "serving", "Recipe", "serving", 1 });
+                values: new object[] { 8, 1, "Sample Recipes", 0, new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2366), "system", "A simple and elegant Italian salad made with fresh mozzarella, tomatoes, and basil.", "1. Slice the mozzarella and tomatoes into 1/4-inch thick slices.\r\n2. On a serving plate, alternately arrange the mozzarella and tomato slices in a circular pattern.\r\n3. Tuck fresh basil leaves between the mozzarella and tomato slices.\r\n4. Drizzle with extra virgin olive oil and balsamic vinegar.\r\n5. Season with salt and freshly ground black pepper.\r\n6. Serve immediately at room temperature.", true, null, "Classic Caprese Salad", 0m, null, "CAPRESE-001", 15, 4m, 100m, 4m, "serving", "Recipe", "serving", 1 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -352,8 +351,8 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 columns: new[] { "Id", "ContentType", "Description", "FileName", "FilePath", "FileSize", "IsApproved", "IsMain", "IsMainPhoto", "ModifiedAt", "RecipeId", "ThumbnailPath", "UploadedAt", "UploadedById" },
                 values: new object[,]
                 {
-                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 20L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3372), "system" },
-                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3375), "system" }
+                    { 1, "image/jpeg", "Classic Caprese Salad with alternating slices of mozzarella and tomato", "caprese-main.jpg", "/recipe-photos/originals/caprese-main.jpg", 20L, true, true, false, null, 8, "/recipe-photos/thumbnails/caprese-main.jpg", new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2423), "system" },
+                    { 2, "image/jpeg", "Caprese Salad from a different angle", "caprese-salad-recipe-1.jpg", "/recipe-photos/originals/caprese-salad-recipe-1.jpg", 18432L, true, false, false, null, 8, "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg", new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2426), "system" }
                 });
 
             migrationBuilder.CreateIndex(

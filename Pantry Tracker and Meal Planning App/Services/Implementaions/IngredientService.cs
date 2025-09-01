@@ -119,8 +119,7 @@ namespace Vahallan_Ingredient_Aggregator.Services
                 Name = sourceIngredient.Name,
                 Unit = sourceIngredient.Unit,
                 CostPerPackage = sourceIngredient.CostPerPackage,
-                ServingsPerPackage = sourceIngredient.ServingsPerPackage,
-                CaloriesPerServing = sourceIngredient.CaloriesPerServing,
+                UnitsPerPackage = sourceIngredient.UnitsPerPackage,
                 MaterialType = sourceIngredient.MaterialType,
                 Vendor = sourceIngredient.Vendor,
                 CreatedById = userId,
@@ -229,8 +228,7 @@ namespace Vahallan_Ingredient_Aggregator.Services
                 existingIngredient.Name = updatedIngredient.Name;
                 existingIngredient.Unit = updatedIngredient.Unit;
                 existingIngredient.CostPerPackage = updatedIngredient.CostPerPackage;
-                existingIngredient.ServingsPerPackage = updatedIngredient.ServingsPerPackage;
-                existingIngredient.CaloriesPerServing = updatedIngredient.CaloriesPerServing;
+                existingIngredient.UnitsPerPackage = updatedIngredient.UnitsPerPackage;
                 existingIngredient.MaterialType = updatedIngredient.MaterialType;
                 existingIngredient.Vendor = updatedIngredient.Vendor;
 

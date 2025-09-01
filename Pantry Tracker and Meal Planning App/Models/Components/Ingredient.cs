@@ -14,14 +14,7 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
     {
         [Column(TypeName = "decimal(18,2)")]
         public decimal CostPerPackage { get; set; }
-
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal CaloriesPerServing { get; set; }
-
-        public decimal ServingsPerPackage { get; set; }
-
-        //   public bool IsSystemIngredient { get; set; }
-
+        public decimal UnitsPerPackage { get; set; }
         public string MaterialType { get; set; } = "General";  // Paper, Paint, Metallic, etc.
         public string Vendor { get; set; } = string.Empty;
         // Add reference to original system ingredient if this is a user copy
@@ -30,10 +23,12 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();
 
 
+        //[NotMapped]
+        //public decimal ServingCost => CostPerPackage / UnitsPerPackage;
+
+  
         [NotMapped]
-        public decimal ServingCost => CostPerPackage / ServingsPerPackage;
-
-
+        public decimal CostPerUnit => CostPerPackage / UnitsPerPackage;  // Cost per individual unit
 
 
         public Ingredient()
@@ -42,58 +37,19 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         }
         public override decimal GetTotalCost()
         {
-            return (decimal)(Quantity * ServingCost);
-        }
-
-        public override decimal GetTotalCalories()
-        {
-            return (decimal)(Quantity * CaloriesPerServing);
+            return (decimal)(UnitsPerPackage * CostPerPackage);
         }
 
         public override List<Ingredient> GetIngredientList()
         {
             return new List<Ingredient> { this };
         }
-      //  public Ingredient CreateUserCopy(string userId)
-        //{
-        //    if (!IsSystemIngredient)
-        //    {
-        //        throw new InvalidOperationException("Can only create user copies from system ingredients");
-        //    }
-
-        //    return new Ingredient
-        //    {
-        //        Name = this.Name,
-        //        Unit = this.Unit,
-        //        CostPerPackage = this.CostPerPackage,
-        //        ServingsPerPackage = this.ServingsPerPackage,
-        //        CaloriesPerServing = this.CaloriesPerServing,
-        //        CreatedById = userId,
-        //        CreatedAt = DateTime.UtcNow,
-        //     //   IsSystemIngredient = false,
-        //        SystemIngredientId = this.Id
-        //    };
-        //}
-
-
-        // Modified to accept the service as a parameter
-        //public void UpdateMeasurement(decimal quantity, string unit, IMeasurementConversionService conversionService)
-        //{
-        //    Quantity = quantity;
-        //    Unit = unit;
-
-        //    if (conversionService != null)
-        //    {
-        //        UpdateStoredMeasurement(conversionService);
-        //    }
-        //}
 
         public override BaseIngredientComponent Clone()
         {
             var clone = (Ingredient)base.Clone();
             clone.CostPerPackage = this.CostPerPackage;
-            clone.CaloriesPerServing = this.CaloriesPerServing;
-            clone.ServingsPerPackage = this.ServingsPerPackage;
+            clone.UnitsPerPackage = this.UnitsPerPackage;
             return clone;
         }
 
@@ -107,17 +63,12 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
                 isValid = false;
             }
 
-            if (ServingsPerPackage <= 0)
+            if (UnitsPerPackage <= 0)
             {
                 errors.Add("Servings per package must be greater than zero");
                 isValid = false;
             }
 
-            if (CaloriesPerServing < 0)
-            {
-                errors.Add("Calories per serving cannot be negative");
-                isValid = false;
-            }
 
             return isValid;
         }

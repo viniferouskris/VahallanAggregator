@@ -52,14 +52,14 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "1f158e86-c2c9-4550-b8cb-7723d5468cbc",
+                            ConcurrencyStamp = "6b99ba17-807a-4ff0-a441-35e52b0ef578",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "f2719a1e-3d6a-437b-8279-8b30c756835e",
+                            ConcurrencyStamp = "36c4cd21-5c7d-4c36-b831-ada7c14d9d86",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -159,15 +159,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         {
                             Id = "admin-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3b5e520e-35ed-4b74-9c99-c65395bb7f6f",
+                            ConcurrencyStamp = "0062e930-d372-44e8-94cb-3d31f588934a",
                             Email = "admin@yourapp.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@YOURAPP.COM",
                             NormalizedUserName = "ADMIN@YOURAPP.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDxV2ZkpGgq+SASa5MRkJplTdWNEnkyJX10Weub/6uBYZp69f9I//qxmnWcD4lzHMg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKnxDeHvS/hC1Tma6kADzSdUgCH7mLVJJmFuGwZQHvF7UXg8d8A+ZmCAX0+pOkcdCg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "68275353-d67e-458a-9e50-63d5ba0740c3",
+                            SecurityStamp = "4ca1c946-7aef-4a15-bb4c-5d0132f3f16e",
                             TwoFactorEnabled = false,
                             UserName = "admin@yourapp.com"
                         });
@@ -518,7 +518,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-main.jpg",
-                            UploadedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3372),
+                            UploadedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2423),
                             UploadedById = "system"
                         },
                         new
@@ -534,7 +534,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             IsMainPhoto = false,
                             RecipeId = 8,
                             ThumbnailPath = "/recipe-photos/thumbnails/caprese-salad-recipe-1.jpg",
-                            UploadedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3375),
+                            UploadedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2426),
                             UploadedById = "system"
                         });
                 });
@@ -543,9 +543,6 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                 {
                     b.HasBaseType("Vahallan_Ingredient_Aggregator.Models.Components.BaseIngredientComponent");
 
-                    b.Property<decimal>("CaloriesPerServing")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<decimal>("CostPerPackage")
                         .HasColumnType("decimal(18,2)");
 
@@ -553,11 +550,11 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("ServingsPerPackage")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int?>("SystemIngredientId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("UnitsPerPackage")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Vendor")
                         .IsRequired()
@@ -569,7 +566,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3327),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2388),
                             CreatedById = "system",
                             Name = "Fresh Mozzarella",
                             Quantity = 16m,
@@ -577,16 +574,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             StoredUnit = "g",
                             Type = "Ingredient",
                             Unit = "oz",
-                            CaloriesPerServing = 70m,
                             CostPerPackage = 5.99m,
                             MaterialType = "Dairy",
-                            ServingsPerPackage = 16m,
+                            UnitsPerPackage = 16m,
                             Vendor = "Local Farm"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3335),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2394),
                             CreatedById = "system",
                             Name = "Ripe Tomatoes",
                             Quantity = 4m,
@@ -594,16 +590,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             StoredUnit = "count",
                             Type = "Ingredient",
                             Unit = "count",
-                            CaloriesPerServing = 22m,
                             CostPerPackage = 3.00m,
                             MaterialType = "Produce",
-                            ServingsPerPackage = 4m,
+                            UnitsPerPackage = 4m,
                             Vendor = "Local Market"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3341),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2398),
                             CreatedById = "system",
                             Name = "Fresh Basil Leaves",
                             Quantity = 20m,
@@ -611,16 +606,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             StoredUnit = "count",
                             Type = "Ingredient",
                             Unit = "count",
-                            CaloriesPerServing = 1m,
                             CostPerPackage = 2.99m,
                             MaterialType = "Herbs",
-                            ServingsPerPackage = 30m,
+                            UnitsPerPackage = 30m,
                             Vendor = "Garden Center"
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3346),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2402),
                             CreatedById = "system",
                             Name = "Extra Virgin Olive Oil",
                             Quantity = 2m,
@@ -628,16 +622,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tbsp",
-                            CaloriesPerServing = 120m,
                             CostPerPackage = 8.99m,
                             MaterialType = "Oil",
-                            ServingsPerPackage = 33.8m,
+                            UnitsPerPackage = 33.8m,
                             Vendor = "Mediterranean Imports"
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3351),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2405),
                             CreatedById = "system",
                             Name = "Balsamic Vinegar",
                             Quantity = 2m,
@@ -645,16 +638,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tbsp",
-                            CaloriesPerServing = 14m,
                             CostPerPackage = 5.99m,
                             MaterialType = "Condiment",
-                            ServingsPerPackage = 16.9m,
+                            UnitsPerPackage = 16.9m,
                             Vendor = "Mediterranean Imports"
                         },
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3357),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2408),
                             CreatedById = "system",
                             Name = "Salt",
                             Quantity = 0.5m,
@@ -662,16 +654,15 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tsp",
-                            CaloriesPerServing = 0m,
                             CostPerPackage = 0.99m,
                             MaterialType = "Seasoning",
-                            ServingsPerPackage = 156m,
+                            UnitsPerPackage = 156m,
                             Vendor = "General Store"
                         },
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3361),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2412),
                             CreatedById = "system",
                             Name = "Black Pepper",
                             Quantity = 0.25m,
@@ -679,10 +670,9 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                             StoredUnit = "ml",
                             Type = "Ingredient",
                             Unit = "tsp",
-                            CaloriesPerServing = 0m,
                             CostPerPackage = 3.99m,
                             MaterialType = "Seasoning",
-                            ServingsPerPackage = 144m,
+                            UnitsPerPackage = 144m,
                             Vendor = "Spice Company"
                         });
                 });
@@ -749,7 +739,7 @@ namespace Vahallan_Ingredient_Aggregator.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2025, 8, 31, 20, 6, 7, 921, DateTimeKind.Utc).AddTicks(3306),
+                            CreatedAt = new DateTime(2025, 9, 1, 15, 57, 15, 362, DateTimeKind.Utc).AddTicks(2366),
                             CreatedById = "system",
                             Name = "Classic Caprese Salad",
                             Quantity = 4m,

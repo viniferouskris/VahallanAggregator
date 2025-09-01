@@ -43,6 +43,7 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
         [NotMapped]
         public string MainPhotoUrl => Photos?.FirstOrDefault(p => p.IsMain)?.StorageUrl;
 
+
         protected BaseIngredientComponent()
         {
             CreatedAt = DateTime.UtcNow;
@@ -52,7 +53,6 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
 
         // Abstract methods
         public abstract decimal GetTotalCost();
-        public abstract decimal GetTotalCalories();
         public abstract List<Ingredient> GetIngredientList();
 
         // Virtual methods with default implementations
@@ -88,8 +88,8 @@ namespace Vahallan_Ingredient_Aggregator.Models.Components
             if (string.IsNullOrWhiteSpace(Name))
                 errors.Add("Name is required");
 
-            if (Quantity <= 0)
-                errors.Add("Quantity must be greater than zero");
+            //if (UnitsPerPackage <= 0)
+            //    errors.Add("UnitsPerPackage must be greater than zero");
 
             if (string.IsNullOrWhiteSpace(Unit))
                 errors.Add("Unit is required");

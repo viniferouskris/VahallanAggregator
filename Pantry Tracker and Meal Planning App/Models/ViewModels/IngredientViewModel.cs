@@ -7,7 +7,7 @@ public class IngredientViewModel
     public int Id { get; set; }
 
     [Required]
-    [Display(Name = "Ingredient Name")]
+    [Display(Name = "Material Name")]
     [StringLength(200)]
     public string Name { get; set; }
 
@@ -28,14 +28,9 @@ public class IngredientViewModel
     public decimal CostPerPackage { get; set; }
 
     [Required]
-    [Display(Name = "Servings Per Package")]
+    [Display(Name = "Units Per Package")]
     [Range(0.01, double.MaxValue, ErrorMessage = "Servings must be greater than 0")]
-    public decimal ServingsPerPackage { get; set; }
-
-    [Required]
-    [Display(Name = "Calories Per Serving")]
-    [Range(0, double.MaxValue, ErrorMessage = "Calories cannot be negative")]
-    public decimal CaloriesPerServing { get; set; }
+    public decimal UnitsPerPackage { get; set; }
 
     public string MaterialType { get; set; } = "General";
     public string Vendor { get; set; } = "";
@@ -57,11 +52,11 @@ public class IngredientViewModel
         get
         {
             // Protect against division by zero
-            if (ServingsPerPackage <= 0)
+            if (UnitsPerPackage <= 0)
             {
                 return 0;
             }
-            return CostPerPackage / ServingsPerPackage;
+            return CostPerPackage / UnitsPerPackage;
         }
     }
         // List of standard units for dropdown
