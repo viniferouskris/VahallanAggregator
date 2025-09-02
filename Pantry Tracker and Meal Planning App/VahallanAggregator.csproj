@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Models\Production\" />
     <Folder Include="Views\MealPlan\" />
     <Folder Include="Views\ShoppingList\" />
     <Folder Include="Views\Pantry\" />

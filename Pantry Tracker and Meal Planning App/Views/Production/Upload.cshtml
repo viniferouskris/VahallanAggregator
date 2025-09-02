@@ -1,0 +1,66 @@
+﻿<!-- Views/Production/Upload.cshtml -->
+@{
+    ViewData["Title"] = "Production Planning";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Production Planning</h3>
+                    <p class="text-muted mb-0">Upload your production CSV to calculate material requirements</p>
+                </div>
+                <div class="card-body">
+                    <form asp-action="ProcessCsv" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label for="csvFile" class="form-label">Production CSV File</label>
+                            <input type="file" class="form-control" id="csvFile" name="csvFile"
+                                   accept=".csv" required>
+                            <div class="form-text">
+                                Upload your production board CSV file. The system will match patterns
+                                to existing recipes and calculate material requirements.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Sample" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-download"></i> Download Sample CSV
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate Materials
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Instructions Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">CSV Format Requirements</h5>
+                </div>
+                <div class="card-body">
+                    <p>Your CSV file should include these columns:</p>
+                    <ul>
+                        <li><strong>Customer</strong> - Customer name</li>
+                        <li><strong>Pattern</strong> - Pattern name (must match recipe names in database)</li>
+                        <li><strong>Colorway</strong> - Pattern variation</li>
+                        <li><strong>Sq Ft</strong> - Square footage for this order</li>
+                        <li><strong>Sheets</strong> - Number of sheets</li>
+                        <li><strong>Due Date</strong> - When order is due</li>
+                        <li><strong>Notes</strong> - Any special notes</li>
+                        <li><strong>Lot</strong> - Lot number</li>
+                    </ul>
+
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> Patterns that don't exist in the database will be flagged
+                        in the report with a link to create them.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

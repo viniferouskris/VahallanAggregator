@@ -74,6 +74,9 @@ builder.Services.AddScoped<IPhotoProcessingService, PhotoProcessingService>();
 
 builder.Services.AddScoped<IImageDownloaderService, ImageDownloaderService>();
 
+builder.Services.AddScoped<IProductionService, ProductionService>();
+
+
 // Configure a named HttpClient for image downloading
 builder.Services.AddHttpClient("ImageDownloader", client => {
     // Configure default headers

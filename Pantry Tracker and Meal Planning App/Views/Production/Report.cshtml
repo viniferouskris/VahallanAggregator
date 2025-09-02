@@ -1,0 +1,282 @@
+﻿<!-- Views/Production/Report.cshtml -->
+@using Vahallan_Ingredient_Aggregator.Models
+@model ProductionReport
+@{
+    ViewData["Title"] = "Production Material Report";
+}
+
+<div class="container">
+    <!-- Report Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Production Material Report</h2>
+            <p class="text-muted">Generated: @Model.GeneratedAt.ToString("MMM dd, yyyy 'at' h:mm tt")</p>
+        </div>
+        <div>
+            <a asp-action="Upload" class="btn btn-outline-secondary">
+                Upload New CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Orders</h5>
+                    <h2>@Model.TotalOrders</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Matched Patterns</h5>
+                    <h2>@Model.MatchedPatterns</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Unknown Patterns</h5>
+                    <h2>@Model.UnknownPatternsCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Sq Ft</h5>
+                    <h2>@Model.TotalSquareFeet.ToString("N0")</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unknown Patterns Alert -->
+    @if (Model.UnknownPatternsList.Any())
+    {
+        <div class="alert alert-warning">
+            <h5><i class="fas fa-exclamation-triangle"></i> Unknown Patterns Found</h5>
+            <p>These patterns were not found in the database and need to be created:</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                @foreach (var pattern in Model.UnknownPatternsList)
+                {
+                    <span class="badge bg-warning text-dark">@pattern</span>
+                }
+            </div>
+            <a asp-controller="Recipe" asp-action="Create" class="btn btn-sm btn-warning">
+                <i class="fas fa-plus"></i> Create Missing Patterns
+            </a>
+        </div>
+    }
+
+    <!-- Material Summary -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">Material Requirements Summary</h4>
+        </div>
+        <div class="card-body">
+            @if (Model.MaterialSummary.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Type</th>
+                                <th>Total Needed</th>
+                                <th>Current Stock</th>
+                                <th>Shortfall</th>
+                                <th>Est. Cost</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var material in Model.MaterialSummary.OrderBy(m => m.MaterialType).ThenBy(m => m.MaterialName))
+                            {
+                                <tr class="@(material.HasShortfall ? "table-warning" : "")">
+                                    <td>
+                                        <strong>@material.MaterialName</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">@material.MaterialType</span>
+                                    </td>
+                                    <td>@material.TotalQuantityNeeded.ToString("N2") @material.Unit</td>
+                                    <td>@material.CurrentInventory.ToString("N2") @material.Unit</td>
+                                    <td>
+                                        @if (material.HasShortfall)
+                                        {
+                                            <span class="text-danger">
+                                                @material.ShortfallQuantity.ToString("N2") @material.Unit
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-success">None</span>
+                                        }
+                                    </td>
+                                    <td>@material.TotalEstimatedCost.ToString("C")</td>
+                                    <td>
+                                        @if (material.HasShortfall)
+                                        {
+                                            <span class="badge bg-danger">Need to Order</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">In Stock</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-info">
+                                <th colspan="5">Total Estimated Cost:</th>
+                                <th>@Model.MaterialSummary.Sum(m => m.TotalEstimatedCost).ToString("C")</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <p class="text-muted">No materials calculated. This may be because no patterns matched existing recipes.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Individual Orders -->
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">Individual Orders</h4>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="ordersAccordion">
+                @for (int i = 0; i < Model.Orders.Count; i++)
+                {
+                    var order = Model.Orders[i];
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading@(i)">
+                            <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse@(i)">
+                                <div class="d-flex justify-content-between align-items-center w-100 me-3">
+                                    <div>
+                                        <strong>@order.Customer</strong> - @order.Pattern
+                                        @if (!string.IsNullOrEmpty(order.Colorway))
+                                        {
+                                            <span class="text-muted">(@order.Colorway)</span>
+                                        }
+                                    </div>
+                                    <div class="d-flex gap-3">
+                                        <small class="text-muted">@order.SquareFeet sq ft</small>
+                                        @if (order.PatternExists)
+                                        {
+                                            <span class="badge bg-success">Matched</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">Unknown Pattern</span>
+                                        }
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse@(i)" class="accordion-collapse collapse"
+                             data-bs-parent="#ordersAccordion">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Order Details:</h6>
+                                        <ul class="list-unstyled">
+                                            <li><strong>Square Feet:</strong> @order.SquareFeet</li>
+                                            <li><strong>Sheets:</strong> @order.Sheets</li>
+                                            <li><strong>Due Date:</strong> @order.DueDate</li>
+                                            <li><strong>Lot:</strong> @order.Lot</li>
+                                            @if (!string.IsNullOrEmpty(order.Notes))
+                                            {
+                                                <li><strong>Notes:</strong> @order.Notes</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @if (order.PatternExists)
+                                        {
+                                            <h6>Material Requirements:</h6>
+                                            @if (order.MaterialNeeds.Any())
+                                            {
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Material</th>
+                                                                <th>Needed</th>
+                                                                <th>Est. Cost</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var need in order.MaterialNeeds)
+                                                            {
+                                                                <tr>
+                                                                    <td>@need.MaterialName</td>
+                                                                    <td>@need.QuantityNeeded.ToString("N2") @need.Unit</td>
+                                                                    <td>@need.EstimatedCost.ToString("C")</td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr class="table-light">
+                                                                <th>Total:</th>
+                                                                <th></th>
+                                                                <th>@order.MaterialNeeds.Sum(m => m.EstimatedCost).ToString("C")</th>
+                                                            </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-muted">No materials found for this pattern.</p>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-warning">
+                                                <h6>Pattern Not Found</h6>
+                                                <p>The pattern "@order.Pattern" doesn't exist in the database.</p>
+                                                <a asp-controller="Recipe" asp-action="Create"
+                                                   asp-route-name="@order.Pattern"
+                                                   class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-plus"></i> Create Pattern
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-expand orders with unknown patterns
+        $(document).ready(function () {
+            $('.accordion-item').each(function () {
+                if ($(this).find('.badge.bg-warning').length > 0) {
+                    $(this).find('.accordion-button').removeClass('collapsed');
+                    $(this).find('.accordion-collapse').addClass('show');
+                }
+            });
+        });
+    </script>
+}
